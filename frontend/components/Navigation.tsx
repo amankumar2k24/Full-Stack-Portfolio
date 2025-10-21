@@ -25,11 +25,12 @@ export default function Navigation() {
 
             // Update active section based on scroll position
             const sections = navItems.map(item => item.href.substring(1))
+            const headerOffset = 80
             const currentSection = sections.find(section => {
                 const element = document.getElementById(section)
                 if (element) {
                     const rect = element.getBoundingClientRect()
-                    return rect.top <= 100 && rect.bottom >= 100
+                    return rect.top <= headerOffset + 50 && rect.bottom >= headerOffset + 50
                 }
                 return false
             })
@@ -45,7 +46,16 @@ export default function Navigation() {
 
     const scrollToSection = (sectionId: string) => {
         const element = document.getElementById(sectionId)
-        element?.scrollIntoView({ behavior: 'smooth' })
+        if (element) {
+            const headerOffset = 80 // Account for fixed header height
+            const elementPosition = element.getBoundingClientRect().top
+            const offsetPosition = elementPosition + window.pageYOffset - headerOffset
+
+            window.scrollTo({
+                top: offsetPosition,
+                behavior: 'smooth'
+            })
+        }
         setIsOpen(false)
     }
 
