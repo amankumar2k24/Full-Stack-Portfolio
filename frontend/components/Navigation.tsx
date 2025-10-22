@@ -2,8 +2,7 @@
 
 import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Menu, X, Home, User, Code, Briefcase, Mail, Settings } from 'lucide-react'
-import Link from 'next/link'
+import { Menu, X, Home, User, Code, Briefcase, Mail } from 'lucide-react'
 import { ThemeToggle } from './ThemeToggle'
 
 const navItems = [
@@ -25,12 +24,15 @@ export default function Navigation() {
 
             // Update active section based on scroll position
             const sections = navItems.map(item => item.href.substring(1))
-            const headerOffset = 80
+            const isMobile = window.innerWidth < 768
+            const headerOffset = isMobile ? 100 : 80
+            const threshold = isMobile ? 100 : 50
+
             const currentSection = sections.find(section => {
                 const element = document.getElementById(section)
                 if (element) {
                     const rect = element.getBoundingClientRect()
-                    return rect.top <= headerOffset + 50 && rect.bottom >= headerOffset + 50
+                    return rect.top <= headerOffset + threshold && rect.bottom >= headerOffset + threshold
                 }
                 return false
             })
@@ -47,16 +49,30 @@ export default function Navigation() {
     const scrollToSection = (sectionId: string) => {
         const element = document.getElementById(sectionId)
         if (element) {
-            const headerOffset = 80 // Account for fixed header height
-            const elementPosition = element.getBoundingClientRect().top
-            const offsetPosition = elementPosition + window.pageYOffset - headerOffset
+            // Close mobile menu first
+            setIsOpen(false)
 
-            window.scrollTo({
-                top: offsetPosition,
-                behavior: 'smooth'
-            })
+            // Small delay to allow menu animation to complete
+            setTimeout(() => {
+                // Dynamic header offset based on screen size
+                const isMobile = window.innerWidth < 768
+                const headerOffset = isMobile ? 120 : 80 // More offset for mobile
+
+                // Get the section heading element for better positioning
+                const sectionHeading = element.querySelector('h1, h2')
+                const targetElement = sectionHeading || element
+
+                const elementPosition = targetElement.getBoundingClientRect().top
+                const offsetPosition = elementPosition + window.pageYOffset - headerOffset
+
+                window.scrollTo({
+                    top: offsetPosition,
+                    behavior: 'smooth'
+                })
+            }, isOpen ? 300 : 0) // Delay only if menu was open
+        } else {
+            setIsOpen(false)
         }
-        setIsOpen(false)
     }
 
     return (

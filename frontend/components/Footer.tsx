@@ -75,8 +75,25 @@ export default function Footer() {
                                 <motion.button
                                     key={link.name}
                                     onClick={() => {
-                                        const element = document.getElementById(link.href.substring(1))
-                                        element?.scrollIntoView({ behavior: 'smooth' })
+                                        const sectionId = link.href.substring(1)
+                                        const element = document.getElementById(sectionId)
+                                        if (element) {
+                                            // Dynamic header offset based on screen size
+                                            const isMobile = window.innerWidth < 768
+                                            const headerOffset = isMobile ? 120 : 80
+
+                                            // Get the section heading element for better positioning
+                                            const sectionHeading = element.querySelector('h1, h2')
+                                            const targetElement = sectionHeading || element
+
+                                            const elementPosition = targetElement.getBoundingClientRect().top
+                                            const offsetPosition = elementPosition + window.pageYOffset - headerOffset
+
+                                            window.scrollTo({
+                                                top: offsetPosition,
+                                                behavior: 'smooth'
+                                            })
+                                        }
                                     }}
                                     className="text-left text-muted-foreground hover:text-primary transition-colors text-sm"
                                     whileHover={{ x: 4 }}
@@ -131,18 +148,11 @@ export default function Footer() {
                     className="pt-8 border-t border-border flex flex-col sm:flex-row justify-between items-center gap-4"
                 >
                     <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                        <span>&copy; {currentYear} Aman Kumar. Made with</span>
-                        <motion.div
-                            animate={{ scale: [1, 1.2, 1] }}
-                            transition={{ duration: 1, repeat: Infinity }}
-                        >
-                            <Heart size={16} className="text-red-500 fill-current" />
-                        </motion.div>
-                        <span>and lots of ☕</span>
+                        <span>&copy; {currentYear} Aman Kumar. Open to collaboration 🤝</span>
                     </div>
 
                     <div className="flex items-center gap-4 text-xs text-muted-foreground">
-                        <span>Built with Next.js, TypeScript & Tailwind CSS</span>
+                        <span>Powered by Next.js, Nest.js & TypeScript</span>
                     </div>
                 </motion.div>
             </div>
