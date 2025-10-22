@@ -14,33 +14,21 @@ import Footer from '@/components/Footer'
 import PortfolioLoader from '@/components/PortfolioLoader'
 
 export default function HomePage() {
-    const [isLoading, setIsLoading] = useState(false)
+    const [isLoading, setIsLoading] = useState(true)
     const [isMounted, setIsMounted] = useState(false)
-    const [showLoader, setShowLoader] = useState(false)
 
     useEffect(() => {
         setIsMounted(true)
 
-        // Check if this is the first visit in this session
-        const hasVisited = sessionStorage.getItem('portfolio-visited')
+        // Always show loader on every page load/refresh
+        setIsLoading(true)
 
-        if (!hasVisited) {
-            // First visit - show loader
-            setShowLoader(true)
-            setIsLoading(true)
-            sessionStorage.setItem('portfolio-visited', 'true')
-
-            // Simulate loading time
-            const timer = setTimeout(() => {
-                setIsLoading(false)
-            }, 3000)
-
-            return () => clearTimeout(timer)
-        } else {
-            // Already visited - skip loader
-            setShowLoader(false)
+        // Minimum loading time
+        const timer = setTimeout(() => {
             setIsLoading(false)
-        }
+        }, 3000)
+
+        return () => clearTimeout(timer)
     }, [])
 
     // Don't show anything until mounted to prevent hydration issues
@@ -50,12 +38,10 @@ export default function HomePage() {
 
     return (
         <>
-            {showLoader && (
-                <PortfolioLoader
-                    isLoading={isLoading}
-                    onComplete={() => setIsLoading(false)}
-                />
-            )}
+            <PortfolioLoader
+                isLoading={isLoading}
+                onComplete={() => setIsLoading(false)}
+            />
 
             <div className={`min-h-screen bg-background pt-16 sm:pt-20 overflow-x-hidden w-full max-w-full transition-opacity duration-500 ${isLoading ? 'opacity-0' : 'opacity-100'}`}>
                 <Navigation />

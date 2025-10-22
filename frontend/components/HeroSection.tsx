@@ -136,24 +136,25 @@ export default function HeroSection() {
         element?.scrollIntoView({ behavior: 'smooth' })
     }
 
-    if (loading) {
-        return (
-            <div className="flex items-center justify-center min-h-screen">
-                <motion.div
-                    className="text-center space-y-4"
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                >
-                    <motion.div
-                        className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full mx-auto"
-                        animate={{ rotate: 360 }}
-                        transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-                    />
-                    <p className="text-muted-foreground">Loading amazing portfolio...</p>
-                </motion.div>
-            </div>
-        )
-    }
+    // Remove the loading state since we have the main portfolio loader
+    // if (loading) {
+    //     return (
+    //         <div className="flex items-center justify-center min-h-screen">
+    //             <motion.div
+    //                 className="text-center space-y-4"
+    //                 initial={{ opacity: 0 }}
+    //                 animate={{ opacity: 1 }}
+    //             >
+    //                 <motion.div
+    //                     className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full mx-auto"
+    //                     animate={{ rotate: 360 }}
+    //                     transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
+    //                 />
+    //                 <p className="text-muted-foreground">Loading amazing portfolio...</p>
+    //             </motion.div>
+    //         </div>
+    //     )
+    // }
 
     return (
         <div className="relative min-h-screen w-full max-w-full flex items-center justify-center overflow-hidden bg-gradient-to-br from-background via-background to-muted/20 pt-0">
