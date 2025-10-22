@@ -156,7 +156,7 @@ export default function HeroSection() {
     }
 
     return (
-        <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-gradient-to-br from-background via-background to-muted/20 pt-10">
+        <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-gradient-to-br from-background via-background to-muted/20 pt-0">
             {/* Simple Floating Elements */}
             <SimpleFloatingElements />
 

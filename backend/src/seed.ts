@@ -19,8 +19,8 @@ async function seed() {
         // Create admin user
         console.log('Creating admin user...');
         try {
-            await authService.createUser('admin@example.com', 'password123');
-            console.log('Admin user created: admin@example.com / password123');
+            await authService.createUser('aman.kumar2k15@gmail.com', 'Aman@123');
+            console.log('Admin user created: aman.kumar2k15@gmail.com / Aman@123');
         } catch (error) {
             console.log('Admin user already exists, skipping...');
         }
@@ -33,10 +33,10 @@ async function seed() {
             bio: 'Passionate full-stack developer with expertise in modern web technologies. I love building scalable applications and solving complex problems.',
             location: 'India',
             socials: {
-                github: 'https://github.com/amankumar',
-                linkedin: 'https://linkedin.com/in/amankumar',
-                twitter: 'https://twitter.com/amankumar',
-                email: 'aman@example.com',
+                github: 'https://github.com/aman',
+                linkedin: 'https://linkedin.com/in/aman',
+                twitter: 'https://twitter.com/aman',
+                email: 'aman.kumar2k15@gmail.com',
             },
         });
         console.log('About section created');

@@ -139,7 +139,7 @@ export default function ContactForm() {
                                     type="text"
                                     id="name"
                                     className="w-full px-4 py-3 border border-input rounded-xl bg-background/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300"
-                                    placeholder="Your name"
+                                    placeholder="Enter your name"
                                 />
                                 {errors.name && (
                                     <motion.p
@@ -166,7 +166,7 @@ export default function ContactForm() {
                                     type="email"
                                     id="email"
                                     className="w-full px-4 py-3 border border-input rounded-xl bg-background/50 backdrop-blur-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent transition-all duration-300"
-                                    placeholder="your.email@example.com"
+                                    placeholder="Enter your email"
                                 />
                                 {errors.email && (
                                     <motion.p

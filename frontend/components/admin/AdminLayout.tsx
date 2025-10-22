@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useAuthStore } from '@/lib/store'
 import AdminSidebar from './AdminSidebar'
@@ -12,12 +12,27 @@ interface AdminLayoutProps {
 export default function AdminLayout({ children }: AdminLayoutProps) {
     const { isAuthenticated } = useAuthStore()
     const router = useRouter()
+    const [isVerySmall, setIsVerySmall] = useState(false)
+    const [isMobile, setIsMobile] = useState(false)
+
 
     useEffect(() => {
         if (!isAuthenticated) {
             router.push('/admin/login')
         }
     }, [isAuthenticated, router])
+
+    useEffect(() => {
+        const checkScreenSize = () => {
+            const width = window.innerWidth
+            setIsVerySmall(width < 420)
+            setIsMobile(width >= 420 && width < 720)
+        }
+
+        checkScreenSize()
+        window.addEventListener('resize', checkScreenSize)
+        return () => window.removeEventListener('resize', checkScreenSize)
+    }, [])
 
     if (!isAuthenticated) {
         return (
@@ -31,9 +46,13 @@ export default function AdminLayout({ children }: AdminLayoutProps) {
     }
 
     return (
-        <div className="flex min-h-screen bg-background">
+        <div className="min-h-screen bg-background">
             <AdminSidebar />
-            <main className="flex-1 p-6">
+
+            <main className={`p-6 transition-all duration-300 ${isVerySmall ? 'w-full ml-0' :
+                isMobile ? 'pt-20 ml-0' :
+                    'ml-72'
+                }`}>
                 {children}
             </main>
         </div>

@@ -176,14 +176,14 @@ export default function AboutSection() {
                 className="relative"
             >
                 <div className="relative bg-gradient-to-br from-primary/20 via-blue-500/20 to-purple-500/20 rounded-2xl p-8 backdrop-blur-sm border border-primary/20">
-                    <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent rounded-2xl"></div>
-                    <div className="relative z-10">
-                        <div className="grid grid-cols-2 gap-6">
+                    <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent rounded-2xl overflow-hidden"></div>
+                    <div className="relative z-10 overflow-hidden">
+                        <div className="grid grid-cols-2 gap-6 ">
                             <motion.div
                                 className="text-center"
                                 whileHover={{ scale: 1.05 }}
                             >
-                                <div className="text-3xl font-bold text-primary mb-2">3+</div>
+                                <div className="text-3xl font-bold text-primary mb-2">2.8+</div>
                                 <div className="text-sm text-muted-foreground">Years Experience</div>
                             </motion.div>
                             <motion.div

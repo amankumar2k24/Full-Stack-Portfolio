@@ -100,7 +100,7 @@ export default function AdminSkillsManager() {
                 <p className="text-muted-foreground">Manage your skill categories and items</p>
                 <button
                     onClick={() => setShowAddForm(true)}
-                    className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors"
+                    className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-lg hover:bg-primary/90 transition-colors whitespace-nowrap"
                 >
                     <Plus size={16} />
                     Add Category

@@ -108,7 +108,7 @@ export default function Navigation() {
 
                             <ThemeToggle />
 
-                            <Link href="/admin">
+                            <Link href="/admin/login">
                                 <motion.button
                                     className="p-2 rounded-full hover:bg-accent transition-colors"
                                     whileHover={{ scale: 1.1, rotate: 90 }}
@@ -168,7 +168,7 @@ export default function Navigation() {
                                     <ThemeToggle />
                                 </div>
 
-                                <Link href="/admin">
+                                <Link href="/admin/login">
                                     <motion.button
                                         className="flex items-center space-x-3 px-4 py-3 rounded-lg text-left hover:bg-accent w-full"
                                         whileHover={{ x: 4 }}
