@@ -156,32 +156,32 @@ export default function HeroSection() {
     }
 
     return (
-        <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-gradient-to-br from-background via-background to-muted/20 pt-0 max-w-full">
+        <div className="relative min-h-screen w-full max-w-full flex items-center justify-center overflow-hidden bg-gradient-to-br from-background via-background to-muted/20 pt-0">
             {/* Simple Floating Elements */}
             <SimpleFloatingElements />
 
             {/* Animated background gradients */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
                 <motion.div
-                    className="absolute -top-40 -right-40 w-60 sm:w-80 h-60 sm:h-80 bg-gradient-to-br from-primary/20 to-blue-500/20 rounded-full blur-3xl max-w-full"
+                    className="absolute -top-20 -right-20 w-40 sm:w-60 md:w-80 h-40 sm:h-60 md:h-80 bg-gradient-to-br from-primary/20 to-blue-500/20 rounded-full blur-3xl"
                     animate={{
-                        scale: [1, 1.2, 1],
+                        scale: [1, 1.1, 1],
                         rotate: [0, 180, 360]
                     }}
                     transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
                 />
                 <motion.div
-                    className="absolute -bottom-40 -left-40 w-60 sm:w-80 h-60 sm:h-80 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-full blur-3xl max-w-full"
+                    className="absolute -bottom-20 -left-20 w-40 sm:w-60 md:w-80 h-40 sm:h-60 md:h-80 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-full blur-3xl"
                     animate={{
-                        scale: [1.2, 1, 1.2],
+                        scale: [1.1, 1, 1.1],
                         rotate: [360, 180, 0]
                     }}
                     transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
                 />
                 <motion.div
-                    className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-72 sm:w-96 h-72 sm:h-96 bg-gradient-to-br from-cyan-500/10 to-blue-500/10 rounded-full blur-3xl max-w-full"
+                    className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-48 sm:w-72 md:w-96 h-48 sm:h-72 md:h-96 bg-gradient-to-br from-cyan-500/10 to-blue-500/10 rounded-full blur-3xl"
                     animate={{
-                        scale: [1, 1.3, 1],
+                        scale: [1, 1.2, 1],
                         opacity: [0.3, 0.6, 0.3]
                     }}
                     transition={{ duration: 15, repeat: Infinity, ease: "easeInOut" }}
@@ -191,7 +191,7 @@ export default function HeroSection() {
             {/* Floating Icons */}
             <FloatingIcons />
 
-            <div className="relative z-10 text-center max-w-5xl mx-auto px-3 sm:px-6">
+            <div className="relative z-10 text-center max-w-5xl mx-auto px-4 sm:px-6 w-full">
                 {/* Main heading */}
                 <motion.div
                     initial={{ opacity: 0, y: 50 }}
