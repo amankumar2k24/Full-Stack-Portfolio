@@ -14,7 +14,7 @@ import Footer from '@/components/Footer'
 
 export default function HomePage() {
     return (
-        <div className="min-h-screen bg-background pt-16 sm:pt-20">
+        <div className="min-h-screen bg-background pt-16 sm:pt-20 overflow-x-hidden">
             <Navigation />
 
             {/* Hero Section */}

@@ -156,14 +156,14 @@ export default function HeroSection() {
     }
 
     return (
-        <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-gradient-to-br from-background via-background to-muted/20 pt-0">
+        <div className="relative min-h-screen w-full flex items-center justify-center overflow-hidden bg-gradient-to-br from-background via-background to-muted/20 pt-0 max-w-full">
             {/* Simple Floating Elements */}
             <SimpleFloatingElements />
 
             {/* Animated background gradients */}
             <div className="absolute inset-0 overflow-hidden pointer-events-none">
                 <motion.div
-                    className="absolute -top-40 -right-40 w-60 sm:w-80 h-60 sm:h-80 bg-gradient-to-br from-primary/20 to-blue-500/20 rounded-full blur-3xl"
+                    className="absolute -top-40 -right-40 w-60 sm:w-80 h-60 sm:h-80 bg-gradient-to-br from-primary/20 to-blue-500/20 rounded-full blur-3xl max-w-full"
                     animate={{
                         scale: [1, 1.2, 1],
                         rotate: [0, 180, 360]
@@ -171,7 +171,7 @@ export default function HeroSection() {
                     transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
                 />
                 <motion.div
-                    className="absolute -bottom-40 -left-40 w-60 sm:w-80 h-60 sm:h-80 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-full blur-3xl"
+                    className="absolute -bottom-40 -left-40 w-60 sm:w-80 h-60 sm:h-80 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-full blur-3xl max-w-full"
                     animate={{
                         scale: [1.2, 1, 1.2],
                         rotate: [360, 180, 0]
@@ -179,7 +179,7 @@ export default function HeroSection() {
                     transition={{ duration: 25, repeat: Infinity, ease: "linear" }}
                 />
                 <motion.div
-                    className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-72 sm:w-96 h-72 sm:h-96 bg-gradient-to-br from-cyan-500/10 to-blue-500/10 rounded-full blur-3xl"
+                    className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-72 sm:w-96 h-72 sm:h-96 bg-gradient-to-br from-cyan-500/10 to-blue-500/10 rounded-full blur-3xl max-w-full"
                     animate={{
                         scale: [1, 1.3, 1],
                         opacity: [0.3, 0.6, 0.3]
