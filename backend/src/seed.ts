@@ -136,7 +136,7 @@ async function seed() {
                 techStack: ['Next.js', 'Node.js', 'MongoDB', 'Stripe'],
                 githubLink: 'https://github.com/amankumar/ecommerce',
                 liveLink: 'https://ecommerce-demo.vercel.app',
-                imageUrl: 'https://via.placeholder.com/400x300',
+                imageUrl: '/api/placeholder/400/300',
             },
             {
                 title: 'Task Management App',
@@ -144,7 +144,7 @@ async function seed() {
                 techStack: ['React', 'Express', 'Socket.io', 'PostgreSQL'],
                 githubLink: 'https://github.com/amankumar/taskmanager',
                 liveLink: 'https://taskmanager-demo.vercel.app',
-                imageUrl: 'https://via.placeholder.com/400x300',
+                imageUrl: '/api/placeholder/400/300',
             },
             {
                 title: 'Weather Dashboard',
@@ -152,7 +152,7 @@ async function seed() {
                 techStack: ['Vue.js', 'Chart.js', 'OpenWeather API'],
                 githubLink: 'https://github.com/amankumar/weather-dashboard',
                 liveLink: 'https://weather-dashboard-demo.vercel.app',
-                imageUrl: 'https://via.placeholder.com/400x300',
+                imageUrl: '/api/placeholder/400/300',
             },
         ];
 

@@ -18,7 +18,8 @@
         "test:e2e": "jest --config ./test/jest-e2e.json",
         "seed": "ts-node src/seed.ts",
         "update-admin": "ts-node src/update-admin.ts",
-        "update-user": "node update-user.js"
+        "update-user": "node update-user.js",
+        "update-placeholders": "node update-placeholder-images.js"
     },
     "dependencies": {
         "@nestjs/common": "^10.4.20",
