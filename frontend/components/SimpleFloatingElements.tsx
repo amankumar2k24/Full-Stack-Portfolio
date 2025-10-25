@@ -4,7 +4,7 @@ import { motion } from 'framer-motion'
 
 export default function SimpleFloatingElements() {
     return (
-        <div className="absolute inset-0 pointer-events-none overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none overflow-hidden hidden min-[720px]:block">
             {/* Floating geometric shapes - more spread out for full width */}
             <motion.div
                 className="absolute top-20 left-5 w-16 h-16 bg-primary/20 rounded-lg backdrop-blur-sm"

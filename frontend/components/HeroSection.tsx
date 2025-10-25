@@ -112,7 +112,6 @@ function FloatingIcons() {
 
 export default function HeroSection() {
     const [about, setAbout] = useState<AboutData | null>(null)
-    const [loading, setLoading] = useState(true)
     const [showTypewriter, setShowTypewriter] = useState(false)
 
     useEffect(() => {
@@ -123,7 +122,6 @@ export default function HeroSection() {
             } catch (error) {
                 console.error('Failed to fetch about data:', error)
             } finally {
-                setLoading(false)
                 setTimeout(() => setShowTypewriter(true), 1000)
             }
         }
@@ -157,12 +155,12 @@ export default function HeroSection() {
     // }
 
     return (
-        <div className="relative min-h-screen w-full max-w-full flex items-center justify-center overflow-hidden bg-gradient-to-br from-background via-background to-muted/20 pt-0">
+        <div className="relative min-h-screen w-full max-w-full flex items-center justify-center overflow-hidden bg-gradient-to-br from-background via-background to-muted/20 max-[719px]:bg-background pt-0">
             {/* Simple Floating Elements */}
             <SimpleFloatingElements />
 
-            {/* Animated background gradients */}
-            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+            {/* Animated background gradients - hidden on mobile for performance */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none hidden min-[720px]:block">
                 <motion.div
                     className="absolute -top-20 -right-20 w-40 sm:w-60 md:w-80 h-40 sm:h-60 md:h-80 bg-gradient-to-br from-primary/20 to-blue-500/20 rounded-full blur-3xl"
                     animate={{
@@ -189,8 +187,16 @@ export default function HeroSection() {
                 />
             </div>
 
-            {/* Floating Icons */}
-            <FloatingIcons />
+            {/* Simple mobile background */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none min-[720px]:hidden">
+                <div className="absolute -top-20 -right-20 w-40 h-40 bg-gradient-to-br from-primary/10 to-blue-500/10 rounded-full blur-2xl" />
+                <div className="absolute -bottom-20 -left-20 w-40 h-40 bg-gradient-to-br from-purple-500/10 to-pink-500/10 rounded-full blur-2xl" />
+            </div>
+
+            {/* Floating Icons - hidden on mobile for performance */}
+            <div className="hidden min-[720px]:block">
+                <FloatingIcons />
+            </div>
 
             <div className="relative z-10 text-center max-w-5xl mx-auto px-4 sm:px-6 w-full">
                 {/* Main heading */}
@@ -218,10 +224,13 @@ export default function HeroSection() {
                 >
                     <h2 className="text-xl sm:text-2xl md:text-3xl text-muted-foreground mb-2">
                         {showTypewriter ? (
-                            <RotatingTypewriter />
-                        ) : (
-                            <span className="opacity-0">Loading...</span>
-                        )}
+                            <span className="hidden min-[720px]:inline">
+                                <RotatingTypewriter />
+                            </span>
+                        ) : null}
+                        <span className="min-[720px]:hidden">
+                            Senior Full Stack Developer
+                        </span>
                     </h2>
                     <motion.div
                         className="flex flex-wrap justify-center gap-2 sm:gap-4 mt-4"
@@ -279,7 +288,7 @@ export default function HeroSection() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 1.2 }}
-                    className="flex justify-center gap-4 sm:gap-6 mb-12 sm:mb-16"
+                    className="flex justify-center gap-4 sm:gap-6 mb-16 sm:mb-20"
                 >
                     {about?.socials?.github && (
                         <motion.a
