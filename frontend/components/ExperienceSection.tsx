@@ -141,7 +141,7 @@ function ExperienceCard({ experience, index }: { experience: Experience, index: 
                             whileHover={{ scale: 1.02 }}
                             whileTap={{ scale: 0.98 }}
                         >
-                            {showAll ? 'Show Less' : `Show More (${experience.achievements.length - 5} more)`}
+                            {showAll ? 'Show Less' : `Show More (${experience.achievements.length - 3} more)`}
                             <motion.div
                                 animate={{ rotate: showAll ? 180 : 0 }}
                                 transition={{ duration: 0.2 }}
