@@ -30,18 +30,20 @@ function RotatingTypewriter() {
     useEffect(() => {
         const currentTitle = titles[currentTitleIndex]
 
+        const isMobile = typeof window !== 'undefined' && window.innerWidth < 720
+
         if (isTyping) {
             if (currentCharIndex < currentTitle.length) {
                 const timeout = setTimeout(() => {
                     setDisplayText(prev => prev + currentTitle[currentCharIndex])
                     setCurrentCharIndex(prev => prev + 1)
-                }, 100)
+                }, isMobile ? 80 : 100) // Slightly faster on mobile
                 return () => clearTimeout(timeout)
             } else {
                 // Finished typing, wait then start erasing
                 const timeout = setTimeout(() => {
                     setIsTyping(false)
-                }, 2000)
+                }, isMobile ? 1500 : 2000) // Shorter pause on mobile
                 return () => clearTimeout(timeout)
             }
         } else {
@@ -49,7 +51,7 @@ function RotatingTypewriter() {
             if (displayText.length > 0) {
                 const timeout = setTimeout(() => {
                     setDisplayText(prev => prev.slice(0, -1))
-                }, 50)
+                }, isMobile ? 40 : 50) // Faster erasing on mobile
                 return () => clearTimeout(timeout)
             } else {
                 // Finished erasing, move to next title
@@ -65,8 +67,11 @@ function RotatingTypewriter() {
             {displayText}
             <motion.span
                 animate={{ opacity: [1, 0] }}
-                transition={{ duration: 0.8, repeat: Infinity }}
-                className="inline-block w-0.5 h-6 bg-primary ml-1"
+                transition={{
+                    duration: typeof window !== 'undefined' && window.innerWidth < 720 ? 0.6 : 0.8,
+                    repeat: Infinity
+                }}
+                className="inline-block w-0.5 h-5 sm:h-6 bg-primary ml-1"
             />
         </span>
     )
@@ -171,7 +176,7 @@ export default function HeroSection() {
     // }
 
     return (
-        <div className="relative min-h-screen w-full max-w-full flex items-center justify-center overflow-hidden bg-gradient-to-br from-background via-background to-muted/20 max-[719px]:bg-background pt-0">
+        <div className="relative min-h-[calc(100vh-4rem)] sm:min-h-[calc(100vh-5rem)] w-full max-w-full flex items-center justify-center overflow-hidden bg-gradient-to-br from-background via-background to-muted/20 max-[719px]:bg-background">
             {/* Simple Floating Elements */}
             <SimpleFloatingElements />
 
@@ -214,7 +219,7 @@ export default function HeroSection() {
                 <FloatingIcons />
             </div>
 
-            <div className="relative z-10 text-center max-w-5xl mx-auto px-4 sm:px-6 w-full">
+            <div className="relative z-10 text-center max-w-5xl mx-auto px-4 sm:px-6 w-full py-8 sm:py-0">
                 {/* Main heading */}
                 <motion.div
                     initial={{ opacity: 0, y: 50 }}
@@ -222,7 +227,7 @@ export default function HeroSection() {
                     transition={{ duration: 1, ease: "easeOut" }}
                 >
                     <motion.h1
-                        className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-4 sm:mb-6 bg-gradient-to-r from-primary via-blue-500 to-purple-500 bg-clip-text text-transparent leading-tight"
+                        className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-bold mb-3 sm:mb-6 bg-gradient-to-r from-primary via-blue-500 to-purple-500 bg-clip-text text-transparent leading-tight"
                         initial={{ opacity: 0, scale: 0.8 }}
                         animate={{ opacity: 1, scale: 1 }}
                         transition={{ duration: 1, delay: 0.2 }}
@@ -236,17 +241,14 @@ export default function HeroSection() {
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.5 }}
-                    className="mb-6 sm:mb-8"
+                    className="mb-4 sm:mb-8"
                 >
                     <h2 className="text-xl sm:text-2xl md:text-3xl text-muted-foreground mb-2">
                         {showTypewriter ? (
-                            <span className="hidden min-[720px]:inline">
-                                <RotatingTypewriter />
-                            </span>
-                        ) : null}
-                        <span className="min-[720px]:hidden">
-                            Senior Full Stack Developer
-                        </span>
+                            <RotatingTypewriter />
+                        ) : (
+                            <span className="opacity-0">Loading...</span>
+                        )}
                     </h2>
                     <motion.div
                         className="flex flex-wrap justify-center gap-2 sm:gap-4 mt-4"
@@ -274,7 +276,7 @@ export default function HeroSection() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 0.8 }}
-                    className="mb-8 sm:mb-12"
+                    className="mb-6 sm:mb-12"
                 >
                     <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed px-4">
                         {about?.bio || 'Passionate about creating innovative solutions and beautiful user experiences that make a difference in the digital world.'}
@@ -286,7 +288,7 @@ export default function HeroSection() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 1 }}
-                    className="flex justify-center mb-8 sm:mb-12 px-4"
+                    className="flex justify-center mb-6 sm:mb-12 px-4"
                 >
                     <motion.button
                         onClick={() => scrollToSection('contact')}
@@ -304,7 +306,7 @@ export default function HeroSection() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 1.2 }}
-                    className="flex justify-center gap-4 sm:gap-6 mb-16 sm:mb-20"
+                    className="flex justify-center gap-4 sm:gap-6 mb-8 sm:mb-16"
                 >
                     {about?.socials?.github && (
                         <motion.a
