@@ -131,7 +131,23 @@ export default function HeroSection() {
 
     const scrollToSection = (sectionId: string) => {
         const element = document.getElementById(sectionId)
-        element?.scrollIntoView({ behavior: 'smooth' })
+        if (element) {
+            // Dynamic header offset based on screen size
+            const isMobile = window.innerWidth < 768
+            const headerOffset = isMobile ? 120 : 80 // More offset for mobile
+
+            // Get the section heading element for better positioning
+            const sectionHeading = element.querySelector('h1, h2')
+            const targetElement = sectionHeading || element
+
+            const elementPosition = targetElement.getBoundingClientRect().top
+            const offsetPosition = elementPosition + window.pageYOffset - headerOffset
+
+            window.scrollTo({
+                top: offsetPosition,
+                behavior: 'smooth'
+            })
+        }
     }
 
     // Remove the loading state since we have the main portfolio loader
