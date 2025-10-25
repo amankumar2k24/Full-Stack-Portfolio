@@ -95,7 +95,7 @@ export default function HomePage() {
                             <h2 className="pb-1 text-3xl sm:text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-blue-500 to-purple-500 bg-clip-text text-transparent">
                                 Skills & Technologies
                             </h2>
-                            <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto">
+                            <p className="text-xs sm:text-sm text-muted-foreground max-w-2xl mx-auto">
                                 Explore my technical expertise through this interactive skill constellation
                             </p>
                         </motion.div>
@@ -122,7 +122,7 @@ export default function HomePage() {
                             <h2 className="pb-1 text-3xl sm:text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-blue-500 to-purple-500 bg-clip-text text-transparent">
                                 Featured Projects
                             </h2>
-                            <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto">
+                            <p className="text-xs sm:text-sm text-muted-foreground max-w-2xl mx-auto">
                                 Showcasing innovative solutions and cutting-edge development work
                             </p>
                         </motion.div>
@@ -145,7 +145,7 @@ export default function HomePage() {
                             <h2 className="pb-1 text-3xl sm:text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-blue-500 to-purple-500 bg-clip-text text-transparent">
                                 Let's Work Together
                             </h2>
-                            <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto">
+                            <p className="text-xs sm:text-sm text-muted-foreground max-w-2xl mx-auto">
                                 Ready to bring your ideas to life? Let's discuss your project and create something amazing together
                             </p>
                         </motion.div>

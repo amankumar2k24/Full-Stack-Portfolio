@@ -137,7 +137,7 @@ export default function AboutSection() {
                     viewport={{ once: true }}
                     transition={{ duration: 0.6, delay: 0.5 }}
                 >
-                    <p className="text-lg leading-relaxed text-muted-foreground">
+                    <p className="text-base sm:text-lg leading-relaxed text-muted-foreground">
                         {about.bio}
                     </p>
                 </motion.div>

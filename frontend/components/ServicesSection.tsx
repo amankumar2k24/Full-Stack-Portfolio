@@ -142,7 +142,7 @@ function ServiceCard({ service, index }: { service: Service, index: number }) {
             transition={{ duration: 0.6, delay: index * 0.1 }}
             className="group relative"
         >
-            <div className="h-full bg-card rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all duration-500 relative overflow-hidden border border-border/60 hover:border-border/80">
+            <div className="h-full bg-card rounded-2xl p-4 sm:p-6 shadow-sm hover:shadow-xl transition-all duration-500 relative overflow-hidden border border-border/60 hover:border-border/80">
                 {/* Enhanced border glow effect */}
                 <div className="absolute inset-0 rounded-2xl border border-white/20 group-hover:border-white/30 transition-all duration-500"></div>
 
@@ -156,25 +156,28 @@ function ServiceCard({ service, index }: { service: Service, index: number }) {
                 />
 
                 <div className="relative z-10">
-                    <motion.div
-                        className="w-14 h-14 rounded-xl mb-6 flex items-center justify-center group-hover:shadow-lg transition-all duration-300"
-                        style={{
-                            backgroundColor: `${service.color}15`,
-                        }}
-                        whileHover={{ scale: 1.1, rotate: 5 }}
-                        transition={{ duration: 0.2 }}
-                    >
-                        <Icon size={28} style={{ color: service.color }} className="group-hover:scale-110 transition-transform duration-300" />
-                    </motion.div>
-
-                    <h3 className="text-xl font-bold mb-3 transition-colors duration-300 group-hover:opacity-90">
-                        <span
-                            className="group-hover:text-current transition-colors duration-300"
-                            style={{ '--hover-color': service.color } as React.CSSProperties}
+                    {/* Icon and Title on same line */}
+                    <div className="flex items-center gap-3 mb-4 sm:mb-6">
+                        <motion.div
+                            className="w-10 h-10 sm:w-12 sm:h-12 rounded-xl flex items-center justify-center group-hover:shadow-lg transition-all duration-300 flex-shrink-0"
+                            style={{
+                                backgroundColor: `${service.color}15`,
+                            }}
+                            whileHover={{ scale: 1.1, rotate: 5 }}
+                            transition={{ duration: 0.2 }}
                         >
-                            {service.title}
-                        </span>
-                    </h3>
+                            <Icon size={20} style={{ color: service.color }} className="group-hover:scale-110 transition-transform duration-300 sm:w-6 sm:h-6" />
+                        </motion.div>
+
+                        <h3 className="text-base sm:text-lg md:text-xl font-bold transition-colors duration-300 group-hover:opacity-90 leading-tight flex-1">
+                            <span
+                                className="group-hover:text-current transition-colors duration-300"
+                                style={{ '--hover-color': service.color } as React.CSSProperties}
+                            >
+                                {service.title}
+                            </span>
+                        </h3>
+                    </div>
 
                     <p className="text-muted-foreground mb-6 leading-relaxed">
                         {service.description}

@@ -57,16 +57,16 @@ export default function ContactForm() {
             >
                 <div>
                     <motion.h3
-                        className="text-3xl font-bold mb-4"
+                        className="text-2xl sm:text-3xl font-bold mb-4"
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
                         transition={{ duration: 0.6, delay: 0.2 }}
                     >
-                        Let's Work Together
+                        Get In Touch
                     </motion.h3>
                     <motion.p
-                        className="text-lg text-muted-foreground leading-relaxed"
+                        className="text-sm sm:text-lg text-muted-foreground leading-relaxed"
                         initial={{ opacity: 0, y: 20 }}
                         whileInView={{ opacity: 1, y: 0 }}
                         viewport={{ once: true }}
@@ -119,7 +119,7 @@ export default function ContactForm() {
                 transition={{ duration: 0.8, delay: 0.2 }}
                 className="relative"
             >
-                <div className="bg-card p-8 rounded-2xl border shadow-lg relative overflow-hidden">
+                <div className="bg-card p-4 sm:p-8 rounded-2xl border shadow-lg relative overflow-hidden">
                     {/* Background gradient */}
                     <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-transparent to-blue-500/5"></div>
 

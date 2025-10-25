@@ -250,7 +250,7 @@ const getRandomColor = (skillName: string): string => {
     for (let i = 0; i < skillName.length; i++) {
         const char = skillName.charCodeAt(i)
         hash = ((hash << 5) - hash) + char
-        hash = hash & hash 
+        hash = hash & hash
     }
     const index = Math.abs(hash) % defaultColors.length
     return defaultColors[index]
@@ -312,7 +312,7 @@ function SkillCard({ skill, index, isVisible }: { skill: Skill, index: number, i
                 scale: 1.05,
                 transition: { duration: 0.2 }
             }}
-            className="group relative bg-card rounded-2xl p-6 border shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden"
+            className="group relative bg-card rounded-2xl p-6 border shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden w-full max-w-[280px]"
         >
             {/* Background color hover effect */}
             <div
@@ -534,13 +534,13 @@ export default function EnhancedSkillsSection() {
                 initial={{ opacity: 0, y: 30 }}
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.8 }}
-                className="flex flex-wrap justify-center gap-3 mb-8"
+                className="flex flex-wrap justify-center gap-3 mb-8 max-sm:grid max-sm:grid-cols-2 max-sm:gap-2 max-sm:place-items-center max-sm:px-4 max-sm:[&>*:last-child:nth-child(odd)]:col-span-2 max-sm:[&>*:last-child:nth-child(odd)]:justify-self-center max-sm:[&>*:last-child:nth-child(odd)]:max-w-[calc(50%-0.25rem)]"
             >
                 {categories.map((category, index) => (
                     <motion.button
                         key={category.name}
                         onClick={() => setActiveCategory(category.name)}
-                        className={`px-6 py-3 rounded-full font-medium transition-all duration-300 ${activeCategory === category.name
+                        className={`px-3 py-2 rounded-full font-medium transition-all duration-300 text-sm max-sm:w-full max-sm:text-center max-sm:text-xs max-sm:px-2 max-sm:py-1 max-sm:leading-tight ${activeCategory === category.name
                             ? 'text-white shadow-lg transform scale-105'
                             : 'bg-card text-muted-foreground hover:bg-accent border border-border'
                             }`}
@@ -554,7 +554,7 @@ export default function EnhancedSkillsSection() {
                         transition={{ duration: 0.6, delay: index * 0.1 }}
                     >
                         {category.name}
-                        <span className="ml-2 text-sm opacity-75">
+                        <span className="ml-2 text-sm opacity-75 max-sm:text-[10px] max-sm:ml-1">
                             ({category.name === 'All' ? skillsData.length : skillsData.filter(s => s.category === category.name).length})
                         </span>
                     </motion.button>
@@ -563,7 +563,7 @@ export default function EnhancedSkillsSection() {
 
             {/* Skills Grid */}
             <motion.div
-                className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+                className="flex flex-wrap justify-center gap-6"
                 layout
             >
                 {displayedSkills.map((skill, index) => (
@@ -587,7 +587,7 @@ export default function EnhancedSkillsSection() {
                 >
                     <motion.button
                         onClick={showMoreSkills}
-                        className="px-8 py-3 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-all duration-300 font-medium"
+                        className="px-8 py-3 text-sm sm:text-md bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-all duration-300 font-medium"
                         whileHover={{ scale: 1.05 }}
                         whileTap={{ scale: 0.95 }}
                     >
@@ -602,7 +602,7 @@ export default function EnhancedSkillsSection() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.8, delay: 0.5 }}
-                className="mt-8 grid grid-cols-2 md:grid-cols-4 gap-4"
+                className="mt-8 hidden sm:flex flex-wrap justify-center gap-4"
             >
                 {categories.slice(1).map((category, index) => {
                     const categorySkills = skillsData.filter(s => s.category === category.name)
@@ -614,7 +614,7 @@ export default function EnhancedSkillsSection() {
                     return (
                         <motion.div
                             key={category.name}
-                            className="text-center p-4 bg-card rounded-xl border"
+                            className="text-center p-4 bg-card rounded-xl border w-full max-w-[200px]"
                             whileHover={{ scale: 1.05 }}
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}

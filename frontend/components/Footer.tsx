@@ -43,16 +43,16 @@ export default function Footer() {
                         className="space-y-4"
                     >
                         <div className="flex items-center gap-2">
-                            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
-                                <Code size={16} className="text-primary-foreground" />
+                            <div className="w-10 h-10 sm:w-8 sm:h-8 bg-primary rounded-lg flex items-center justify-center">
+                                <Code size={20} className="text-primary-foreground sm:w-4 sm:h-4" />
                             </div>
-                            <span className="text-xl font-bold">Aman Kumar</span>
+                            <span className="text-2xl sm:text-xl font-bold">Aman Kumar</span>
                         </div>
-                        <p className="text-muted-foreground leading-relaxed">
+                        <p className="text-muted-foreground leading-relaxed text-base sm:text-sm">
                             Crafting high-performance web applications with React, Node.js, AI integrations, and DevOps.
                         </p>
-                        <div className="flex items-center gap-2 text-sm text-muted-foreground">
-                            <Coffee size={16} />
+                        <div className="flex items-center gap-2 text-base sm:text-sm text-muted-foreground">
+                            <Coffee size={18} className="sm:w-4 sm:h-4" />
                             <span>Fueled by coffee and creativity</span>
                         </div>
                     </motion.div>
@@ -65,8 +65,8 @@ export default function Footer() {
                         transition={{ duration: 0.6, delay: 0.1 }}
                         className="space-y-4"
                     >
-                        <h3 className="text-lg font-semibold">Quick Links</h3>
-                        <div className="grid grid-cols-2 gap-2">
+                        <h3 className="text-xl sm:text-lg font-semibold">Quick Links</h3>
+                        <div className="grid grid-cols-2 gap-3 sm:gap-2">
                             {[
                                 { name: 'About', href: '#about' },
                                 { name: 'Skills', href: '#skills' },
@@ -96,7 +96,7 @@ export default function Footer() {
                                             })
                                         }
                                     }}
-                                    className="text-left text-muted-foreground hover:text-primary transition-colors text-sm"
+                                    className="text-left text-muted-foreground hover:text-primary transition-colors text-base sm:text-sm"
                                     whileHover={{ x: 4 }}
                                 >
                                     {link.name}
@@ -113,8 +113,8 @@ export default function Footer() {
                         transition={{ duration: 0.6, delay: 0.2 }}
                         className="space-y-4"
                     >
-                        <h3 className="text-lg font-semibold">Let's Connect</h3>
-                        <p className="text-muted-foreground text-sm">
+                        <h3 className="text-xl sm:text-lg font-semibold">Let's Connect</h3>
+                        <p className="text-muted-foreground text-base sm:text-sm">
                             Ready to start your next project? I'm always excited to work on new challenges.
                         </p>
                         <div className="flex gap-4">
@@ -123,12 +123,12 @@ export default function Footer() {
                                     href={about.socials.github}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="p-2 rounded-lg bg-muted hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+                                    className="p-3 sm:p-2 rounded-lg bg-muted hover:bg-primary hover:text-primary-foreground transition-all duration-300"
                                     whileHover={{ scale: 1.1, rotate: 5 }}
                                     whileTap={{ scale: 0.9 }}
                                     title="GitHub"
                                 >
-                                    <Github size={18} />
+                                    <Github size={22} className="sm:w-[18px] sm:h-[18px]" />
                                 </motion.a>
                             )}
                             {about?.socials?.linkedin && (
@@ -136,23 +136,23 @@ export default function Footer() {
                                     href={about.socials.linkedin}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="p-2 rounded-lg bg-muted hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+                                    className="p-3 sm:p-2 rounded-lg bg-muted hover:bg-primary hover:text-primary-foreground transition-all duration-300"
                                     whileHover={{ scale: 1.1, rotate: 5 }}
                                     whileTap={{ scale: 0.9 }}
                                     title="LinkedIn"
                                 >
-                                    <Linkedin size={18} />
+                                    <Linkedin size={22} className="sm:w-[18px] sm:h-[18px]" />
                                 </motion.a>
                             )}
                             {about?.socials?.email && (
                                 <motion.a
                                     href={`mailto:${about.socials.email}`}
-                                    className="p-2 rounded-lg bg-muted hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+                                    className="p-3 sm:p-2 rounded-lg bg-muted hover:bg-primary hover:text-primary-foreground transition-all duration-300"
                                     whileHover={{ scale: 1.1, rotate: 5 }}
                                     whileTap={{ scale: 0.9 }}
                                     title="Email"
                                 >
-                                    <Mail size={18} />
+                                    <Mail size={22} className="sm:w-[18px] sm:h-[18px]" />
                                 </motion.a>
                             )}
                         </div>
@@ -167,11 +167,11 @@ export default function Footer() {
                     transition={{ duration: 0.6, delay: 0.3 }}
                     className="pt-8 border-t border-border flex flex-col sm:flex-row justify-between items-center gap-4"
                 >
-                    <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                    <div className="flex items-center gap-2 text-[13px] text-muted-foreground">
                         <span>&copy; {currentYear} Aman Kumar. Open to collaboration 🤝</span>
                     </div>
 
-                    <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                    <div className="flex items-center gap-4 text-xs sm:text-xs text-muted-foreground">
                         <span>Powered by Next.js, Nest.js & TypeScript</span>
                     </div>
                 </motion.div>
@@ -180,7 +180,7 @@ export default function Footer() {
             {/* Scroll to Top Button */}
             <motion.button
                 onClick={scrollToTop}
-                className={`fixed bottom-6 right-6 p-3 bg-primary text-primary-foreground rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-50 ${showScrollTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'
+                className={`fixed bottom-6 right-6 p-4 sm:p-3 bg-primary text-primary-foreground rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-50 ${showScrollTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'
                     }`}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
@@ -191,7 +191,7 @@ export default function Footer() {
                 }}
                 transition={{ duration: 0.3 }}
             >
-                <ArrowUp size={20} />
+                <ArrowUp size={24} className="sm:w-5 sm:h-5" />
             </motion.button>
         </footer>
     )

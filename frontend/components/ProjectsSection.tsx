@@ -174,7 +174,7 @@ export default function ProjectsSection() {
                         </motion.div>
 
                         <motion.div
-                            className="flex gap-4"
+                            className="flex gap-4 max-sm:gap-2 max-sm:flex-wrap max-sm:justify-center"
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
@@ -185,7 +185,7 @@ export default function ProjectsSection() {
                                     href={project.githubLink}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="inline-flex items-center gap-2 px-4 py-2 border border-primary text-primary rounded-full hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+                                    className="inline-flex items-center gap-2 px-4 py-2 max-sm:px-3 max-sm:py-1.5 max-sm:text-sm border border-primary text-primary rounded-full hover:bg-primary hover:text-primary-foreground transition-all duration-300"
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
                                 >
@@ -198,7 +198,7 @@ export default function ProjectsSection() {
                                     href={project.liveLink}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="inline-flex items-center gap-2 px-4 py-2 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-all duration-300"
+                                    className="inline-flex items-center gap-2 px-4 py-2 max-sm:px-3 max-sm:py-1.5 max-sm:text-sm bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-all duration-300"
                                     whileHover={{ scale: 1.05 }}
                                     whileTap={{ scale: 0.95 }}
                                 >

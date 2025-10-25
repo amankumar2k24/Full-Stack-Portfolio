@@ -39,12 +39,31 @@ interface Stat {
 function ExperienceCard({ experience, index }: { experience: Experience, index: number }) {
     const ref = useRef(null)
     const isInView = useInView(ref, { once: true })
+    const [showAll, setShowAll] = useState(false)
+    const [isMobile, setIsMobile] = useState(false)
+
+    // Check if screen is mobile (below 720px)
+    useEffect(() => {
+        const checkScreenSize = () => {
+            setIsMobile(window.innerWidth < 720)
+        }
+
+        checkScreenSize()
+        window.addEventListener('resize', checkScreenSize)
+        return () => window.removeEventListener('resize', checkScreenSize)
+    }, [])
 
     // Use icon and color from API data, with fallbacks
     const icons = [Code2, TrendingUp, Users, Award]
     const colors = ["#3b82f6", "#10b981", "#8b5cf6", "#f59e0b"]
     const Icon = icons[index % icons.length] // Could be enhanced to map experience.icon to actual icon
     const color = experience.color || colors[index % colors.length]
+
+    // Determine which achievements to show
+    const achievementsToShow = isMobile && !showAll
+        ? experience.achievements.slice(0, 3)
+        : experience.achievements
+    const hasMoreAchievements = isMobile && experience.achievements.length > 3
 
     return (
         <motion.div
@@ -76,11 +95,11 @@ function ExperienceCard({ experience, index }: { experience: Experience, index: 
                     </motion.div>
 
                     <div className="flex-1">
-                        <h3 className="text-xl font-bold group-hover:text-primary transition-colors">
+                        <h3 className="text-sm max-[420px]:text-xs md:text-lg font-bold group-hover:text-primary transition-colors">
                             {experience.title}
                         </h3>
-                        <p className="text-primary font-semibold">{experience.company}</p>
-                        <div className="flex flex-wrap gap-4 text-sm text-muted-foreground mt-1">
+                        <p className="text-xs max-[420px]:text-[12px] md:text-sm text-primary font-semibold">{experience.company}</p>
+                        <div className="flex flex-wrap gap-4 text-[12px] max-[420px]:text-[10px] md:text-xs text-muted-foreground mt-1">
                             <span className="flex items-center gap-1">
                                 <MapPin size={14} />
                                 {experience.location}
@@ -93,26 +112,44 @@ function ExperienceCard({ experience, index }: { experience: Experience, index: 
                     </div>
                 </div>
 
-                <p className="text-muted-foreground mb-4 leading-relaxed">
+                <p className="text-[12px] max-[420px]:text-[12px] sm:text-[15px] text-muted-foreground mb-4 leading-relaxed">
                     {experience.description}
                 </p>
 
                 <div className="mb-4">
-                    <h4 className="font-semibold mb-2 text-sm">Key Achievements:</h4>
-                    <ul className="space-y-1">
-                        {experience.achievements.map((achievement, i) => (
+                    <h4 className="font-semibold mb-2 text-[12px] max-[420px]:text-[12px] sm:text-[16px]">Key Achievements:</h4>
+                    <ul className="space-y-2">
+                        {achievementsToShow.map((achievement, i) => (
                             <motion.li
                                 key={i}
                                 initial={{ opacity: 0, x: -20 }}
                                 animate={isInView ? { opacity: 1, x: 0 } : {}}
                                 transition={{ duration: 0.5, delay: index * 0.2 + 0.5 + i * 0.1 }}
-                                className="flex items-center gap-2 text-sm text-muted-foreground"
+                                className="flex items-start gap-3 text-[12px] max-[420px]:text-[12px] sm:text-[15px] text-muted-foreground"
                             >
-                                <div className="w-1.5 h-1.5 rounded-full bg-primary" />
-                                {achievement}
+                                <div className="w-2 h-2 rounded-full bg-primary mt-2 flex-shrink-0" />
+                                <span className="leading-relaxed">{achievement}</span>
                             </motion.li>
                         ))}
                     </ul>
+
+                    {/* Show More/Less Button for Mobile */}
+                    {hasMoreAchievements && (
+                        <motion.button
+                            onClick={() => setShowAll(!showAll)}
+                            className="mt-3 text-xs text-primary hover:text-primary/80 transition-colors font-medium flex items-center gap-1"
+                            whileHover={{ scale: 1.02 }}
+                            whileTap={{ scale: 0.98 }}
+                        >
+                            {showAll ? 'Show Less' : `Show More (${experience.achievements.length - 5} more)`}
+                            <motion.div
+                                animate={{ rotate: showAll ? 180 : 0 }}
+                                transition={{ duration: 0.2 }}
+                            >
+                                ▼
+                            </motion.div>
+                        </motion.button>
+                    )}
                 </div>
 
                 <div className="flex flex-wrap gap-2">
@@ -122,7 +159,7 @@ function ExperienceCard({ experience, index }: { experience: Experience, index: 
                             initial={{ opacity: 0, scale: 0 }}
                             animate={isInView ? { opacity: 1, scale: 1 } : {}}
                             transition={{ duration: 0.3, delay: index * 0.2 + 0.7 + i * 0.05 }}
-                            className="px-2 py-1 bg-accent text-accent-foreground rounded-md text-xs font-medium"
+                            className="px-2 py-1 bg-accent text-accent-foreground rounded-md text-[10px] sm:text-xs font-medium"
                             whileHover={{ scale: 1.05 }}
                         >
                             {tech}
@@ -161,14 +198,14 @@ function StatCard({ stat, index }: { stat: Stat, index: number }) {
             className="text-center group"
         >
             <motion.div
-                className="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center group-hover:opacity-80 transition-colors"
+                className="w-16 h-16 max-[480px]:w-12 max-[480px]:h-12 mx-auto mb-4 max-[480px]:mb-2 rounded-2xl max-[480px]:rounded-xl flex items-center justify-center group-hover:opacity-80 transition-colors"
                 style={{ backgroundColor: `${stat.color}20` }}
                 whileHover={{ scale: 1.1, rotate: 5 }}
             >
-                <Icon size={28} style={{ color: stat.color }} />
+                <Icon size={28} className="max-[480px]:w-5 max-[480px]:h-5" style={{ color: stat.color }} />
             </motion.div>
             <motion.div
-                className="text-3xl font-bold mb-2"
+                className="text-3xl max-[480px]:text-xl font-bold mb-2 max-[480px]:mb-1"
                 style={{ color: stat.color }}
                 initial={{ scale: 0 }}
                 animate={isInView ? { scale: 1 } : {}}
@@ -176,9 +213,9 @@ function StatCard({ stat, index }: { stat: Stat, index: number }) {
             >
                 {stat.value}
             </motion.div>
-            <p className="text-muted-foreground font-medium">{stat.label}</p>
+            <p className="text-muted-foreground font-medium max-[480px]:text-sm">{stat.label}</p>
             {stat.description && (
-                <p className="text-xs text-muted-foreground/70 mt-1">{stat.description}</p>
+                <p className="text-xs max-[480px]:text-[10px] text-muted-foreground/70 mt-1">{stat.description}</p>
             )}
         </motion.div>
     )
@@ -233,13 +270,13 @@ export default function ExperienceSection() {
                     <h2 className="text-3xl sm:text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-blue-500 to-purple-500 bg-clip-text text-transparent">
                         Professional Experience
                     </h2>
-                    <p className="text-base sm:text-lg text-muted-foreground max-w-2xl mx-auto">
+                    <p className="text-xs sm:text-sm text-muted-foreground max-w-2xl mx-auto">
                         A journey of growth, innovation, and delivering exceptional results
                     </p>
                 </motion.div>
 
                 {/* Stats */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 mb-12 sm:mb-16">
+                <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 mb-12 sm:mb-16 place-items-center">
                     {statsLoading ? (
                         // Loading skeleton for stats
                         [...Array(4)].map((_, index) => (
