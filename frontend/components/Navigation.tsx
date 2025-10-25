@@ -103,7 +103,7 @@ export default function Navigation() {
                     top: offsetPosition,
                     behavior: 'smooth'
                 })
-            }, isOpen ? 300 : 0) // Delay only if menu was open
+            }, isOpen ? 150 : 0) // Delay only if menu was open
         } else {
             setIsOpen(false)
         }
@@ -182,16 +182,16 @@ export default function Navigation() {
             </motion.nav>
 
             {/* Mobile Menu */}
-            <AnimatePresence>
+            <AnimatePresence mode="wait">
                 {isOpen && (
                     <motion.div
                         initial={{ opacity: 0, x: '100%' }}
                         animate={{ opacity: 1, x: 0 }}
                         exit={{ opacity: 0, x: '100%' }}
-                        transition={{ type: 'tween', duration: 0.3 }}
+                        transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                         className="fixed inset-0 z-40 md:hidden"
                     >
-                        <div className="absolute inset-0 bg-background/80 backdrop-blur-md" />
+                        <div className="absolute inset-0 bg-background/90 backdrop-blur-sm" />
                         <div className="absolute right-0 top-0 h-full w-64 bg-card border-l border-border p-6">
                             <div className="flex flex-col space-y-6 mt-16">
                                 {navItems.map((item) => {

@@ -149,6 +149,34 @@ export default function SimpleFloatingElements() {
                         delay: 2
                     }}
                 />
+
+                <motion.div
+                    className="absolute top-1/2 left-6 w-4 h-10 bg-purple-500/15 rounded-full backdrop-blur-sm"
+                    animate={{
+                        x: [0, 12, 0],
+                        scale: [1, 1.1, 1],
+                    }}
+                    transition={{
+                        duration: 5,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                        delay: 1
+                    }}
+                />
+
+                <motion.div
+                    className="absolute top-20 left-1/2 w-5 h-5 bg-green-500/15 rounded-lg backdrop-blur-sm"
+                    animate={{
+                        y: [0, -8, 0],
+                        rotate: [0, 90, 180, 270, 360],
+                    }}
+                    transition={{
+                        duration: 8,
+                        repeat: Infinity,
+                        ease: "easeInOut",
+                        delay: 3
+                    }}
+                />
             </div>
         </>
     )
