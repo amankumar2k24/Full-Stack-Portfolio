@@ -1,68 +1,48 @@
 'use client'
 
 import { motion, useInView } from 'framer-motion'
-import { useRef } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { Calendar, MapPin, Award, TrendingUp, Users, Code2 } from 'lucide-react'
+import api from '@/lib/api'
 
-const experiences = [
-    {
-        title: "Senior Full Stack Developer",
-        company: "TechCorp Solutions",
-        location: "Remote",
-        duration: "2022 - Present",
-        description: "Led development of scalable web applications serving 100K+ users. Implemented microservices architecture and improved system performance by 40%.",
-        achievements: [
-            "Reduced API response time by 60%",
-            "Led team of 5 developers",
-            "Implemented CI/CD pipeline"
-        ],
-        technologies: ["React", "Node.js", "AWS", "Docker", "MongoDB"],
-        icon: Code2,
-        color: "#3b82f6"
-    },
-    {
-        title: "Full Stack Developer",
-        company: "StartupXYZ",
-        location: "San Francisco, CA",
-        duration: "2021 - 2022",
-        description: "Built MVP from scratch that secured $2M in Series A funding. Developed real-time features and integrated payment systems.",
-        achievements: [
-            "Built MVP in 3 months",
-            "Integrated Stripe payments",
-            "Implemented real-time chat"
-        ],
-        technologies: ["Next.js", "Python", "PostgreSQL", "Redis", "Stripe"],
-        icon: TrendingUp,
-        color: "#10b981"
-    },
-    {
-        title: "Frontend Developer",
-        company: "Digital Agency Pro",
-        location: "New York, NY",
-        duration: "2020 - 2021",
-        description: "Created responsive web applications for Fortune 500 clients. Collaborated with design teams to deliver pixel-perfect implementations.",
-        achievements: [
-            "Delivered 15+ client projects",
-            "Improved page load speed by 50%",
-            "Mentored junior developers"
-        ],
-        technologies: ["React", "TypeScript", "Sass", "Webpack", "Figma"],
-        icon: Users,
-        color: "#8b5cf6"
-    }
-]
+interface Experience {
+    _id: string
+    title: string
+    company: string
+    location: string
+    duration: string
+    description: string
+    achievements: string[]
+    technologies: string[]
+    icon: string
+    color: string
+    order: number
+    isActive: boolean
+}
 
-const stats = [
-    { label: "Years Experience", value: "3+", icon: Calendar },
-    { label: "Projects Completed", value: "50+", icon: Award },
-    { label: "Happy Clients", value: "25+", icon: Users },
-    { label: "Code Commits", value: "2000+", icon: Code2 }
-]
 
-function ExperienceCard({ experience, index }: { experience: typeof experiences[0], index: number }) {
+
+const getStats = (experiences: Experience[]) => {
+    const currentYear = new Date().getFullYear()
+    const yearsExperience = experiences.length > 0 ? "2.8" : "0"
+
+    return [
+        { label: "Years Experience", value: `${yearsExperience}+`, icon: Calendar },
+        { label: "Projects Completed", value: "50+", icon: Award },
+        { label: "Happy Clients", value: "25+", icon: Users },
+        { label: "Code Commits", value: "2000+", icon: Code2 }
+    ]
+}
+
+function ExperienceCard({ experience, index }: { experience: Experience, index: number }) {
     const ref = useRef(null)
     const isInView = useInView(ref, { once: true })
-    const Icon = experience.icon
+
+    // Use icon and color from API data, with fallbacks
+    const icons = [Code2, TrendingUp, Users, Award]
+    const colors = ["#3b82f6", "#10b981", "#8b5cf6", "#f59e0b"]
+    const Icon = icons[index % icons.length] // Could be enhanced to map experience.icon to actual icon
+    const color = experience.color || colors[index % colors.length]
 
     return (
         <motion.div
@@ -87,10 +67,10 @@ function ExperienceCard({ experience, index }: { experience: typeof experiences[
                 <div className="flex items-start gap-4 mb-4">
                     <motion.div
                         className="p-3 rounded-xl"
-                        style={{ backgroundColor: `${experience.color}20` }}
+                        style={{ backgroundColor: `${color}20` }}
                         whileHover={{ scale: 1.1, rotate: 5 }}
                     >
-                        <Icon size={24} style={{ color: experience.color }} />
+                        <Icon size={24} style={{ color: color }} />
                     </motion.div>
 
                     <div className="flex-1">
@@ -152,7 +132,7 @@ function ExperienceCard({ experience, index }: { experience: typeof experiences[
     )
 }
 
-function StatCard({ stat, index }: { stat: typeof stats[0], index: number }) {
+function StatCard({ stat, index }: { stat: { label: string, value: string, icon: any }, index: number }) {
     const ref = useRef(null)
     const isInView = useInView(ref, { once: true })
     const Icon = stat.icon
@@ -187,6 +167,27 @@ function StatCard({ stat, index }: { stat: typeof stats[0], index: number }) {
 export default function ExperienceSection() {
     const ref = useRef(null)
     const isInView = useInView(ref, { once: true })
+    const [experiences, setExperiences] = useState<Experience[]>([])
+    const [loading, setLoading] = useState(true)
+
+    useEffect(() => {
+        const fetchExperiences = async () => {
+            try {
+                const response = await api.get('/experience')
+                // Filter only active experiences and sort by order
+                const activeExperiences = response.data
+                    .filter((exp: Experience) => exp.isActive)
+                    .sort((a: Experience, b: Experience) => a.order - b.order)
+                setExperiences(activeExperiences)
+            } catch (error) {
+                console.error('Failed to fetch experiences:', error)
+            } finally {
+                setLoading(false)
+            }
+        }
+
+        fetchExperiences()
+    }, [])
 
     return (
         <section className="py-12 sm:py-20 px-3 sm:px-6 relative overflow-hidden">
@@ -209,16 +210,26 @@ export default function ExperienceSection() {
 
                 {/* Stats */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 mb-12 sm:mb-16">
-                    {stats.map((stat, index) => (
+                    {getStats(experiences).map((stat, index) => (
                         <StatCard key={stat.label} stat={stat} index={index} />
                     ))}
                 </div>
 
                 {/* Experience Timeline */}
                 <div className="space-y-8 sm:space-y-12">
-                    {experiences.map((experience, index) => (
-                        <ExperienceCard key={experience.company} experience={experience} index={index} />
-                    ))}
+                    {loading ? (
+                        <div className="flex items-center justify-center py-12">
+                            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+                        </div>
+                    ) : experiences.length > 0 ? (
+                        experiences.map((experience, index) => (
+                            <ExperienceCard key={experience._id} experience={experience} index={index} />
+                        ))
+                    ) : (
+                        <div className="text-center py-12">
+                            <p className="text-muted-foreground">No experience data available.</p>
+                        </div>
+                    )}
                 </div>
             </div>
 

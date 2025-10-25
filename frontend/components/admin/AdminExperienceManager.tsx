@@ -329,21 +329,49 @@ export default function AdminExperienceManager() {
                         <div className="flex items-start justify-between mb-4">
                             <div className="flex-1">
                                 {editingId === experience._id ? (
-                                    <div className="space-y-2">
-                                        <input
-                                            type="text"
-                                            value={experience.title}
-                                            onChange={(e) => updateExperience(experience._id, 'title', e.target.value)}
-                                            className="text-lg font-semibold bg-background border border-input rounded px-2 py-1 w-full"
-                                            placeholder="Job Title"
-                                        />
-                                        <input
-                                            type="text"
-                                            value={experience.company}
-                                            onChange={(e) => updateExperience(experience._id, 'company', e.target.value)}
-                                            className="text-base bg-background border border-input rounded px-2 py-1 w-full"
-                                            placeholder="Company"
-                                        />
+                                    <div className="space-y-3">
+                                        <div>
+                                            <label className="block text-sm font-medium mb-1">Job Title</label>
+                                            <input
+                                                type="text"
+                                                value={experience.title}
+                                                onChange={(e) => updateExperience(experience._id, 'title', e.target.value)}
+                                                className="text-lg font-semibold bg-background border border-input rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-ring"
+                                                placeholder="Senior Developer"
+                                            />
+                                        </div>
+                                        <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                            <div>
+                                                <label className="block text-sm font-medium mb-1">Company</label>
+                                                <input
+                                                    type="text"
+                                                    value={experience.company}
+                                                    onChange={(e) => updateExperience(experience._id, 'company', e.target.value)}
+                                                    className="text-base bg-background border border-input rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-ring"
+                                                    placeholder="Tech Company Inc."
+                                                />
+                                            </div>
+                                            <div>
+                                                <label className="block text-sm font-medium mb-1">Location</label>
+                                                <input
+                                                    type="text"
+                                                    value={experience.location}
+                                                    onChange={(e) => updateExperience(experience._id, 'location', e.target.value)}
+                                                    className="text-base bg-background border border-input rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-ring"
+                                                    placeholder="New York, NY"
+                                                />
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label className="block text-sm font-medium mb-1">Duration</label>
+                                            <input
+                                                type="text"
+                                                value={experience.duration}
+                                                onChange={(e) => updateExperience(experience._id, 'duration', e.target.value)}
+                                                className="text-base bg-background border border-input rounded px-3 py-2 w-full focus:outline-none focus:ring-2 focus:ring-ring"
+                                                placeholder="Jan 2020 - Present"
+                                            />
+                                        </div>
                                     </div>
                                 ) : (
                                     <div>
@@ -405,27 +433,36 @@ export default function AdminExperienceManager() {
 
                         {editingId === experience._id ? (
                             <div className="space-y-4">
-                                <textarea
-                                    value={experience.description}
-                                    onChange={(e) => updateExperience(experience._id, 'description', e.target.value)}
-                                    className="w-full px-3 py-2 border border-input rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-ring resize-none"
-                                    rows={3}
-                                    placeholder="Description"
-                                />
-                                <textarea
-                                    value={experience.achievements.join('\n')}
-                                    onChange={(e) => updateExperience(experience._id, 'achievements', e.target.value.split('\n').filter(item => item.trim()))}
-                                    className="w-full px-3 py-2 border border-input rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-ring resize-none"
-                                    rows={4}
-                                    placeholder="Achievements (one per line)"
-                                />
-                                <input
-                                    type="text"
-                                    value={experience.technologies.join(', ')}
-                                    onChange={(e) => updateExperience(experience._id, 'technologies', e.target.value.split(',').map(tech => tech.trim()))}
-                                    className="w-full px-3 py-2 border border-input rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-ring"
-                                    placeholder="Technologies (comma-separated)"
-                                />
+                                <div>
+                                    <label className="block text-sm font-medium mb-2">Description</label>
+                                    <textarea
+                                        value={experience.description}
+                                        onChange={(e) => updateExperience(experience._id, 'description', e.target.value)}
+                                        className="w-full px-3 py-2 border border-input rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-ring resize-none"
+                                        rows={3}
+                                        placeholder="Brief description of your role and responsibilities"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium mb-2">Key Achievements (one per line)</label>
+                                    <textarea
+                                        value={experience.achievements.join('\n')}
+                                        onChange={(e) => updateExperience(experience._id, 'achievements', e.target.value.split('\n').filter(item => item.trim()))}
+                                        className="w-full px-3 py-2 border border-input rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-ring resize-none"
+                                        rows={4}
+                                        placeholder="Led a team of 5 developers&#10;Increased performance by 40%&#10;Implemented new architecture"
+                                    />
+                                </div>
+                                <div>
+                                    <label className="block text-sm font-medium mb-2">Technologies (comma-separated)</label>
+                                    <input
+                                        type="text"
+                                        value={experience.technologies.join(', ')}
+                                        onChange={(e) => updateExperience(experience._id, 'technologies', e.target.value.split(',').map(tech => tech.trim()))}
+                                        className="w-full px-3 py-2 border border-input rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-ring"
+                                        placeholder="React, Node.js, MongoDB"
+                                    />
+                                </div>
                             </div>
                         ) : (
                             <div className="space-y-3">

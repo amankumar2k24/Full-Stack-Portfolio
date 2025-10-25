@@ -279,7 +279,8 @@ export default function HeroSection() {
                     className="mb-6 sm:mb-12"
                 >
                     <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed px-4">
-                        {about?.bio || 'Passionate about creating innovative solutions and beautiful user experiences that make a difference in the digital world.'}
+                        {/* {about?.bio} */}
+                        Full-stack developer leveraging AI and modern web technologies to solve complex problems, delivering scalable solutions and exceptional digital experiences for businesses globally.
                     </p>
                 </motion.div>
 
@@ -306,7 +307,7 @@ export default function HeroSection() {
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ duration: 0.8, delay: 1.2 }}
-                    className="flex justify-center gap-4 sm:gap-6 mb-8 sm:mb-16"
+                    className="flex justify-center gap-4 sm:gap-6 mb-8 sm:mb-20"
                 >
                     {about?.socials?.github && (
                         <motion.a
