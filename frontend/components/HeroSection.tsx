@@ -219,7 +219,7 @@ export default function HeroSection() {
                 <FloatingIcons />
             </div>
 
-            <div className="relative z-10 text-center max-w-5xl mx-auto px-4 sm:px-6 w-full py-8 sm:py-0">
+            <div className="relative z-10 text-center max-w-5xl mx-auto px-4 sm:px-6 w-full py-8 sm:py-0 sm:pt-10">
                 {/* Main heading */}
                 <motion.div
                     initial={{ opacity: 0, y: 50 }}

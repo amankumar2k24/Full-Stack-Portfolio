@@ -9,8 +9,22 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UpdateSkillDto = exports.CreateSkillDto = void 0;
+exports.UpdateSkillDto = exports.CreateSkillDto = exports.SkillItemDto = void 0;
 const class_validator_1 = require("class-validator");
+const class_transformer_1 = require("class-transformer");
+class SkillItemDto {
+}
+exports.SkillItemDto = SkillItemDto;
+__decorate([
+    (0, class_validator_1.IsString)(),
+    __metadata("design:type", String)
+], SkillItemDto.prototype, "name", void 0);
+__decorate([
+    (0, class_validator_1.IsNumber)(),
+    (0, class_validator_1.Min)(0),
+    (0, class_validator_1.Max)(100),
+    __metadata("design:type", Number)
+], SkillItemDto.prototype, "level", void 0);
 class CreateSkillDto {
 }
 exports.CreateSkillDto = CreateSkillDto;
@@ -20,7 +34,8 @@ __decorate([
 ], CreateSkillDto.prototype, "category", void 0);
 __decorate([
     (0, class_validator_1.IsArray)(),
-    (0, class_validator_1.IsString)({ each: true }),
+    (0, class_validator_1.ValidateNested)({ each: true }),
+    (0, class_transformer_1.Type)(() => SkillItemDto),
     __metadata("design:type", Array)
 ], CreateSkillDto.prototype, "items", void 0);
 class UpdateSkillDto extends CreateSkillDto {

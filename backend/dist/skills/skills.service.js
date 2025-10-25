@@ -22,7 +22,7 @@ let SkillsService = class SkillsService {
         this.skillModel = skillModel;
     }
     async findAll() {
-        return this.skillModel.find().exec();
+        return this.skillModel.find().sort({ createdAt: 1 }).exec();
     }
     async create(createSkillDto) {
         const createdSkill = new this.skillModel(createSkillDto);

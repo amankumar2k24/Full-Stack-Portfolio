@@ -19,23 +19,47 @@ interface AboutData {
     }
 }
 
+interface Stat {
+    _id: string
+    key: string
+    label: string
+    value: string
+    icon: string
+    color: string
+    order: number
+    isActive: boolean
+    description?: string
+}
+
 export default function AboutSection() {
     const [about, setAbout] = useState<AboutData | null>(null)
+    const [stats, setStats] = useState<Stat[]>([])
     const [loading, setLoading] = useState(true)
+    const [statsLoading, setStatsLoading] = useState(true)
 
     useEffect(() => {
-        const fetchAbout = async () => {
+        const fetchData = async () => {
             try {
-                const response = await api.get('/about')
-                setAbout(response.data)
+                // Fetch about data
+                const aboutResponse = await api.get('/about')
+                setAbout(aboutResponse.data)
+
+                // Fetch stats data
+                const statsResponse = await api.get('/stats')
+                const activeStats = statsResponse.data
+                    .filter((stat: Stat) => stat.isActive)
+                    .sort((a: Stat, b: Stat) => a.order - b.order)
+                    .slice(0, 4) // Only take first 4 stats for the about section
+                setStats(activeStats)
             } catch (error) {
-                console.error('Failed to fetch about data:', error)
+                console.error('Failed to fetch data:', error)
             } finally {
                 setLoading(false)
+                setStatsLoading(false)
             }
         }
 
-        fetchAbout()
+        fetchData()
     }, [])
 
     if (loading) {
@@ -179,22 +203,66 @@ export default function AboutSection() {
                     <div className="absolute inset-0 bg-gradient-to-br from-primary/10 to-transparent rounded-2xl overflow-hidden"></div>
                     <div className="relative z-10 overflow-hidden">
                         <div className="grid grid-cols-2 gap-4 sm:gap-6">
-                            <div className="text-center min-[720px]:hover:scale-105 transition-transform duration-200">
-                                <div className="text-2xl sm:text-3xl font-bold text-primary mb-2">2.8+</div>
-                                <div className="text-xs sm:text-sm text-muted-foreground">Years Experience</div>
-                            </div>
-                            <div className="text-center min-[720px]:hover:scale-105 transition-transform duration-200">
-                                <div className="text-2xl sm:text-3xl font-bold text-primary mb-2">50+</div>
-                                <div className="text-xs sm:text-sm text-muted-foreground">Projects Completed</div>
-                            </div>
-                            <div className="text-center min-[720px]:hover:scale-105 transition-transform duration-200">
-                                <div className="text-2xl sm:text-3xl font-bold text-primary mb-2">20+</div>
-                                <div className="text-xs sm:text-sm text-muted-foreground">Technologies</div>
-                            </div>
-                            <div className="text-center min-[720px]:hover:scale-105 transition-transform duration-200">
-                                <div className="text-2xl sm:text-3xl font-bold text-primary mb-2">100%</div>
-                                <div className="text-xs sm:text-sm text-muted-foreground">Client Satisfaction</div>
-                            </div>
+                            {statsLoading ? (
+                                // Loading skeleton for stats
+                                [...Array(4)].map((_, index) => (
+                                    <div key={index} className="text-center">
+                                        <div className="h-8 bg-muted rounded w-16 mx-auto mb-2 animate-pulse"></div>
+                                        <div className="h-4 bg-muted rounded w-20 mx-auto animate-pulse"></div>
+                                    </div>
+                                ))
+                            ) : stats.length > 0 ? (
+                                stats.map((stat, index) => (
+                                    <motion.div
+                                        key={stat._id}
+                                        className="text-center min-[720px]:hover:scale-105 transition-all duration-200 group"
+                                        initial={{ opacity: 0, scale: 0 }}
+                                        whileInView={{ opacity: 1, scale: 1 }}
+                                        viewport={{ once: true }}
+                                        transition={{ duration: 0.5, delay: index * 0.1 }}
+                                        whileHover={{ y: -2 }}
+                                    >
+                                        <motion.div
+                                            className="text-2xl sm:text-3xl font-bold mb-2 group-hover:scale-110 transition-transform duration-200"
+                                            style={{ color: stat.color }}
+                                            initial={{ scale: 0 }}
+                                            whileInView={{ scale: 1 }}
+                                            viewport={{ once: true }}
+                                            transition={{ duration: 0.6, delay: index * 0.1 + 0.2, type: "spring" }}
+                                        >
+                                            {stat.value}
+                                        </motion.div>
+                                        <div className="text-xs sm:text-sm text-muted-foreground group-hover:text-foreground transition-colors duration-200">
+                                            {stat.label}
+                                        </div>
+                                        {stat.description && (
+                                            <div className="text-xs text-muted-foreground/70 mt-1 opacity-0 group-hover:opacity-100 transition-opacity duration-200">
+                                                {stat.description}
+                                            </div>
+                                        )}
+                                    </motion.div>
+                                ))
+                            ) : (
+                                // Fallback to default stats if no stats available
+                                <>
+                                    <div className="text-center min-[720px]:hover:scale-105 transition-transform duration-200">
+                                        <div className="text-2xl sm:text-3xl font-bold text-primary mb-2">2.8+</div>
+                                        <div className="text-xs sm:text-sm text-muted-foreground">Years Experience</div>
+                                    </div>
+                                    <div className="text-center min-[720px]:hover:scale-105 transition-transform duration-200">
+                                        <div className="text-2xl sm:text-3xl font-bold text-primary mb-2">50+</div>
+                                        <div className="text-xs sm:text-sm text-muted-foreground">Projects Completed</div>
+                                    </div>
+                                    <div className="text-center min-[720px]:hover:scale-105 transition-transform duration-200">
+                                        <div className="text-2xl sm:text-3xl font-bold text-primary mb-2">20+</div>
+                                        <div className="text-xs sm:text-sm text-muted-foreground">Technologies</div>
+                                    </div>
+                                    <div className="text-center min-[720px]:hover:scale-105 transition-transform duration-200">
+                                        <div className="text-2xl sm:text-3xl font-bold text-primary mb-2">100%</div>
+                                        <div className="text-xs sm:text-sm text-muted-foreground">Client Satisfaction</div>
+                                    </div>
+                                </>
+                            )}
                         </div>
                     </div>
                 </div>

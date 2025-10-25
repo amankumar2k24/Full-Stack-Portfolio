@@ -9,8 +9,22 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.SkillSchema = exports.Skill = void 0;
+exports.SkillSchema = exports.Skill = exports.SkillItem = void 0;
 const mongoose_1 = require("@nestjs/mongoose");
+let SkillItem = class SkillItem {
+};
+exports.SkillItem = SkillItem;
+__decorate([
+    (0, mongoose_1.Prop)({ required: true }),
+    __metadata("design:type", String)
+], SkillItem.prototype, "name", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ required: true, min: 0, max: 100 }),
+    __metadata("design:type", Number)
+], SkillItem.prototype, "level", void 0);
+exports.SkillItem = SkillItem = __decorate([
+    (0, mongoose_1.Schema)()
+], SkillItem);
 let Skill = class Skill {
 };
 exports.Skill = Skill;
@@ -19,7 +33,7 @@ __decorate([
     __metadata("design:type", String)
 ], Skill.prototype, "category", void 0);
 __decorate([
-    (0, mongoose_1.Prop)({ type: [String], required: true }),
+    (0, mongoose_1.Prop)({ type: [SkillItem], required: true }),
     __metadata("design:type", Array)
 ], Skill.prototype, "items", void 0);
 exports.Skill = Skill = __decorate([

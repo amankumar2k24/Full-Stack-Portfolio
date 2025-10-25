@@ -1,11 +1,13 @@
 'use client'
 
 import { motion } from 'framer-motion'
-import { Github, Linkedin, Mail, Heart, ArrowUp, Code, Coffee } from 'lucide-react'
+import { Github, Linkedin, Mail, ArrowUp, Code, Coffee } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import { useAbout } from '@/hooks/useAbout'
 
 export default function Footer() {
     const [showScrollTop, setShowScrollTop] = useState(false)
+    const { about } = useAbout()
 
     useEffect(() => {
         const handleScroll = () => {
@@ -47,8 +49,7 @@ export default function Footer() {
                             <span className="text-xl font-bold">Aman Kumar</span>
                         </div>
                         <p className="text-muted-foreground leading-relaxed">
-                            Crafting digital experiences with passion, precision, and cutting-edge technology.
-                            Let's build something amazing together.
+                            Crafting high-performance web applications with React, Node.js, AI integrations, and DevOps.
                         </p>
                         <div className="flex items-center gap-2 text-sm text-muted-foreground">
                             <Coffee size={16} />
@@ -117,24 +118,43 @@ export default function Footer() {
                             Ready to start your next project? I'm always excited to work on new challenges.
                         </p>
                         <div className="flex gap-4">
-                            {[
-                                { icon: Github, href: 'https://github.com', label: 'GitHub' },
-                                { icon: Linkedin, href: 'https://linkedin.com', label: 'LinkedIn' },
-                                { icon: Mail, href: 'mailto:aman.kumar2k15@gmail.com', label: 'Email' },
-                            ].map(({ icon: Icon, href, label }) => (
+                            {about?.socials?.github && (
                                 <motion.a
-                                    key={label}
-                                    href={href}
+                                    href={about.socials.github}
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="p-2 rounded-lg bg-muted hover:bg-primary hover:text-primary-foreground transition-all duration-300"
                                     whileHover={{ scale: 1.1, rotate: 5 }}
                                     whileTap={{ scale: 0.9 }}
-                                    title={label}
+                                    title="GitHub"
                                 >
-                                    <Icon size={18} />
+                                    <Github size={18} />
                                 </motion.a>
-                            ))}
+                            )}
+                            {about?.socials?.linkedin && (
+                                <motion.a
+                                    href={about.socials.linkedin}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="p-2 rounded-lg bg-muted hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+                                    whileHover={{ scale: 1.1, rotate: 5 }}
+                                    whileTap={{ scale: 0.9 }}
+                                    title="LinkedIn"
+                                >
+                                    <Linkedin size={18} />
+                                </motion.a>
+                            )}
+                            {about?.socials?.email && (
+                                <motion.a
+                                    href={`mailto:${about.socials.email}`}
+                                    className="p-2 rounded-lg bg-muted hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+                                    whileHover={{ scale: 1.1, rotate: 5 }}
+                                    whileTap={{ scale: 0.9 }}
+                                    title="Email"
+                                >
+                                    <Mail size={18} />
+                                </motion.a>
+                            )}
                         </div>
                     </motion.div>
                 </div>

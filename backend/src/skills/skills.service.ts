@@ -11,7 +11,7 @@ export class SkillsService {
     ) { }
 
     async findAll(): Promise<Skill[]> {
-        return this.skillModel.find().exec();
+        return this.skillModel.find().sort({ createdAt: 1 }).exec();
     }
 
     async create(createSkillDto: CreateSkillDto): Promise<Skill> {

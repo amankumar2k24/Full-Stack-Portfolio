@@ -10,6 +10,7 @@ import { DashboardModule } from './dashboard/dashboard.module';
 import { ServicesModule } from './services/services.module';
 import { ExperienceModule } from './experience/experience.module';
 import { SettingsModule } from './settings/settings.module';
+import { StatsModule } from './stats/stats.module';
 
 @Module({
     imports: [
@@ -26,6 +27,7 @@ import { SettingsModule } from './settings/settings.module';
         ServicesModule,
         ExperienceModule,
         SettingsModule,
+        StatsModule,
     ],
 })
 export class AppModule { }

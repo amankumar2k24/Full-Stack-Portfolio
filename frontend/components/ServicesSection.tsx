@@ -12,7 +12,32 @@ import {
     Shield,
     BarChart3,
     Rocket,
-    Globe
+    Globe,
+    // Additional icons for more variety
+    Monitor,
+    Server,
+    ShoppingCart,
+    Layers,
+    Settings,
+    Lock,
+    TrendingUp,
+    Brush,
+    Cpu,
+    Network,
+    FileCode,
+    Blocks,
+    Package,
+    Wrench,
+    Layout,
+    Smartphone as Mobile,
+    CloudLightning,
+    HardDrive,
+    PaintBucket,
+    Gauge,
+    ShieldCheck,
+    Activity,
+    Briefcase,
+    Target
 } from 'lucide-react'
 import api from '@/lib/api'
 
@@ -37,7 +62,32 @@ const iconMap: Record<string, any> = {
     Shield,
     BarChart3,
     Rocket,
-    Globe
+    Globe,
+    // Additional icons
+    Monitor,
+    Server,
+    ShoppingCart,
+    Layers,
+    Settings,
+    Lock,
+    TrendingUp,
+    Brush,
+    Cpu,
+    Network,
+    FileCode,
+    Blocks,
+    Package,
+    Wrench,
+    Layout,
+    Mobile,
+    CloudLightning,
+    HardDrive,
+    PaintBucket,
+    Gauge,
+    ShieldCheck,
+    Activity,
+    Briefcase,
+    Target
 }
 
 const processSteps = [
@@ -92,22 +142,38 @@ function ServiceCard({ service, index }: { service: Service, index: number }) {
             transition={{ duration: 0.6, delay: index * 0.1 }}
             className="group relative"
         >
-            <div className="h-full bg-card rounded-2xl p-6 border shadow-sm hover:shadow-xl transition-all duration-500 relative overflow-hidden">
+            <div className="h-full bg-card rounded-2xl p-6 shadow-sm hover:shadow-xl transition-all duration-500 relative overflow-hidden border border-border/60 hover:border-border/80">
+                {/* Enhanced border glow effect */}
+                <div className="absolute inset-0 rounded-2xl border border-white/20 group-hover:border-white/30 transition-all duration-500"></div>
+
                 {/* Background gradient */}
-                <div className={`absolute inset-0 bg-gradient-to-br ${service.gradient} opacity-0 group-hover:opacity-5 transition-opacity duration-500`} />
+                <div className={`absolute inset-0 bg-gradient-to-br ${service.gradient} opacity-0 group-hover:opacity-10 transition-opacity duration-500 rounded-2xl`} />
+
+                {/* Color-wise background overlay */}
+                <div
+                    className="absolute inset-0 opacity-0 group-hover:opacity-5 transition-opacity duration-500 rounded-2xl"
+                    style={{ backgroundColor: service.color }}
+                />
 
                 <div className="relative z-10">
                     <motion.div
-                        className="w-14 h-14 rounded-xl mb-6 flex items-center justify-center"
-                        style={{ backgroundColor: `${service.color}15` }}
+                        className="w-14 h-14 rounded-xl mb-6 flex items-center justify-center group-hover:shadow-lg transition-all duration-300"
+                        style={{
+                            backgroundColor: `${service.color}15`,
+                        }}
                         whileHover={{ scale: 1.1, rotate: 5 }}
                         transition={{ duration: 0.2 }}
                     >
-                        <Icon size={28} style={{ color: service.color }} />
+                        <Icon size={28} style={{ color: service.color }} className="group-hover:scale-110 transition-transform duration-300" />
                     </motion.div>
 
-                    <h3 className="text-xl font-bold mb-3 group-hover:text-primary transition-colors">
-                        {service.title}
+                    <h3 className="text-xl font-bold mb-3 transition-colors duration-300 group-hover:opacity-90">
+                        <span
+                            className="group-hover:text-current transition-colors duration-300"
+                            style={{ '--hover-color': service.color } as React.CSSProperties}
+                        >
+                            {service.title}
+                        </span>
                     </h3>
 
                     <p className="text-muted-foreground mb-6 leading-relaxed">

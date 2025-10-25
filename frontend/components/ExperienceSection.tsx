@@ -2,7 +2,7 @@
 
 import { motion, useInView } from 'framer-motion'
 import { useRef, useState, useEffect } from 'react'
-import { Calendar, MapPin, Award, TrendingUp, Users, Code2 } from 'lucide-react'
+import { Calendar, MapPin, Award, TrendingUp, Users, Code2, Zap } from 'lucide-react'
 import api from '@/lib/api'
 
 interface Experience {
@@ -20,19 +20,21 @@ interface Experience {
     isActive: boolean
 }
 
-
-
-const getStats = (experiences: Experience[]) => {
-    const currentYear = new Date().getFullYear()
-    const yearsExperience = experiences.length > 0 ? "2.8" : "0"
-
-    return [
-        { label: "Years Experience", value: `${yearsExperience}+`, icon: Calendar },
-        { label: "Projects Completed", value: "50+", icon: Award },
-        { label: "Happy Clients", value: "25+", icon: Users },
-        { label: "Code Commits", value: "2000+", icon: Code2 }
-    ]
+interface Stat {
+    _id: string
+    key: string
+    label: string
+    value: string
+    icon: string
+    color: string
+    order: number
+    isActive: boolean
+    description?: string
 }
+
+
+
+
 
 function ExperienceCard({ experience, index }: { experience: Experience, index: number }) {
     const ref = useRef(null)
@@ -132,10 +134,23 @@ function ExperienceCard({ experience, index }: { experience: Experience, index: 
     )
 }
 
-function StatCard({ stat, index }: { stat: { label: string, value: string, icon: any }, index: number }) {
+function StatCard({ stat, index }: { stat: Stat, index: number }) {
     const ref = useRef(null)
     const isInView = useInView(ref, { once: true })
-    const Icon = stat.icon
+
+    // Map icon names to actual icons
+    const iconMap: { [key: string]: any } = {
+        Calendar,
+        Award,
+        Users,
+        Code2,
+        TrendingUp,
+        Zap,
+        Star: Award, // fallback
+        Heart: Users, // fallback
+    }
+
+    const Icon = iconMap[stat.icon] || Award // fallback to Award icon
 
     return (
         <motion.div
@@ -146,13 +161,15 @@ function StatCard({ stat, index }: { stat: { label: string, value: string, icon:
             className="text-center group"
         >
             <motion.div
-                className="w-16 h-16 mx-auto mb-4 bg-primary/10 rounded-2xl flex items-center justify-center group-hover:bg-primary/20 transition-colors"
+                className="w-16 h-16 mx-auto mb-4 rounded-2xl flex items-center justify-center group-hover:opacity-80 transition-colors"
+                style={{ backgroundColor: `${stat.color}20` }}
                 whileHover={{ scale: 1.1, rotate: 5 }}
             >
-                <Icon size={28} className="text-primary" />
+                <Icon size={28} style={{ color: stat.color }} />
             </motion.div>
             <motion.div
-                className="text-3xl font-bold text-primary mb-2"
+                className="text-3xl font-bold mb-2"
+                style={{ color: stat.color }}
                 initial={{ scale: 0 }}
                 animate={isInView ? { scale: 1 } : {}}
                 transition={{ duration: 0.5, delay: index * 0.1 + 0.3, type: "spring" }}
@@ -160,6 +177,9 @@ function StatCard({ stat, index }: { stat: { label: string, value: string, icon:
                 {stat.value}
             </motion.div>
             <p className="text-muted-foreground font-medium">{stat.label}</p>
+            {stat.description && (
+                <p className="text-xs text-muted-foreground/70 mt-1">{stat.description}</p>
+            )}
         </motion.div>
     )
 }
@@ -168,25 +188,35 @@ export default function ExperienceSection() {
     const ref = useRef(null)
     const isInView = useInView(ref, { once: true })
     const [experiences, setExperiences] = useState<Experience[]>([])
+    const [stats, setStats] = useState<Stat[]>([])
     const [loading, setLoading] = useState(true)
+    const [statsLoading, setStatsLoading] = useState(true)
 
     useEffect(() => {
-        const fetchExperiences = async () => {
+        const fetchData = async () => {
             try {
-                const response = await api.get('/experience')
-                // Filter only active experiences and sort by order
-                const activeExperiences = response.data
+                // Fetch experiences
+                const experienceResponse = await api.get('/experience')
+                const activeExperiences = experienceResponse.data
                     .filter((exp: Experience) => exp.isActive)
                     .sort((a: Experience, b: Experience) => a.order - b.order)
                 setExperiences(activeExperiences)
+
+                // Fetch stats
+                const statsResponse = await api.get('/stats')
+                const activeStats = statsResponse.data
+                    .filter((stat: Stat) => stat.isActive)
+                    .sort((a: Stat, b: Stat) => a.order - b.order)
+                setStats(activeStats)
             } catch (error) {
-                console.error('Failed to fetch experiences:', error)
+                console.error('Failed to fetch data:', error)
             } finally {
                 setLoading(false)
+                setStatsLoading(false)
             }
         }
 
-        fetchExperiences()
+        fetchData()
     }, [])
 
     return (
@@ -210,9 +240,24 @@ export default function ExperienceSection() {
 
                 {/* Stats */}
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 mb-12 sm:mb-16">
-                    {getStats(experiences).map((stat, index) => (
-                        <StatCard key={stat.label} stat={stat} index={index} />
-                    ))}
+                    {statsLoading ? (
+                        // Loading skeleton for stats
+                        [...Array(4)].map((_, index) => (
+                            <div key={index} className="text-center">
+                                <div className="w-16 h-16 mx-auto mb-4 bg-muted rounded-2xl animate-pulse"></div>
+                                <div className="h-8 bg-muted rounded w-16 mx-auto mb-2 animate-pulse"></div>
+                                <div className="h-4 bg-muted rounded w-24 mx-auto animate-pulse"></div>
+                            </div>
+                        ))
+                    ) : stats.length > 0 ? (
+                        stats.map((stat, index) => (
+                            <StatCard key={stat._id} stat={stat} index={index} />
+                        ))
+                    ) : (
+                        <div className="col-span-full text-center py-8">
+                            <p className="text-muted-foreground">No statistics available. Add some stats in the admin panel!</p>
+                        </div>
+                    )}
                 </div>
 
                 {/* Experience Timeline */}
