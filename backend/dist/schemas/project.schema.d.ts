@@ -4,9 +4,8 @@ export declare class Project {
     title: string;
     description: string;
     techStack: string[];
-    githubLink: string;
-    liveLink: string;
-    imageUrl: string;
+    liveLinks: string[];
+    imageUrls: string[];
 }
 export declare const ProjectSchema: import("mongoose").Schema<Project, import("mongoose").Model<Project, any, any, any, Document<unknown, any, Project> & Project & {
     _id: import("mongoose").Types.ObjectId;

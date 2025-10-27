@@ -27,17 +27,13 @@ __decorate([
     __metadata("design:type", Array)
 ], Project.prototype, "techStack", void 0);
 __decorate([
-    (0, mongoose_1.Prop)(),
-    __metadata("design:type", String)
-], Project.prototype, "githubLink", void 0);
+    (0, mongoose_1.Prop)({ type: [String], default: [] }),
+    __metadata("design:type", Array)
+], Project.prototype, "liveLinks", void 0);
 __decorate([
-    (0, mongoose_1.Prop)(),
-    __metadata("design:type", String)
-], Project.prototype, "liveLink", void 0);
-__decorate([
-    (0, mongoose_1.Prop)(),
-    __metadata("design:type", String)
-], Project.prototype, "imageUrl", void 0);
+    (0, mongoose_1.Prop)({ type: [String], default: [] }),
+    __metadata("design:type", Array)
+], Project.prototype, "imageUrls", void 0);
 exports.Project = Project = __decorate([
     (0, mongoose_1.Schema)({ timestamps: true })
 ], Project);

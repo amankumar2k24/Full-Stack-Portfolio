@@ -29,19 +29,16 @@ __decorate([
 ], CreateProjectDto.prototype, "techStack", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CreateProjectDto.prototype, "githubLink", void 0);
+    (0, class_validator_1.IsArray)(),
+    (0, class_validator_1.IsString)({ each: true }),
+    __metadata("design:type", Array)
+], CreateProjectDto.prototype, "liveLinks", void 0);
 __decorate([
     (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CreateProjectDto.prototype, "liveLink", void 0);
-__decorate([
-    (0, class_validator_1.IsOptional)(),
-    (0, class_validator_1.IsString)(),
-    __metadata("design:type", String)
-], CreateProjectDto.prototype, "imageUrl", void 0);
+    (0, class_validator_1.IsArray)(),
+    (0, class_validator_1.IsString)({ each: true }),
+    __metadata("design:type", Array)
+], CreateProjectDto.prototype, "imageUrls", void 0);
 class UpdateProjectDto extends CreateProjectDto {
 }
 exports.UpdateProjectDto = UpdateProjectDto;

@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { Plus, Edit, Trash2, Save, X, ExternalLink, Github } from 'lucide-react'
+import { Plus, Edit, Trash2, Save, X, ExternalLink, ChevronLeft, ChevronRight } from 'lucide-react'
 import Image from 'next/image'
 import api from '@/lib/api'
 
@@ -11,9 +11,70 @@ interface Project {
     title: string
     description: string
     techStack: string[]
-    githubLink?: string
-    liveLink?: string
-    imageUrl?: string
+    liveLinks: string[]
+    imageUrls: string[]
+}
+
+// Image Carousel Component for Admin
+function AdminImageCarousel({ images, title }: { images: string[], title: string }) {
+    const [currentIndex, setCurrentIndex] = useState(0)
+
+    const nextImage = () => {
+        setCurrentIndex((prev) => (prev + 1) % images.length)
+    }
+
+    const prevImage = () => {
+        setCurrentIndex((prev) => (prev - 1 + images.length) % images.length)
+    }
+
+    if (!images || images.length === 0) {
+        return (
+            <div className="relative h-48 w-full bg-muted flex items-center justify-center">
+                <span className="text-muted-foreground text-sm">No images</span>
+            </div>
+        )
+    }
+
+    return (
+        <div className="relative h-48 w-full overflow-hidden group">
+            <Image
+                src={images[currentIndex]}
+                alt={`${title} - Image ${currentIndex + 1}`}
+                fill
+                className="object-cover"
+            />
+
+            {/* Navigation buttons */}
+            {images.length > 1 && (
+                <>
+                    <button
+                        onClick={prevImage}
+                        className="absolute left-2 top-1/2 -translate-y-1/2 p-1 bg-black/50 hover:bg-black/70 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"
+                    >
+                        <ChevronLeft size={16} />
+                    </button>
+                    <button
+                        onClick={nextImage}
+                        className="absolute right-2 top-1/2 -translate-y-1/2 p-1 bg-black/50 hover:bg-black/70 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"
+                    >
+                        <ChevronRight size={16} />
+                    </button>
+
+                    {/* Dots indicator */}
+                    <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1 z-10">
+                        {images.map((_, index) => (
+                            <button
+                                key={index}
+                                onClick={() => setCurrentIndex(index)}
+                                className={`w-1.5 h-1.5 rounded-full transition-colors ${index === currentIndex ? 'bg-white' : 'bg-white/50'
+                                    }`}
+                            />
+                        ))}
+                    </div>
+                </>
+            )}
+        </div>
+    )
 }
 
 export default function AdminProjectsManager() {
@@ -25,9 +86,8 @@ export default function AdminProjectsManager() {
         title: '',
         description: '',
         techStack: '',
-        githubLink: '',
-        liveLink: '',
-        imageUrl: ''
+        liveLinks: '',
+        imageUrls: ''
     })
 
     useEffect(() => {
@@ -49,16 +109,17 @@ export default function AdminProjectsManager() {
         try {
             const projectData = {
                 ...formData,
-                techStack: formData.techStack.split(',').map(tech => tech.trim()).filter(tech => tech)
+                techStack: formData.techStack.split(',').map(tech => tech.trim()).filter(tech => tech),
+                liveLinks: formData.liveLinks.split(',').map(link => link.trim()).filter(link => link),
+                imageUrls: formData.imageUrls.split(',').map(url => url.trim()).filter(url => url)
             }
             await api.post('/projects', projectData)
             setFormData({
                 title: '',
                 description: '',
                 techStack: '',
-                githubLink: '',
-                liveLink: '',
-                imageUrl: ''
+                liveLinks: '',
+                imageUrls: ''
             })
             setShowAddForm(false)
             fetchProjects()
@@ -149,13 +210,13 @@ export default function AdminProjectsManager() {
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium mb-2">Image URL</label>
+                            <label className="block text-sm font-medium mb-2">Image URLs (comma-separated)</label>
                             <input
-                                type="url"
-                                value={formData.imageUrl}
-                                onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
+                                type="text"
+                                value={formData.imageUrls}
+                                onChange={(e) => setFormData({ ...formData, imageUrls: e.target.value })}
                                 className="w-full px-3 py-2 border border-input rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-ring"
-                                placeholder="https://example.com/image.jpg"
+                                placeholder="https://example.com/image1.jpg, https://example.com/image2.jpg"
                             />
                         </div>
                         <div className="md:col-span-2">
@@ -179,23 +240,13 @@ export default function AdminProjectsManager() {
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium mb-2">GitHub Link</label>
+                            <label className="block text-sm font-medium mb-2">Live Links (comma-separated)</label>
                             <input
-                                type="url"
-                                value={formData.githubLink}
-                                onChange={(e) => setFormData({ ...formData, githubLink: e.target.value })}
+                                type="text"
+                                value={formData.liveLinks}
+                                onChange={(e) => setFormData({ ...formData, liveLinks: e.target.value })}
                                 className="w-full px-3 py-2 border border-input rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-ring"
-                                placeholder="https://github.com/username/repo"
-                            />
-                        </div>
-                        <div>
-                            <label className="block text-sm font-medium mb-2">Live Link</label>
-                            <input
-                                type="url"
-                                value={formData.liveLink}
-                                onChange={(e) => setFormData({ ...formData, liveLink: e.target.value })}
-                                className="w-full px-3 py-2 border border-input rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-ring"
-                                placeholder="https://project-demo.com"
+                                placeholder="https://demo1.com, https://demo2.com"
                             />
                         </div>
                     </div>
@@ -214,9 +265,8 @@ export default function AdminProjectsManager() {
                                     title: '',
                                     description: '',
                                     techStack: '',
-                                    githubLink: '',
-                                    liveLink: '',
-                                    imageUrl: ''
+                                    liveLinks: '',
+                                    imageUrls: ''
                                 })
                             }}
                             className="inline-flex items-center gap-2 px-4 py-2 border border-border rounded-lg hover:bg-accent transition-colors"
@@ -237,16 +287,7 @@ export default function AdminProjectsManager() {
                         transition={{ delay: index * 0.1 }}
                         className="bg-card rounded-lg border overflow-hidden"
                     >
-                        {project.imageUrl && (
-                            <div className="relative h-48 w-full">
-                                <Image
-                                    src={project.imageUrl}
-                                    alt={project.title}
-                                    fill
-                                    className="object-cover"
-                                />
-                            </div>
-                        )}
+                        <AdminImageCarousel images={project.imageUrls || []} title={project.title} />
 
                         <div className="p-6">
                             <div className="flex items-start justify-between mb-2">
@@ -320,30 +361,23 @@ export default function AdminProjectsManager() {
                                 ))}
                             </div>
 
-                            <div className="flex gap-3">
-                                {project.githubLink && (
-                                    <a
-                                        href={project.githubLink}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="inline-flex items-center gap-1 text-sm hover:text-primary transition-colors"
-                                    >
-                                        <Github size={16} />
-                                        Code
-                                    </a>
-                                )}
-                                {project.liveLink && (
-                                    <a
-                                        href={project.liveLink}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="inline-flex items-center gap-1 text-sm hover:text-primary transition-colors"
-                                    >
-                                        <ExternalLink size={16} />
-                                        Live Demo
-                                    </a>
-                                )}
-                            </div>
+                            {/* Multiple Live Links */}
+                            {project.liveLinks && project.liveLinks.length > 0 && (
+                                <div className="flex flex-wrap gap-2">
+                                    {project.liveLinks.map((link, linkIndex) => (
+                                        <a
+                                            key={linkIndex}
+                                            href={link}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="inline-flex items-center gap-1 text-sm hover:text-primary transition-colors"
+                                        >
+                                            <ExternalLink size={16} />
+                                            {project.liveLinks.length > 1 ? `Demo ${linkIndex + 1}` : 'Live Demo'}
+                                        </a>
+                                    ))}
+                                </div>
+                            )}
                         </div>
                     </motion.div>
                 ))}

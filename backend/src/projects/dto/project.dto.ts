@@ -12,16 +12,14 @@ export class CreateProjectDto {
     techStack: string[];
 
     @IsOptional()
-    @IsString()
-    githubLink?: string;
+    @IsArray()
+    @IsString({ each: true })
+    liveLinks?: string[];
 
     @IsOptional()
-    @IsString()
-    liveLink?: string;
-
-    @IsOptional()
-    @IsString()
-    imageUrl?: string;
+    @IsArray()
+    @IsString({ each: true })
+    imageUrls?: string[];
 }
 
 export class UpdateProjectDto extends CreateProjectDto { }

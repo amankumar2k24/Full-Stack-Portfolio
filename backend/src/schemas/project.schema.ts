@@ -14,14 +14,11 @@ export class Project {
     @Prop({ type: [String], required: true })
     techStack: string[];
 
-    @Prop()
-    githubLink: string;
+    @Prop({ type: [String], default: [] })
+    liveLinks: string[];
 
-    @Prop()
-    liveLink: string;
-
-    @Prop()
-    imageUrl: string;
+    @Prop({ type: [String], default: [] })
+    imageUrls: string[];
 }
 
 export const ProjectSchema = SchemaFactory.createForClass(Project);
