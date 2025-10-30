@@ -23,7 +23,7 @@ async function addOrderToProjects(dryRun = true) {
         // Update each project with an order field based on creation date
         for (let i = 0; i < projects.length; i++) {
             const project = projects[i];
-
+ 
             if (dryRun) {
                 console.log(`Would update project "${project.title}" with order ${i}`);
                 console.log(`  - Current data preserved: title, description, ${project.techStack.length} tech items, ${project.liveLinks.length} links, ${project.imageUrls.length} images`);
