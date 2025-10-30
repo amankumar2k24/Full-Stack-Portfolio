@@ -14,6 +14,7 @@
         "test": "jest",
         "test:watch": "jest --watch",
         "migrate:skills": "npx ts-node src/scripts/migrate-skills.ts",
+        "add-order-projects": "ts-node src/scripts/add-order-to-projects.ts",
         "test:cov": "jest --coverage",
         "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
         "test:e2e": "jest --config ./test/jest-e2e.json",

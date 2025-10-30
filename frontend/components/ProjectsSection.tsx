@@ -15,6 +15,7 @@ interface Project {
     imageUrls: string[]
 }
 
+
 // Image Carousel Component
 function ImageCarousel({ images, title }: { images: string[], title: string }) {
     const [currentIndex, setCurrentIndex] = useState(0)
@@ -152,21 +153,23 @@ export default function ProjectsSection() {
 
                     <div className="p-6">
                         <motion.h3
-                            className="text-xl font-bold mb-3 group-hover:text-primary transition-colors duration-300"
+                            className="text-xl font-bold mb-3 group-hover:text-primary transition-colors duration-300 cursor-help"
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ duration: 0.6, delay: index * 0.1 + 0.2 }}
+                            title={project.title}
                         >
                             {project.title}
                         </motion.h3>
 
                         <motion.p
-                            className="text-muted-foreground mb-4 line-clamp-3 leading-relaxed"
+                            className="text-muted-foreground mb-4 line-clamp-3 leading-relaxed cursor-help"
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ duration: 0.6, delay: index * 0.1 + 0.3 }}
+                            title={project.description}
                         >
                             {project.description}
                         </motion.p>
@@ -217,7 +220,7 @@ export default function ProjectsSection() {
                                         whileHover={{ scale: 1.05 }}
                                         whileTap={{ scale: 0.95 }}
                                     >
-                                        <ExternalLink size={16} />
+                                        <ExternalLink size={10} />
                                         {project.liveLinks.length > 1 ? `Link ${linkIndex + 1}` : 'Live Demo'}
                                     </motion.a>
                                 ))}

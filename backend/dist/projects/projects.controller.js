@@ -27,6 +27,9 @@ let ProjectsController = class ProjectsController {
     async create(createProjectDto) {
         return this.projectsService.create(createProjectDto);
     }
+    async reorder(reorderDto) {
+        return this.projectsService.reorder(reorderDto.projectIds);
+    }
     async update(id, updateProjectDto) {
         return this.projectsService.update(id, updateProjectDto);
     }
@@ -49,6 +52,14 @@ __decorate([
     __metadata("design:paramtypes", [project_dto_1.CreateProjectDto]),
     __metadata("design:returntype", Promise)
 ], ProjectsController.prototype, "create", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Put)('reorder'),
+    __param(0, (0, common_1.Body)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [project_dto_1.ReorderProjectsDto]),
+    __metadata("design:returntype", Promise)
+], ProjectsController.prototype, "reorder", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Put)(':id'),

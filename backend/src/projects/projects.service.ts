@@ -11,11 +11,18 @@ export class ProjectsService {
     ) { }
 
     async findAll(): Promise<Project[]> {
-        return this.projectModel.find().exec();
+        return this.projectModel.find().sort({ order: 1, createdAt: 1 }).exec();
     }
 
     async create(createProjectDto: CreateProjectDto): Promise<Project> {
-        const createdProject = new this.projectModel(createProjectDto);
+        // Get the highest order value and increment by 1
+        const lastProject = await this.projectModel.findOne().sort({ order: -1 }).exec();
+        const order = lastProject ? lastProject.order + 1 : 0;
+
+        const createdProject = new this.projectModel({
+            ...createProjectDto,
+            order
+        });
         return createdProject.save();
     }
 
@@ -25,5 +32,15 @@ export class ProjectsService {
 
     async remove(id: string): Promise<void> {
         await this.projectModel.findByIdAndDelete(id);
+    }
+
+    async reorder(projectIds: string[]): Promise<Project[]> {
+        // Update the order of each project based on the array index
+        const updatePromises = projectIds.map((id, index) =>
+            this.projectModel.findByIdAndUpdate(id, { order: index }, { new: true })
+        );
+
+        await Promise.all(updatePromises);
+        return this.findAll();
     }
 }

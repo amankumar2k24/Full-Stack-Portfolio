@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { Plus, Edit, Trash2, Save, X, ExternalLink, ChevronLeft, ChevronRight } from 'lucide-react'
+import { Plus, Edit, Trash2, Save, X, ExternalLink, ChevronLeft, ChevronRight, ArrowUp, ArrowDown, GripVertical } from 'lucide-react'
 import Image from 'next/image'
 import api from '@/lib/api'
 
@@ -13,7 +13,10 @@ interface Project {
     techStack: string[]
     liveLinks: string[]
     imageUrls: string[]
+    order: number
 }
+
+
 
 // Image Carousel Component for Admin
 function AdminImageCarousel({ images, title }: { images: string[], title: string }) {
@@ -44,7 +47,6 @@ function AdminImageCarousel({ images, title }: { images: string[], title: string
                 className="object-cover"
             />
 
-            {/* Navigation buttons */}
             {images.length > 1 && (
                 <>
                     <button
@@ -60,7 +62,6 @@ function AdminImageCarousel({ images, title }: { images: string[], title: string
                         <ChevronRight size={16} />
                     </button>
 
-                    {/* Dots indicator */}
                     <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1 z-10">
                         {images.map((_, index) => (
                             <button
@@ -89,6 +90,7 @@ export default function AdminProjectsManager() {
         liveLinks: '',
         imageUrls: ''
     })
+    const [draggedItem, setDraggedItem] = useState<string | null>(null)
 
     useEffect(() => {
         fetchProjects()
@@ -156,6 +158,73 @@ export default function AdminProjectsManager() {
         setProjects(projects.map(project =>
             project._id === id ? { ...project, [field]: value } : project
         ))
+    }
+
+    const moveProject = async (projectId: string, direction: 'up' | 'down') => {
+        const currentIndex = projects.findIndex(p => p._id === projectId)
+        if (
+            (direction === 'up' && currentIndex === 0) ||
+            (direction === 'down' && currentIndex === projects.length - 1)
+        ) {
+            return
+        }
+
+        const newProjects = [...projects]
+        const targetIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1
+
+        // Swap the projects
+        const temp = newProjects[currentIndex]
+        newProjects[currentIndex] = newProjects[targetIndex]
+        newProjects[targetIndex] = temp
+
+        setProjects(newProjects)
+
+        // Update order in backend
+        const projectIds = newProjects.map(p => p._id)
+        try {
+            await api.put('/projects/reorder', { projectIds })
+        } catch (error) {
+            console.error('Failed to reorder projects:', error)
+            fetchProjects()
+        }
+    }
+
+    const handleDragStart = (e: React.DragEvent, projectId: string) => {
+        setDraggedItem(projectId)
+        e.dataTransfer.effectAllowed = 'move'
+    }
+
+    const handleDragOver = (e: React.DragEvent) => {
+        e.preventDefault()
+        e.dataTransfer.dropEffect = 'move'
+    }
+
+    const handleDrop = async (e: React.DragEvent, targetProjectId: string) => {
+        e.preventDefault()
+
+        if (!draggedItem || draggedItem === targetProjectId) {
+            setDraggedItem(null)
+            return
+        }
+
+        const draggedIndex = projects.findIndex(p => p._id === draggedItem)
+        const targetIndex = projects.findIndex(p => p._id === targetProjectId)
+
+        const newProjects = [...projects]
+        const [draggedProject] = newProjects.splice(draggedIndex, 1)
+        newProjects.splice(targetIndex, 0, draggedProject)
+
+        setProjects(newProjects)
+        setDraggedItem(null)
+
+        // Update order in backend
+        const projectIds = newProjects.map(p => p._id)
+        try {
+            await api.put('/projects/reorder', { projectIds })
+        } catch (error) {
+            console.error('Failed to reorder projects:', error)
+            fetchProjects()
+        }
     }
 
     if (loading) {
@@ -285,8 +354,32 @@ export default function AdminProjectsManager() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: index * 0.1 }}
-                        className="bg-card rounded-lg border overflow-hidden"
+                        className={`bg-card rounded-lg border overflow-hidden relative group ${draggedItem === project._id ? 'opacity-50' : ''
+                            }`}
+
                     >
+
+
+                        {/* Reorder Controls */}
+                        <div className="absolute top-2 right-2 z-10 flex gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <button
+                                onClick={() => moveProject(project._id, 'up')}
+                                disabled={index === 0}
+                                className="p-1 bg-black/50 hover:bg-black/70 text-white rounded disabled:opacity-50 disabled:cursor-not-allowed"
+                                title="Move up"
+                            >
+                                <ArrowUp size={14} />
+                            </button>
+                            <button
+                                onClick={() => moveProject(project._id, 'down')}
+                                disabled={index === projects.length - 1}
+                                className="p-1 bg-black/50 hover:bg-black/70 text-white rounded disabled:opacity-50 disabled:cursor-not-allowed"
+                                title="Move down"
+                            >
+                                <ArrowDown size={14} />
+                            </button>
+                        </div>
+
                         <AdminImageCarousel images={project.imageUrls || []} title={project.title} />
 
                         <div className="p-6">
@@ -299,7 +392,12 @@ export default function AdminProjectsManager() {
                                         className="text-xl font-semibold bg-background border border-input rounded px-2 py-1 w-full"
                                     />
                                 ) : (
-                                    <h3 className="text-xl font-semibold">{project.title}</h3>
+                                    <h3
+                                        className="text-xl font-semibold cursor-help"
+                                        title={project.title}
+                                    >
+                                        {project.title}
+                                    </h3>
                                 )}
 
                                 <div className="flex gap-1 ml-2">
@@ -338,45 +436,73 @@ export default function AdminProjectsManager() {
                             </div>
 
                             {editingId === project._id ? (
-                                <textarea
-                                    value={project.description}
-                                    onChange={(e) => updateProject(project._id, 'description', e.target.value)}
-                                    className="w-full px-3 py-2 border border-input rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-ring resize-none mb-4"
-                                    rows={3}
-                                />
-                            ) : (
-                                <p className="text-muted-foreground mb-4 line-clamp-3">
-                                    {project.description}
-                                </p>
-                            )}
-
-                            <div className="flex flex-wrap gap-2 mb-4">
-                                {project.techStack.map((tech, techIndex) => (
-                                    <span
-                                        key={techIndex}
-                                        className="px-2 py-1 bg-accent text-accent-foreground rounded text-xs"
-                                    >
-                                        {tech}
-                                    </span>
-                                ))}
-                            </div>
-
-                            {/* Multiple Live Links */}
-                            {project.liveLinks && project.liveLinks.length > 0 && (
-                                <div className="flex flex-wrap gap-2">
-                                    {project.liveLinks.map((link, linkIndex) => (
-                                        <a
-                                            key={linkIndex}
-                                            href={link}
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            className="inline-flex items-center gap-1 text-sm hover:text-primary transition-colors"
-                                        >
-                                            <ExternalLink size={16} />
-                                            {project.liveLinks.length > 1 ? `Demo ${linkIndex + 1}` : 'Live Demo'}
-                                        </a>
-                                    ))}
+                                <div className="space-y-4">
+                                    <textarea
+                                        value={project.description}
+                                        onChange={(e) => updateProject(project._id, 'description', e.target.value)}
+                                        className="w-full px-3 py-2 border border-input rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-ring resize-none"
+                                        rows={3}
+                                        placeholder="Project description"
+                                    />
+                                    <input
+                                        type="text"
+                                        value={project.techStack.join(', ')}
+                                        onChange={(e) => updateProject(project._id, 'techStack', e.target.value.split(',').map(tech => tech.trim()).filter(tech => tech))}
+                                        className="w-full px-3 py-2 border border-input rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-ring"
+                                        placeholder="Tech Stack (comma-separated)"
+                                    />
+                                    <input
+                                        type="text"
+                                        value={project.liveLinks.join(', ')}
+                                        onChange={(e) => updateProject(project._id, 'liveLinks', e.target.value.split(',').map(link => link.trim()).filter(link => link))}
+                                        className="w-full px-3 py-2 border border-input rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-ring"
+                                        placeholder="Live Links (comma-separated)"
+                                    />
+                                    <input
+                                        type="text"
+                                        value={project.imageUrls.join(', ')}
+                                        onChange={(e) => updateProject(project._id, 'imageUrls', e.target.value.split(',').map(url => url.trim()).filter(url => url))}
+                                        className="w-full px-3 py-2 border border-input rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-ring"
+                                        placeholder="Image URLs (comma-separated)"
+                                    />
                                 </div>
+                            ) : (
+                                <>
+                                    <p
+                                        className="text-muted-foreground mb-4 line-clamp-3 cursor-help"
+                                        title={project.description}
+                                    >
+                                        {project.description}
+                                    </p>
+
+                                    <div className="flex flex-wrap gap-2 mb-4">
+                                        {project.techStack.map((tech, techIndex) => (
+                                            <span
+                                                key={techIndex}
+                                                className="px-2 py-1 bg-accent text-accent-foreground rounded text-xs"
+                                            >
+                                                {tech}
+                                            </span>
+                                        ))}
+                                    </div>
+
+                                    {project.liveLinks && project.liveLinks.length > 0 && (
+                                        <div className="flex flex-wrap gap-2">
+                                            {project.liveLinks.map((link, linkIndex) => (
+                                                <a
+                                                    key={linkIndex}
+                                                    href={link}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    className="inline-flex items-center gap-1 text-sm px-3 py-1.5 border border-border rounded-lg hover:bg-accent hover:text-primary transition-colors"
+                                                >
+                                                    <ExternalLink size={12} />
+                                                    {project.liveLinks.length > 1 ? `Link ${linkIndex + 1}` : 'Live Demo'}
+                                                </a>
+                                            ))}
+                                        </div>
+                                    )}
+                                </>
                             )}
                         </div>
                     </motion.div>

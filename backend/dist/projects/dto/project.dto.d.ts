@@ -4,6 +4,10 @@ export declare class CreateProjectDto {
     techStack: string[];
     liveLinks?: string[];
     imageUrls?: string[];
+    order?: number;
 }
 export declare class UpdateProjectDto extends CreateProjectDto {
+}
+export declare class ReorderProjectsDto {
+    projectIds: string[];
 }

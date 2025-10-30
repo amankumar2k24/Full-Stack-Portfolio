@@ -1,4 +1,4 @@
-import { IsString, IsArray, IsOptional } from 'class-validator';
+import { IsString, IsArray, IsOptional, IsNumber } from 'class-validator';
 
 export class CreateProjectDto {
     @IsString()
@@ -20,6 +20,16 @@ export class CreateProjectDto {
     @IsArray()
     @IsString({ each: true })
     imageUrls?: string[];
+
+    @IsOptional()
+    @IsNumber()
+    order?: number;
 }
 
 export class UpdateProjectDto extends CreateProjectDto { }
+
+export class ReorderProjectsDto {
+    @IsArray()
+    @IsString({ each: true })
+    projectIds: string[];
+}

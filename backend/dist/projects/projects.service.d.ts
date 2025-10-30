@@ -8,4 +8,5 @@ export declare class ProjectsService {
     create(createProjectDto: CreateProjectDto): Promise<Project>;
     update(id: string, updateProjectDto: UpdateProjectDto): Promise<Project>;
     remove(id: string): Promise<void>;
+    reorder(projectIds: string[]): Promise<Project[]>;
 }

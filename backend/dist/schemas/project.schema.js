@@ -34,6 +34,10 @@ __decorate([
     (0, mongoose_1.Prop)({ type: [String], default: [] }),
     __metadata("design:type", Array)
 ], Project.prototype, "imageUrls", void 0);
+__decorate([
+    (0, mongoose_1.Prop)({ type: Number, default: 0 }),
+    __metadata("design:type", Number)
+], Project.prototype, "order", void 0);
 exports.Project = Project = __decorate([
     (0, mongoose_1.Schema)({ timestamps: true })
 ], Project);

@@ -19,6 +19,9 @@ export class Project {
 
     @Prop({ type: [String], default: [] })
     imageUrls: string[];
+
+    @Prop({ type: Number, default: 0 })
+    order: number;
 }
 
 export const ProjectSchema = SchemaFactory.createForClass(Project);

@@ -9,7 +9,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UpdateProjectDto = exports.CreateProjectDto = void 0;
+exports.ReorderProjectsDto = exports.UpdateProjectDto = exports.CreateProjectDto = void 0;
 const class_validator_1 = require("class-validator");
 class CreateProjectDto {
 }
@@ -39,7 +39,20 @@ __decorate([
     (0, class_validator_1.IsString)({ each: true }),
     __metadata("design:type", Array)
 ], CreateProjectDto.prototype, "imageUrls", void 0);
+__decorate([
+    (0, class_validator_1.IsOptional)(),
+    (0, class_validator_1.IsNumber)(),
+    __metadata("design:type", Number)
+], CreateProjectDto.prototype, "order", void 0);
 class UpdateProjectDto extends CreateProjectDto {
 }
 exports.UpdateProjectDto = UpdateProjectDto;
+class ReorderProjectsDto {
+}
+exports.ReorderProjectsDto = ReorderProjectsDto;
+__decorate([
+    (0, class_validator_1.IsArray)(),
+    (0, class_validator_1.IsString)({ each: true }),
+    __metadata("design:type", Array)
+], ReorderProjectsDto.prototype, "projectIds", void 0);
 //# sourceMappingURL=project.dto.js.map

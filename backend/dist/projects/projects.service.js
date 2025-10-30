@@ -22,10 +22,15 @@ let ProjectsService = class ProjectsService {
         this.projectModel = projectModel;
     }
     async findAll() {
-        return this.projectModel.find().exec();
+        return this.projectModel.find().sort({ order: 1, createdAt: 1 }).exec();
     }
     async create(createProjectDto) {
-        const createdProject = new this.projectModel(createProjectDto);
+        const lastProject = await this.projectModel.findOne().sort({ order: -1 }).exec();
+        const order = lastProject ? lastProject.order + 1 : 0;
+        const createdProject = new this.projectModel({
+            ...createProjectDto,
+            order
+        });
         return createdProject.save();
     }
     async update(id, updateProjectDto) {
@@ -33,6 +38,11 @@ let ProjectsService = class ProjectsService {
     }
     async remove(id) {
         await this.projectModel.findByIdAndDelete(id);
+    }
+    async reorder(projectIds) {
+        const updatePromises = projectIds.map((id, index) => this.projectModel.findByIdAndUpdate(id, { order: index }, { new: true }));
+        await Promise.all(updatePromises);
+        return this.findAll();
     }
 };
 exports.ProjectsService = ProjectsService;

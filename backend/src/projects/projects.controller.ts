@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Put, Delete, Body, Param, UseGuards } from '@nestjs/common';
 import { ProjectsService } from './projects.service';
-import { CreateProjectDto, UpdateProjectDto } from './dto/project.dto';
+import { CreateProjectDto, UpdateProjectDto, ReorderProjectsDto } from './dto/project.dto';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
 @Controller('projects')
@@ -16,6 +16,12 @@ export class ProjectsController {
     @Post()
     async create(@Body() createProjectDto: CreateProjectDto) {
         return this.projectsService.create(createProjectDto);
+    }
+
+    @UseGuards(JwtAuthGuard)
+    @Put('reorder')
+    async reorder(@Body() reorderDto: ReorderProjectsDto) {
+        return this.projectsService.reorder(reorderDto.projectIds);
     }
 
     @UseGuards(JwtAuthGuard)
