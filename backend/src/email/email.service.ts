@@ -8,11 +8,16 @@ export class EmailService {
 
     constructor(private configService: ConfigService) {
         this.transporter = nodemailer.createTransport({
-            service: 'gmail',
+            host: 'smtp.gmail.com',
+            port: 587,
+            secure: false, // true for 465, false for other ports
             auth: {
                 user: this.configService.get<string>('EMAIL_USER'),
                 pass: this.configService.get<string>('EMAIL_PASS'),
             },
+            tls: {
+                rejectUnauthorized: false
+            }
         });
     }
 
@@ -55,7 +60,8 @@ export class EmailService {
             console.log('Contact notification email sent successfully');
         } catch (error) {
             console.error('Error sending contact notification email:', error);
-            throw error;
+            // Don't throw error to prevent API failure
+            // The contact form should still work even if email fails
         }
     }
 }

@@ -17,11 +17,16 @@ let EmailService = class EmailService {
     constructor(configService) {
         this.configService = configService;
         this.transporter = nodemailer.createTransport({
-            service: 'gmail',
+            host: 'smtp.gmail.com',
+            port: 587,
+            secure: false,
             auth: {
                 user: this.configService.get('EMAIL_USER'),
                 pass: this.configService.get('EMAIL_PASS'),
             },
+            tls: {
+                rejectUnauthorized: false
+            }
         });
     }
     async sendContactNotification(contactData) {
@@ -59,7 +64,6 @@ let EmailService = class EmailService {
         }
         catch (error) {
             console.error('Error sending contact notification email:', error);
-            throw error;
         }
     }
 };
