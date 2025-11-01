@@ -27,7 +27,7 @@ let ContactService = class ContactService {
         const createdMessage = new this.messageModel(createMessageDto);
         const savedMessage = await createdMessage.save();
         try {
-            await this.emailService.sendContactNotification({
+            this.emailService.sendContactNotification({
                 name: createMessageDto.name,
                 email: createMessageDto.email,
                 message: createMessageDto.message,

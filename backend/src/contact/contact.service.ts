@@ -18,7 +18,7 @@ export class ContactService {
 
         // Send email notification
         try {
-            await this.emailService.sendContactNotification({
+            this.emailService.sendContactNotification({
                 name: createMessageDto.name,
                 email: createMessageDto.email,
                 message: createMessageDto.message,
