@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { Plus, Edit, Trash2, Save, X, ExternalLink, ChevronLeft, ChevronRight, ArrowUp, ArrowDown, GripVertical } from 'lucide-react'
+import { Plus, Edit, Trash2, Save, X, ExternalLink, ChevronLeft, ChevronRight, ArrowUp, ArrowDown } from 'lucide-react'
 import Image from 'next/image'
 import api from '@/lib/api'
 
@@ -90,7 +90,7 @@ export default function AdminProjectsManager() {
         liveLinks: '',
         imageUrls: ''
     })
-    const [draggedItem, setDraggedItem] = useState<string | null>(null)
+    const [expandedDescriptions, setExpandedDescriptions] = useState<Set<string>>(new Set())
 
     useEffect(() => {
         fetchProjects()
@@ -189,42 +189,21 @@ export default function AdminProjectsManager() {
         }
     }
 
-    const handleDragStart = (e: React.DragEvent, projectId: string) => {
-        setDraggedItem(projectId)
-        e.dataTransfer.effectAllowed = 'move'
+
+
+    const toggleDescription = (projectId: string) => {
+        const newExpanded = new Set(expandedDescriptions)
+        if (newExpanded.has(projectId)) {
+            newExpanded.delete(projectId)
+        } else {
+            newExpanded.add(projectId)
+        }
+        setExpandedDescriptions(newExpanded)
     }
 
-    const handleDragOver = (e: React.DragEvent) => {
-        e.preventDefault()
-        e.dataTransfer.dropEffect = 'move'
-    }
-
-    const handleDrop = async (e: React.DragEvent, targetProjectId: string) => {
-        e.preventDefault()
-
-        if (!draggedItem || draggedItem === targetProjectId) {
-            setDraggedItem(null)
-            return
-        }
-
-        const draggedIndex = projects.findIndex(p => p._id === draggedItem)
-        const targetIndex = projects.findIndex(p => p._id === targetProjectId)
-
-        const newProjects = [...projects]
-        const [draggedProject] = newProjects.splice(draggedIndex, 1)
-        newProjects.splice(targetIndex, 0, draggedProject)
-
-        setProjects(newProjects)
-        setDraggedItem(null)
-
-        // Update order in backend
-        const projectIds = newProjects.map(p => p._id)
-        try {
-            await api.put('/projects/reorder', { projectIds })
-        } catch (error) {
-            console.error('Failed to reorder projects:', error)
-            fetchProjects()
-        }
+    const truncateText = (text: string, maxLength: number = 100) => {
+        if (text.length <= maxLength) return text
+        return text.substring(0, maxLength) + '...'
     }
 
     if (loading) {
@@ -354,8 +333,7 @@ export default function AdminProjectsManager() {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: index * 0.1 }}
-                        className={`bg-card rounded-lg border overflow-hidden relative group ${draggedItem === project._id ? 'opacity-50' : ''
-                            }`}
+                        className="bg-card rounded-lg border overflow-hidden relative group"
 
                     >
 
@@ -468,12 +446,43 @@ export default function AdminProjectsManager() {
                                 </div>
                             ) : (
                                 <>
-                                    <p
-                                        className="text-muted-foreground mb-4 line-clamp-3 cursor-help"
-                                        title={project.description}
-                                    >
-                                        {project.description}
-                                    </p>
+                                    <div className="text-muted-foreground mb-4">
+                                        <p>
+                                            {expandedDescriptions.has(project._id)
+                                                ? project.description
+                                                : (
+                                                    <>
+                                                        {project.description.length > 100
+                                                            ? project.description.substring(0, 100)
+                                                            : project.description
+                                                        }
+                                                        {project.description.length > 100 && (
+                                                            <>
+                                                                ...{' '}
+                                                                <button
+                                                                    onClick={() => toggleDescription(project._id)}
+                                                                    className="text-primary hover:text-primary/80 text-sm font-medium transition-colors inline"
+                                                                >
+                                                                    Show More
+                                                                </button>
+                                                            </>
+                                                        )}
+                                                    </>
+                                                )
+                                            }
+                                            {expandedDescriptions.has(project._id) && project.description.length > 100 && (
+                                                <>
+                                                    {' '}
+                                                    <button
+                                                        onClick={() => toggleDescription(project._id)}
+                                                        className="text-primary hover:text-primary/80 text-sm font-medium transition-colors inline"
+                                                    >
+                                                        Show Less
+                                                    </button>
+                                                </>
+                                            )}
+                                        </p>
+                                    </div>
 
                                     <div className="flex flex-wrap gap-2 mb-4">
                                         {project.techStack.map((tech, techIndex) => (

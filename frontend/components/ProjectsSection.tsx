@@ -37,7 +37,7 @@ function ImageCarousel({ images, title }: { images: string[], title: string }) {
     }
 
     return (
-        <div className="relative h-56 w-full overflow-hidden group">
+        <div className="relative h-56 w-full overflow-hidden">
             <AnimatePresence mode="wait">
                 <motion.div
                     key={currentIndex}
@@ -51,7 +51,7 @@ function ImageCarousel({ images, title }: { images: string[], title: string }) {
                         src={images[currentIndex]}
                         alt={`${title} - Image ${currentIndex + 1}`}
                         fill
-                        className="object-cover transition-transform duration-500 group-hover:scale-110"
+                        className="object-cover"
                     />
                 </motion.div>
             </AnimatePresence>
@@ -61,13 +61,13 @@ function ImageCarousel({ images, title }: { images: string[], title: string }) {
                 <>
                     <button
                         onClick={prevImage}
-                        className="absolute left-2 top-1/2 -translate-y-1/2 p-2 bg-black/50 hover:bg-black/70 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"
+                        className="absolute left-2 top-1/2 -translate-y-1/2 p-2 bg-black/50 hover:bg-black/70 text-white rounded-full z-10"
                     >
                         <ChevronLeft size={20} />
                     </button>
                     <button
                         onClick={nextImage}
-                        className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-black/50 hover:bg-black/70 text-white rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-300 z-10"
+                        className="absolute right-2 top-1/2 -translate-y-1/2 p-2 bg-black/50 hover:bg-black/70 text-white rounded-full z-10"
                     >
                         <ChevronRight size={20} />
                     </button>
@@ -92,6 +92,7 @@ function ImageCarousel({ images, title }: { images: string[], title: string }) {
 export default function ProjectsSection() {
     const [projects, setProjects] = useState<Project[]>([])
     const [loading, setLoading] = useState(true)
+    const [expandedDescriptions, setExpandedDescriptions] = useState<Set<string>>(new Set())
 
     useEffect(() => {
         const fetchProjects = async () => {
@@ -126,6 +127,21 @@ export default function ProjectsSection() {
                 ))}
             </div>
         )
+    }
+
+    const toggleDescription = (projectId: string) => {
+        const newExpanded = new Set(expandedDescriptions)
+        if (newExpanded.has(projectId)) {
+            newExpanded.delete(projectId)
+        } else {
+            newExpanded.add(projectId)
+        }
+        setExpandedDescriptions(newExpanded)
+    }
+
+    const truncateText = (text: string, maxLength: number = 100) => {
+        if (text.length <= maxLength) return text
+        return text.substring(0, maxLength) + '...'
     }
 
     if (projects.length === 0) {
@@ -163,16 +179,49 @@ export default function ProjectsSection() {
                             {project.title}
                         </motion.h3>
 
-                        <motion.p
-                            className="text-muted-foreground mb-4 line-clamp-3 leading-relaxed cursor-help"
+                        <motion.div
+                            className="text-muted-foreground mb-4 leading-relaxed"
                             initial={{ opacity: 0, y: 20 }}
                             whileInView={{ opacity: 1, y: 0 }}
                             viewport={{ once: true }}
                             transition={{ duration: 0.6, delay: index * 0.1 + 0.3 }}
-                            title={project.description}
                         >
-                            {project.description}
-                        </motion.p>
+                            <p>
+                                {expandedDescriptions.has(project._id)
+                                    ? project.description
+                                    : (
+                                        <>
+                                            {project.description.length > 90
+                                                ? project.description.substring(0, 90)
+                                                : project.description
+                                            }
+                                            {project.description.length > 90 && (
+                                                <>
+                                                    ...{' '}
+                                                    <button
+                                                        onClick={() => toggleDescription(project._id)}
+                                                        className="text-primary hover:text-primary/80 text-sm font-medium transition-colors inline"
+                                                    >
+                                                        Show More
+                                                    </button>
+                                                </>
+                                            )}
+                                        </>
+                                    )
+                                }
+                                {expandedDescriptions.has(project._id) && project.description.length > 150 && (
+                                    <>
+                                        {' '}
+                                        <button
+                                            onClick={() => toggleDescription(project._id)}
+                                            className="text-primary hover:text-primary/80 text-sm font-medium transition-colors inline"
+                                        >
+                                            Show Less
+                                        </button>
+                                    </>
+                                )}
+                            </p>
+                        </motion.div>
 
                         <motion.div
                             className="flex flex-wrap gap-2 mb-6"
