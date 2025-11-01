@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Plus, Edit, Trash2, Save, X, ArrowUp, ArrowDown } from 'lucide-react'
 import api from '@/lib/api'
+import DeleteConfirmationModal from '@/components/ui/DeleteConfirmationModal'
 
 interface Service {
     _id: string
@@ -32,6 +33,16 @@ export default function AdminServicesManager() {
         order: 0,
         isActive: true
     })
+    const [deleteModal, setDeleteModal] = useState<{
+        isOpen: boolean
+        serviceId: string | null
+        serviceTitle: string
+    }>({
+        isOpen: false,
+        serviceId: null,
+        serviceTitle: ''
+    })
+    const [isDeleting, setIsDeleting] = useState(false)
 
     useEffect(() => {
         fetchServices()
@@ -85,14 +96,35 @@ export default function AdminServicesManager() {
         }
     }
 
-    const handleDelete = async (id: string) => {
-        if (confirm('Are you sure you want to delete this service?')) {
-            try {
-                await api.delete(`/services/${id}`)
-                fetchServices()
-            } catch (error) {
-                console.error('Failed to delete service:', error)
-            }
+    const openDeleteModal = (serviceId: string, serviceTitle: string) => {
+        setDeleteModal({
+            isOpen: true,
+            serviceId,
+            serviceTitle
+        })
+    }
+
+    const closeDeleteModal = () => {
+        setDeleteModal({
+            isOpen: false,
+            serviceId: null,
+            serviceTitle: ''
+        })
+    }
+
+    const handleDelete = async () => {
+        if (!deleteModal.serviceId) return
+
+        setIsDeleting(true)
+        try {
+            await api.delete(`/services/${deleteModal.serviceId}`)
+            fetchServices()
+            closeDeleteModal()
+        } catch (error) {
+            console.error('Failed to delete service:', error)
+            alert('Failed to delete service. Please try again.')
+        } finally {
+            setIsDeleting(false)
         }
     }
 
@@ -334,7 +366,7 @@ export default function AdminServicesManager() {
                                             <Edit size={14} />
                                         </button>
                                         <button
-                                            onClick={() => handleDelete(service._id)}
+                                            onClick={() => openDeleteModal(service._id, service.title)}
                                             className="p-1 text-red-600 hover:bg-red-100 rounded transition-colors"
                                         >
                                             <Trash2 size={14} />
@@ -417,6 +449,16 @@ export default function AdminServicesManager() {
                     <p className="text-muted-foreground">No services found. Add your first service!</p>
                 </div>
             )}
+
+            <DeleteConfirmationModal
+                isOpen={deleteModal.isOpen}
+                onClose={closeDeleteModal}
+                onConfirm={handleDelete}
+                title="Delete Service"
+                message="Are you sure you want to delete this service?"
+                itemName={deleteModal.serviceTitle}
+                isDeleting={isDeleting}
+            />
         </div>
     )
 }

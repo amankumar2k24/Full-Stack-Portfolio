@@ -265,7 +265,7 @@ export default function ProjectsSection() {
                                         href={link}
                                         target="_blank"
                                         rel="noopener noreferrer"
-                                        className="inline-flex items-center gap-2 px-4 py-2 max-sm:px-3 max-sm:py-1.5 max-sm:text-sm bg-primary text-primary-foreground rounded-full hover:bg-primary/90 transition-all duration-300"
+                                        className="inline-flex items-center gap-2 px-4 py-2 max-sm:px-3 max-sm:py-1.5 max-sm:text-sm bg-primary text-xs text-primary-foreground rounded-full hover:bg-primary/90 transition-all duration-300"
                                         whileHover={{ scale: 1.05 }}
                                         whileTap={{ scale: 0.95 }}
                                     >

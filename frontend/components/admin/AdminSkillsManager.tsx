@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Plus, Edit, Trash2, Save, X, Percent } from 'lucide-react'
 import api from '@/lib/api'
+import DeleteConfirmationModal from '@/components/ui/DeleteConfirmationModal'
 
 interface SkillItem {
     name: string
@@ -22,6 +23,16 @@ export default function AdminSkillsManager() {
     const [editingId, setEditingId] = useState<string | null>(null)
     const [showAddForm, setShowAddForm] = useState(false)
     const [formData, setFormData] = useState({ category: '', items: [{ name: '', level: 0 }] })
+    const [deleteModal, setDeleteModal] = useState<{
+        isOpen: boolean
+        skillId: string | null
+        skillCategory: string
+    }>({
+        isOpen: false,
+        skillId: null,
+        skillCategory: ''
+    })
+    const [isDeleting, setIsDeleting] = useState(false)
 
     useEffect(() => {
         fetchSkills()
@@ -75,14 +86,35 @@ export default function AdminSkillsManager() {
         }
     }
 
-    const handleDelete = async (id: string) => {
-        if (confirm('Are you sure you want to delete this skill category?')) {
-            try {
-                await api.delete(`/skills/${id}`)
-                fetchSkills()
-            } catch (error) {
-                console.error('Failed to delete skill:', error)
-            }
+    const openDeleteModal = (skillId: string, skillCategory: string) => {
+        setDeleteModal({
+            isOpen: true,
+            skillId,
+            skillCategory
+        })
+    }
+
+    const closeDeleteModal = () => {
+        setDeleteModal({
+            isOpen: false,
+            skillId: null,
+            skillCategory: ''
+        })
+    }
+
+    const handleDelete = async () => {
+        if (!deleteModal.skillId) return
+
+        setIsDeleting(true)
+        try {
+            await api.delete(`/skills/${deleteModal.skillId}`)
+            fetchSkills()
+            closeDeleteModal()
+        } catch (error) {
+            console.error('Failed to delete skill:', error)
+            alert('Failed to delete skill. Please try again.')
+        } finally {
+            setIsDeleting(false)
         }
     }
 
@@ -278,7 +310,7 @@ export default function AdminSkillsManager() {
                                             <Edit size={16} />
                                         </button>
                                         <button
-                                            onClick={() => handleDelete(skill._id)}
+                                            onClick={() => openDeleteModal(skill._id, skill.category)}
                                             className="p-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors"
                                         >
                                             <Trash2 size={16} />
@@ -376,6 +408,16 @@ export default function AdminSkillsManager() {
                     <p className="text-muted-foreground">No skill categories found. Add your first category!</p>
                 </div>
             )}
+
+            <DeleteConfirmationModal
+                isOpen={deleteModal.isOpen}
+                onClose={closeDeleteModal}
+                onConfirm={handleDelete}
+                title="Delete Skill Category"
+                message="Are you sure you want to delete this skill category?"
+                itemName={deleteModal.skillCategory}
+                isDeleting={isDeleting}
+            />
         </div>
     )
 }

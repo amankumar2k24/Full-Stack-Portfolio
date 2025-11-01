@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Plus, Edit, Trash2, Save, X, Settings as SettingsIcon } from 'lucide-react'
 import api from '@/lib/api'
+import DeleteConfirmationModal from '@/components/ui/DeleteConfirmationModal'
 
 interface Setting {
     _id: string
@@ -24,6 +25,16 @@ export default function AdminSettingsManager() {
         description: '',
         type: 'text' as Setting['type']
     })
+    const [deleteModal, setDeleteModal] = useState<{
+        isOpen: boolean
+        settingId: string | null
+        settingKey: string
+    }>({
+        isOpen: false,
+        settingId: null,
+        settingKey: ''
+    })
+    const [isDeleting, setIsDeleting] = useState(false)
 
     useEffect(() => {
         fetchSettings()
@@ -69,14 +80,35 @@ export default function AdminSettingsManager() {
         }
     }
 
-    const handleDelete = async (id: string) => {
-        if (confirm('Are you sure you want to delete this setting?')) {
-            try {
-                await api.delete(`/settings/${id}`)
-                fetchSettings()
-            } catch (error) {
-                console.error('Failed to delete setting:', error)
-            }
+    const openDeleteModal = (settingId: string, settingKey: string) => {
+        setDeleteModal({
+            isOpen: true,
+            settingId,
+            settingKey
+        })
+    }
+
+    const closeDeleteModal = () => {
+        setDeleteModal({
+            isOpen: false,
+            settingId: null,
+            settingKey: ''
+        })
+    }
+
+    const handleDelete = async () => {
+        if (!deleteModal.settingId) return
+
+        setIsDeleting(true)
+        try {
+            await api.delete(`/settings/${deleteModal.settingId}`)
+            fetchSettings()
+            closeDeleteModal()
+        } catch (error) {
+            console.error('Failed to delete setting:', error)
+            alert('Failed to delete setting. Please try again.')
+        } finally {
+            setIsDeleting(false)
         }
     }
 
@@ -92,8 +124,8 @@ export default function AdminSettingsManager() {
                 case 'boolean':
                     return (
                         <span className={`px-2 py-1 rounded text-xs ${setting.value === 'true'
-                                ? 'bg-green-100 text-green-800'
-                                : 'bg-red-100 text-red-800'
+                            ? 'bg-green-100 text-green-800'
+                            : 'bg-red-100 text-red-800'
                             }`}>
                             {setting.value === 'true' ? 'Enabled' : 'Disabled'}
                         </span>
@@ -379,7 +411,7 @@ export default function AdminSettingsManager() {
                                             <Edit size={16} />
                                         </button>
                                         <button
-                                            onClick={() => handleDelete(setting._id)}
+                                            onClick={() => openDeleteModal(setting._id, setting.key)}
                                             className="p-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors"
                                         >
                                             <Trash2 size={16} />
@@ -402,6 +434,16 @@ export default function AdminSettingsManager() {
                     <p className="text-muted-foreground">No settings found. Add your first setting!</p>
                 </div>
             )}
+
+            <DeleteConfirmationModal
+                isOpen={deleteModal.isOpen}
+                onClose={closeDeleteModal}
+                onConfirm={handleDelete}
+                title="Delete Setting"
+                message="Are you sure you want to delete this setting?"
+                itemName={deleteModal.settingKey}
+                isDeleting={isDeleting}
+            />
         </div>
     )
 }

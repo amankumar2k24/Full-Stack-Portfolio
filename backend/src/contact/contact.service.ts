@@ -25,7 +25,6 @@ export class ContactService {
             });
         } catch (error) {
             console.error('Failed to send email notification:', error);
-            // Don't throw error here to avoid failing the contact form submission
         }
 
         return savedMessage;

@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Plus, Edit, Trash2, Save, X, ArrowUp, ArrowDown } from 'lucide-react'
 import api from '@/lib/api'
+import DeleteConfirmationModal from '@/components/ui/DeleteConfirmationModal'
 
 interface Experience {
     _id: string
@@ -38,6 +39,16 @@ export default function AdminExperienceManager() {
         order: 0,
         isActive: true
     })
+    const [deleteModal, setDeleteModal] = useState<{
+        isOpen: boolean
+        experienceId: string | null
+        experienceTitle: string
+    }>({
+        isOpen: false,
+        experienceId: null,
+        experienceTitle: ''
+    })
+    const [isDeleting, setIsDeleting] = useState(false)
 
     useEffect(() => {
         fetchExperiences()
@@ -95,14 +106,35 @@ export default function AdminExperienceManager() {
         }
     }
 
-    const handleDelete = async (id: string) => {
-        if (confirm('Are you sure you want to delete this experience?')) {
-            try {
-                await api.delete(`/experience/${id}`)
-                fetchExperiences()
-            } catch (error) {
-                console.error('Failed to delete experience:', error)
-            }
+    const openDeleteModal = (experienceId: string, experienceTitle: string) => {
+        setDeleteModal({
+            isOpen: true,
+            experienceId,
+            experienceTitle
+        })
+    }
+
+    const closeDeleteModal = () => {
+        setDeleteModal({
+            isOpen: false,
+            experienceId: null,
+            experienceTitle: ''
+        })
+    }
+
+    const handleDelete = async () => {
+        if (!deleteModal.experienceId) return
+
+        setIsDeleting(true)
+        try {
+            await api.delete(`/experience/${deleteModal.experienceId}`)
+            fetchExperiences()
+            closeDeleteModal()
+        } catch (error) {
+            console.error('Failed to delete experience:', error)
+            alert('Failed to delete experience. Please try again.')
+        } finally {
+            setIsDeleting(false)
         }
     }
 
@@ -421,7 +453,7 @@ export default function AdminExperienceManager() {
                                             <Edit size={16} />
                                         </button>
                                         <button
-                                            onClick={() => handleDelete(experience._id)}
+                                            onClick={() => openDeleteModal(experience._id, experience.title)}
                                             className="p-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors"
                                         >
                                             <Trash2 size={16} />
@@ -498,6 +530,16 @@ export default function AdminExperienceManager() {
                     <p className="text-muted-foreground">No experience entries found. Add your first experience!</p>
                 </div>
             )}
+
+            <DeleteConfirmationModal
+                isOpen={deleteModal.isOpen}
+                onClose={closeDeleteModal}
+                onConfirm={handleDelete}
+                title="Delete Experience"
+                message="Are you sure you want to delete this experience entry?"
+                itemName={deleteModal.experienceTitle}
+                isDeleting={isDeleting}
+            />
         </div>
     )
 }

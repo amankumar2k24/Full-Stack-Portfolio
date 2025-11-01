@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Plus, Edit, Trash2, Save, X, ArrowUp, ArrowDown, BarChart3 } from 'lucide-react'
 import api from '@/lib/api'
+import DeleteConfirmationModal from '@/components/ui/DeleteConfirmationModal'
 
 interface Stat {
     _id: string
@@ -32,6 +33,16 @@ export default function AdminStatsManager() {
         isActive: true,
         description: ''
     })
+    const [deleteModal, setDeleteModal] = useState<{
+        isOpen: boolean
+        statId: string | null
+        statLabel: string
+    }>({
+        isOpen: false,
+        statId: null,
+        statLabel: ''
+    })
+    const [isDeleting, setIsDeleting] = useState(false)
 
     useEffect(() => {
         fetchStats()
@@ -81,14 +92,35 @@ export default function AdminStatsManager() {
         }
     }
 
-    const handleDelete = async (id: string) => {
-        if (confirm('Are you sure you want to delete this statistic?')) {
-            try {
-                await api.delete(`/stats/${id}`)
-                fetchStats()
-            } catch (error) {
-                console.error('Failed to delete stat:', error)
-            }
+    const openDeleteModal = (statId: string, statLabel: string) => {
+        setDeleteModal({
+            isOpen: true,
+            statId,
+            statLabel
+        })
+    }
+
+    const closeDeleteModal = () => {
+        setDeleteModal({
+            isOpen: false,
+            statId: null,
+            statLabel: ''
+        })
+    }
+
+    const handleDelete = async () => {
+        if (!deleteModal.statId) return
+
+        setIsDeleting(true)
+        try {
+            await api.delete(`/stats/${deleteModal.statId}`)
+            fetchStats()
+            closeDeleteModal()
+        } catch (error) {
+            console.error('Failed to delete stat:', error)
+            alert('Failed to delete statistic. Please try again.')
+        } finally {
+            setIsDeleting(false)
         }
     }
 
@@ -417,7 +449,7 @@ export default function AdminStatsManager() {
                                             <Edit size={16} />
                                         </button>
                                         <button
-                                            onClick={() => handleDelete(stat._id)}
+                                            onClick={() => openDeleteModal(stat._id, stat.label)}
                                             className="p-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors"
                                         >
                                             <Trash2 size={16} />
@@ -436,6 +468,16 @@ export default function AdminStatsManager() {
                     <p className="text-muted-foreground">No statistics found. Add your first statistic!</p>
                 </div>
             )}
+
+            <DeleteConfirmationModal
+                isOpen={deleteModal.isOpen}
+                onClose={closeDeleteModal}
+                onConfirm={handleDelete}
+                title="Delete Statistic"
+                message="Are you sure you want to delete this statistic?"
+                itemName={deleteModal.statLabel}
+                isDeleting={isDeleting}
+            />
         </div>
     )
 }

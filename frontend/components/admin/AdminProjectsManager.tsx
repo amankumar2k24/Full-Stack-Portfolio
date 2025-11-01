@@ -5,6 +5,7 @@ import { motion } from 'framer-motion'
 import { Plus, Edit, Trash2, Save, X, ExternalLink, ChevronLeft, ChevronRight, ArrowUp, ArrowDown } from 'lucide-react'
 import Image from 'next/image'
 import api from '@/lib/api'
+import DeleteConfirmationModal from '@/components/ui/DeleteConfirmationModal'
 
 interface Project {
     _id: string
@@ -91,6 +92,16 @@ export default function AdminProjectsManager() {
         imageUrls: ''
     })
     const [expandedDescriptions, setExpandedDescriptions] = useState<Set<string>>(new Set())
+    const [deleteModal, setDeleteModal] = useState<{
+        isOpen: boolean
+        projectId: string | null
+        projectTitle: string
+    }>({
+        isOpen: false,
+        projectId: null,
+        projectTitle: ''
+    })
+    const [isDeleting, setIsDeleting] = useState(false)
 
     useEffect(() => {
         fetchProjects()
@@ -143,14 +154,35 @@ export default function AdminProjectsManager() {
         }
     }
 
-    const handleDelete = async (id: string) => {
-        if (confirm('Are you sure you want to delete this project?')) {
-            try {
-                await api.delete(`/projects/${id}`)
-                fetchProjects()
-            } catch (error) {
-                console.error('Failed to delete project:', error)
-            }
+    const openDeleteModal = (projectId: string, projectTitle: string) => {
+        setDeleteModal({
+            isOpen: true,
+            projectId,
+            projectTitle
+        })
+    }
+
+    const closeDeleteModal = () => {
+        setDeleteModal({
+            isOpen: false,
+            projectId: null,
+            projectTitle: ''
+        })
+    }
+
+    const handleDelete = async () => {
+        if (!deleteModal.projectId) return
+
+        setIsDeleting(true)
+        try {
+            await api.delete(`/projects/${deleteModal.projectId}`)
+            fetchProjects()
+            closeDeleteModal()
+        } catch (error) {
+            console.error('Failed to delete project:', error)
+            alert('Failed to delete project. Please try again.')
+        } finally {
+            setIsDeleting(false)
         }
     }
 
@@ -403,7 +435,7 @@ export default function AdminProjectsManager() {
                                                 <Edit size={14} />
                                             </button>
                                             <button
-                                                onClick={() => handleDelete(project._id)}
+                                                onClick={() => openDeleteModal(project._id, project.title)}
                                                 className="p-1 text-red-600 hover:bg-red-100 rounded transition-colors"
                                             >
                                                 <Trash2 size={14} />
@@ -523,6 +555,16 @@ export default function AdminProjectsManager() {
                     <p className="text-muted-foreground">No projects found. Add your first project!</p>
                 </div>
             )}
+
+            <DeleteConfirmationModal
+                isOpen={deleteModal.isOpen}
+                onClose={closeDeleteModal}
+                onConfirm={handleDelete}
+                title="Delete Project"
+                message="Are you sure you want to delete this project?"
+                itemName={deleteModal.projectTitle}
+                isDeleting={isDeleting}
+            />
         </div>
     )
 }

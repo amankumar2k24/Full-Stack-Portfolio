@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
 import { Mail, Calendar, User, Trash2 } from 'lucide-react'
 import api from '@/lib/api'
+import DeleteConfirmationModal from '@/components/ui/DeleteConfirmationModal'
 
 interface Message {
     _id: string
@@ -16,6 +17,16 @@ interface Message {
 export default function AdminMessagesViewer() {
     const [messages, setMessages] = useState<Message[]>([])
     const [loading, setLoading] = useState(true)
+    const [deleteModal, setDeleteModal] = useState<{
+        isOpen: boolean
+        messageId: string | null
+        messageName: string
+    }>({
+        isOpen: false,
+        messageId: null,
+        messageName: ''
+    })
+    const [isDeleting, setIsDeleting] = useState(false)
 
     useEffect(() => {
         fetchMessages()
@@ -42,15 +53,35 @@ export default function AdminMessagesViewer() {
         })
     }
 
-    const handleDelete = async (messageId: string) => {
-        if (confirm('Are you sure you want to permanently delete this message? This action cannot be undone.')) {
-            try {
-                await api.delete(`/contact/${messageId}`)
-                setMessages(messages.filter(message => message._id !== messageId))
-            } catch (error) {
-                console.error('Failed to delete message:', error)
-                alert('Failed to delete message. Please try again.')
-            }
+    const openDeleteModal = (messageId: string, messageName: string) => {
+        setDeleteModal({
+            isOpen: true,
+            messageId,
+            messageName
+        })
+    }
+
+    const closeDeleteModal = () => {
+        setDeleteModal({
+            isOpen: false,
+            messageId: null,
+            messageName: ''
+        })
+    }
+
+    const handleDelete = async () => {
+        if (!deleteModal.messageId) return
+
+        setIsDeleting(true)
+        try {
+            await api.delete(`/contact/${deleteModal.messageId}`)
+            setMessages(messages.filter(message => message._id !== deleteModal.messageId))
+            closeDeleteModal()
+        } catch (error) {
+            console.error('Failed to delete message:', error)
+            alert('Failed to delete message. Please try again.')
+        } finally {
+            setIsDeleting(false)
         }
     }
 
@@ -127,7 +158,7 @@ export default function AdminMessagesViewer() {
                                 Reply
                             </a>
                             <button
-                                onClick={() => handleDelete(message._id)}
+                                onClick={() => openDeleteModal(message._id, `Message from ${message.name}`)}
                                 className="inline-flex items-center gap-2 px-3 py-1 text-sm bg-destructive text-destructive-foreground rounded hover:bg-destructive/90 transition-colors"
                                 title="Delete message permanently"
                             >
@@ -148,6 +179,16 @@ export default function AdminMessagesViewer() {
                     </p>
                 </div>
             )}
+
+            <DeleteConfirmationModal
+                isOpen={deleteModal.isOpen}
+                onClose={closeDeleteModal}
+                onConfirm={handleDelete}
+                title="Delete Message"
+                message="Are you sure you want to delete this message?"
+                itemName={deleteModal.messageName}
+                isDeleting={isDeleting}
+            />
         </div>
     )
 }
