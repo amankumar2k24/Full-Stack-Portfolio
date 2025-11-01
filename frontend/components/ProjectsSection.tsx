@@ -16,19 +16,31 @@ interface Project {
 }
 
 
+// Utility function to check if URL is a valid image URL
+function isValidImageUrl(url: string): boolean {
+    // Check if it's a valid image URL (has image extension or is from known image hosting services)
+    const imageExtensions = /\.(jpg|jpeg|png|gif|webp|svg|bmp|ico)(\?.*)?$/i;
+    const imageHosts = ['res.cloudinary.com', 'images.unsplash.com', 'cdn.jsdelivr.net'];
+
+    return imageExtensions.test(url) || imageHosts.some(host => url.includes(host));
+}
+
 // Image Carousel Component
 function ImageCarousel({ images, title }: { images: string[], title: string }) {
     const [currentIndex, setCurrentIndex] = useState(0)
 
+    // Filter out invalid image URLs (like website URLs)
+    const validImages = images?.filter(isValidImageUrl) || []
+
     const nextImage = () => {
-        setCurrentIndex((prev) => (prev + 1) % images.length)
+        setCurrentIndex((prev) => (prev + 1) % validImages.length)
     }
 
     const prevImage = () => {
-        setCurrentIndex((prev) => (prev - 1 + images.length) % images.length)
+        setCurrentIndex((prev) => (prev - 1 + validImages.length) % validImages.length)
     }
 
-    if (!images || images.length === 0) {
+    if (!validImages || validImages.length === 0) {
         return (
             <div className="relative h-56 w-full bg-muted flex items-center justify-center">
                 <span className="text-muted-foreground">No image available</span>
@@ -48,7 +60,7 @@ function ImageCarousel({ images, title }: { images: string[], title: string }) {
                     className="w-full h-full"
                 >
                     <Image
-                        src={images[currentIndex]}
+                        src={validImages[currentIndex]}
                         alt={`${title} - Image ${currentIndex + 1}`}
                         fill
                         className="object-cover"
@@ -57,7 +69,7 @@ function ImageCarousel({ images, title }: { images: string[], title: string }) {
             </AnimatePresence>
 
             {/* Navigation buttons */}
-            {images.length > 1 && (
+            {validImages.length > 1 && (
                 <>
                     <button
                         onClick={prevImage}
@@ -74,7 +86,7 @@ function ImageCarousel({ images, title }: { images: string[], title: string }) {
 
                     {/* Dots indicator */}
                     <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1 z-10">
-                        {images.map((_, index) => (
+                        {validImages.map((_, index) => (
                             <button
                                 key={index}
                                 onClick={() => setCurrentIndex(index)}

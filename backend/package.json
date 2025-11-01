@@ -26,7 +26,8 @@
         "seed-skills": "ts-node src/scripts/seed-default-skills.ts",
         "update-user": "node update-user.js",
         "update-placeholders": "node update-placeholder-images.js",
-        "test-email": "ts-node src/scripts/test-email.ts"
+        "test-email": "ts-node src/scripts/test-email.ts",
+        "fix-image-urls": "ts-node src/scripts/fix-image-urls.ts"
     },
     "dependencies": {
         "@nestjs/common": "^10.4.20",

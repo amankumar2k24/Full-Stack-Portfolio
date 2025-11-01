@@ -18,6 +18,22 @@ const nextConfig = {
                 protocol: 'https',
                 hostname: 'res.cloudinary.com',
             },
+            {
+                protocol: 'https',
+                hostname: 'revueo.ai',
+            },
+            {
+                protocol: 'https',
+                hostname: 'shobhit-connect.vercel.app',
+            },
+            {
+                protocol: 'https',
+                hostname: 'beryl.esieve.in',
+            },
+            {
+                protocol: 'https',
+                hostname: 'fullstack-ak-portfolio.vercel.app',
+            },
         ],
     },
     // Suppress source map warnings in development

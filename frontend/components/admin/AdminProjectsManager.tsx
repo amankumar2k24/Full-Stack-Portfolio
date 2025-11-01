@@ -19,22 +19,33 @@ interface Project {
 
 
 
+// Utility function to check if URL is a valid image URL
+function isValidImageUrl(url: string): boolean {
+    const imageExtensions = /\.(jpg|jpeg|png|gif|webp|svg|bmp|ico)(\?.*)?$/i;
+    const imageHosts = ['res.cloudinary.com', 'images.unsplash.com', 'cdn.jsdelivr.net'];
+
+    return imageExtensions.test(url) || imageHosts.some(host => url.includes(host));
+}
+
 // Image Carousel Component for Admin
 function AdminImageCarousel({ images, title }: { images: string[], title: string }) {
     const [currentIndex, setCurrentIndex] = useState(0)
 
+    // Filter out invalid image URLs
+    const validImages = images?.filter(isValidImageUrl) || []
+
     const nextImage = () => {
-        setCurrentIndex((prev) => (prev + 1) % images.length)
+        setCurrentIndex((prev) => (prev + 1) % validImages.length)
     }
 
     const prevImage = () => {
-        setCurrentIndex((prev) => (prev - 1 + images.length) % images.length)
+        setCurrentIndex((prev) => (prev - 1 + validImages.length) % validImages.length)
     }
 
-    if (!images || images.length === 0) {
+    if (!validImages || validImages.length === 0) {
         return (
             <div className="relative h-48 w-full bg-muted flex items-center justify-center">
-                <span className="text-muted-foreground text-sm">No images</span>
+                <span className="text-muted-foreground text-sm">No valid images</span>
             </div>
         )
     }
@@ -42,13 +53,13 @@ function AdminImageCarousel({ images, title }: { images: string[], title: string
     return (
         <div className="relative h-48 w-full overflow-hidden group">
             <Image
-                src={images[currentIndex]}
+                src={validImages[currentIndex]}
                 alt={`${title} - Image ${currentIndex + 1}`}
                 fill
                 className="object-cover"
             />
 
-            {images.length > 1 && (
+            {validImages.length > 1 && (
                 <>
                     <button
                         onClick={prevImage}
@@ -64,7 +75,7 @@ function AdminImageCarousel({ images, title }: { images: string[], title: string
                     </button>
 
                     <div className="absolute bottom-2 left-1/2 -translate-x-1/2 flex gap-1 z-10">
-                        {images.map((_, index) => (
+                        {validImages.map((_, index) => (
                             <button
                                 key={index}
                                 onClick={() => setCurrentIndex(index)}
@@ -91,6 +102,9 @@ export default function AdminProjectsManager() {
         liveLinks: '',
         imageUrls: ''
     })
+    const [imageUrlInputs, setImageUrlInputs] = useState<string[]>([''])
+    const [liveLinkInputs, setLiveLinkInputs] = useState<string[]>([''])
+    const [techStackInputs, setTechStackInputs] = useState<string[]>([''])
     const [expandedDescriptions, setExpandedDescriptions] = useState<Set<string>>(new Set())
     const [deleteModal, setDeleteModal] = useState<{
         isOpen: boolean
@@ -122,9 +136,9 @@ export default function AdminProjectsManager() {
         try {
             const projectData = {
                 ...formData,
-                techStack: formData.techStack.split(',').map(tech => tech.trim()).filter(tech => tech),
-                liveLinks: formData.liveLinks.split(',').map(link => link.trim()).filter(link => link),
-                imageUrls: formData.imageUrls.split(',').map(url => url.trim()).filter(url => url)
+                techStack: techStackInputs.filter(tech => tech.trim()),
+                liveLinks: liveLinkInputs.filter(link => link.trim()),
+                imageUrls: imageUrlInputs.filter(url => url.trim())
             }
             await api.post('/projects', projectData)
             setFormData({
@@ -134,6 +148,9 @@ export default function AdminProjectsManager() {
                 liveLinks: '',
                 imageUrls: ''
             })
+            setImageUrlInputs([''])
+            setLiveLinkInputs([''])
+            setTechStackInputs([''])
             setShowAddForm(false)
             fetchProjects()
         } catch (error) {
@@ -277,7 +294,7 @@ export default function AdminProjectsManager() {
                     animate={{ opacity: 1, y: 0 }}
                     className="bg-card p-6 rounded-lg border"
                 >
-                    <h3 className="text-lg font-semibold mb-4">Add New Project</h3>
+                    <h3 className="text-lg font-semibold mb-4">Add New Project - UPDATED</h3>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div>
                             <label className="block text-sm font-medium mb-2">Title</label>
@@ -290,14 +307,44 @@ export default function AdminProjectsManager() {
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium mb-2">Image URLs (comma-separated)</label>
-                            <input
-                                type="text"
-                                value={formData.imageUrls}
-                                onChange={(e) => setFormData({ ...formData, imageUrls: e.target.value })}
-                                className="w-full px-3 py-2 border border-input rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-ring"
-                                placeholder="https://example.com/image1.jpg, https://example.com/image2.jpg"
-                            />
+                            <label className="block text-sm font-medium mb-2">Image URLs</label>
+                            <div className="space-y-2">
+                                {imageUrlInputs.map((url, index) => (
+                                    <div key={index} className="flex gap-2">
+                                        <input
+                                            type="text"
+                                            value={url}
+                                            onChange={(e) => {
+                                                const newUrls = [...imageUrlInputs]
+                                                newUrls[index] = e.target.value
+                                                setImageUrlInputs(newUrls)
+                                            }}
+                                            className="flex-1 px-3 py-2 border border-input rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-ring"
+                                            placeholder="https://example.com/image.jpg"
+                                        />
+                                        {imageUrlInputs.length > 1 && (
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    const newUrls = imageUrlInputs.filter((_, i) => i !== index)
+                                                    setImageUrlInputs(newUrls)
+                                                }}
+                                                className="px-3 py-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors"
+                                            >
+                                                <X size={16} />
+                                            </button>
+                                        )}
+                                    </div>
+                                ))}
+                                <button
+                                    type="button"
+                                    onClick={() => setImageUrlInputs([...imageUrlInputs, ''])}
+                                    className="inline-flex items-center gap-2 px-3 py-2 text-sm border border-dashed border-border rounded-lg hover:bg-accent transition-colors"
+                                >
+                                    <Plus size={14} />
+                                    Add Image URL
+                                </button>
+                            </div>
                         </div>
                         <div className="md:col-span-2">
                             <label className="block text-sm font-medium mb-2">Description</label>
@@ -310,24 +357,84 @@ export default function AdminProjectsManager() {
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium mb-2">Tech Stack (comma-separated)</label>
-                            <input
-                                type="text"
-                                value={formData.techStack}
-                                onChange={(e) => setFormData({ ...formData, techStack: e.target.value })}
-                                className="w-full px-3 py-2 border border-input rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-ring"
-                                placeholder="React, Node.js, MongoDB"
-                            />
+                            <label className="block text-sm font-medium mb-2">Tech Stack</label>
+                            <div className="space-y-2">
+                                {techStackInputs.map((tech, index) => (
+                                    <div key={index} className="flex gap-2">
+                                        <input
+                                            type="text"
+                                            value={tech}
+                                            onChange={(e) => {
+                                                const newTechs = [...techStackInputs]
+                                                newTechs[index] = e.target.value
+                                                setTechStackInputs(newTechs)
+                                            }}
+                                            className="flex-1 px-3 py-2 border border-input rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-ring"
+                                            placeholder="React, Node.js, MongoDB, etc."
+                                        />
+                                        {techStackInputs.length > 1 && (
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    const newTechs = techStackInputs.filter((_, i) => i !== index)
+                                                    setTechStackInputs(newTechs)
+                                                }}
+                                                className="px-3 py-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors"
+                                            >
+                                                <X size={16} />
+                                            </button>
+                                        )}
+                                    </div>
+                                ))}
+                                <button
+                                    type="button"
+                                    onClick={() => setTechStackInputs([...techStackInputs, ''])}
+                                    className="inline-flex items-center gap-2 px-3 py-2 text-sm border border-dashed border-border rounded-lg hover:bg-accent transition-colors"
+                                >
+                                    <Plus size={14} />
+                                    Add Technology
+                                </button>
+                            </div>
                         </div>
                         <div>
-                            <label className="block text-sm font-medium mb-2">Live Links (comma-separated)</label>
-                            <input
-                                type="text"
-                                value={formData.liveLinks}
-                                onChange={(e) => setFormData({ ...formData, liveLinks: e.target.value })}
-                                className="w-full px-3 py-2 border border-input rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-ring"
-                                placeholder="https://demo1.com, https://demo2.com"
-                            />
+                            <label className="block text-sm font-medium mb-2">Live Links</label>
+                            <div className="space-y-2">
+                                {liveLinkInputs.map((link, index) => (
+                                    <div key={index} className="flex gap-2">
+                                        <input
+                                            type="text"
+                                            value={link}
+                                            onChange={(e) => {
+                                                const newLinks = [...liveLinkInputs]
+                                                newLinks[index] = e.target.value
+                                                setLiveLinkInputs(newLinks)
+                                            }}
+                                            className="flex-1 px-3 py-2 border border-input rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-ring"
+                                            placeholder="https://demo.com"
+                                        />
+                                        {liveLinkInputs.length > 1 && (
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    const newLinks = liveLinkInputs.filter((_, i) => i !== index)
+                                                    setLiveLinkInputs(newLinks)
+                                                }}
+                                                className="px-3 py-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors"
+                                            >
+                                                <X size={16} />
+                                            </button>
+                                        )}
+                                    </div>
+                                ))}
+                                <button
+                                    type="button"
+                                    onClick={() => setLiveLinkInputs([...liveLinkInputs, ''])}
+                                    className="inline-flex items-center gap-2 px-3 py-2 text-sm border border-dashed border-border rounded-lg hover:bg-accent transition-colors"
+                                >
+                                    <Plus size={14} />
+                                    Add Live Link
+                                </button>
+                            </div>
                         </div>
                     </div>
                     <div className="flex gap-2 mt-4">
@@ -348,6 +455,9 @@ export default function AdminProjectsManager() {
                                     liveLinks: '',
                                     imageUrls: ''
                                 })
+                                setImageUrlInputs([''])
+                                setLiveLinkInputs([''])
+                                setTechStackInputs([''])
                             }}
                             className="inline-flex items-center gap-2 px-4 py-2 border border-border rounded-lg hover:bg-accent transition-colors"
                         >
@@ -454,27 +564,120 @@ export default function AdminProjectsManager() {
                                         rows={3}
                                         placeholder="Project description"
                                     />
-                                    <input
-                                        type="text"
-                                        value={project.techStack.join(', ')}
-                                        onChange={(e) => updateProject(project._id, 'techStack', e.target.value.split(',').map(tech => tech.trim()).filter(tech => tech))}
-                                        className="w-full px-3 py-2 border border-input rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-ring"
-                                        placeholder="Tech Stack (comma-separated)"
-                                    />
-                                    <input
-                                        type="text"
-                                        value={project.liveLinks.join(', ')}
-                                        onChange={(e) => updateProject(project._id, 'liveLinks', e.target.value.split(',').map(link => link.trim()).filter(link => link))}
-                                        className="w-full px-3 py-2 border border-input rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-ring"
-                                        placeholder="Live Links (comma-separated)"
-                                    />
-                                    <input
-                                        type="text"
-                                        value={project.imageUrls.join(', ')}
-                                        onChange={(e) => updateProject(project._id, 'imageUrls', e.target.value.split(',').map(url => url.trim()).filter(url => url))}
-                                        className="w-full px-3 py-2 border border-input rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-ring"
-                                        placeholder="Image URLs (comma-separated)"
-                                    />
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium">Tech Stack</label>
+                                        {project.techStack.map((tech, index) => (
+                                            <div key={index} className="flex gap-2">
+                                                <input
+                                                    type="text"
+                                                    value={tech}
+                                                    onChange={(e) => {
+                                                        const newTechStack = [...project.techStack]
+                                                        newTechStack[index] = e.target.value
+                                                        updateProject(project._id, 'techStack', newTechStack)
+                                                    }}
+                                                    className="flex-1 px-3 py-2 border border-input rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-ring"
+                                                    placeholder="Technology"
+                                                />
+                                                {project.techStack.length > 1 && (
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => {
+                                                            const newTechStack = project.techStack.filter((_, i) => i !== index)
+                                                            updateProject(project._id, 'techStack', newTechStack)
+                                                        }}
+                                                        className="px-3 py-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors"
+                                                    >
+                                                        <X size={16} />
+                                                    </button>
+                                                )}
+                                            </div>
+                                        ))}
+                                        <button
+                                            type="button"
+                                            onClick={() => updateProject(project._id, 'techStack', [...project.techStack, ''])}
+                                            className="inline-flex items-center gap-2 px-3 py-2 text-sm border border-dashed border-border rounded-lg hover:bg-accent transition-colors"
+                                        >
+                                            <Plus size={14} />
+                                            Add Technology
+                                        </button>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium">Live Links</label>
+                                        {project.liveLinks.map((link, index) => (
+                                            <div key={index} className="flex gap-2">
+                                                <input
+                                                    type="text"
+                                                    value={link}
+                                                    onChange={(e) => {
+                                                        const newLiveLinks = [...project.liveLinks]
+                                                        newLiveLinks[index] = e.target.value
+                                                        updateProject(project._id, 'liveLinks', newLiveLinks)
+                                                    }}
+                                                    className="flex-1 px-3 py-2 border border-input rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-ring"
+                                                    placeholder="https://demo.com"
+                                                />
+                                                {project.liveLinks.length > 1 && (
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => {
+                                                            const newLiveLinks = project.liveLinks.filter((_, i) => i !== index)
+                                                            updateProject(project._id, 'liveLinks', newLiveLinks)
+                                                        }}
+                                                        className="px-3 py-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors"
+                                                    >
+                                                        <X size={16} />
+                                                    </button>
+                                                )}
+                                            </div>
+                                        ))}
+                                        <button
+                                            type="button"
+                                            onClick={() => updateProject(project._id, 'liveLinks', [...project.liveLinks, ''])}
+                                            className="inline-flex items-center gap-2 px-3 py-2 text-sm border border-dashed border-border rounded-lg hover:bg-accent transition-colors"
+                                        >
+                                            <Plus size={14} />
+                                            Add Live Link
+                                        </button>
+                                    </div>
+                                    <div className="space-y-2">
+                                        <label className="text-sm font-medium">Image URLs</label>
+                                        {project.imageUrls.map((url, index) => (
+                                            <div key={index} className="flex gap-2">
+                                                <input
+                                                    type="text"
+                                                    value={url}
+                                                    onChange={(e) => {
+                                                        const newImageUrls = [...project.imageUrls]
+                                                        newImageUrls[index] = e.target.value
+                                                        updateProject(project._id, 'imageUrls', newImageUrls)
+                                                    }}
+                                                    className="flex-1 px-3 py-2 border border-input rounded-lg bg-background focus:outline-none focus:ring-2 focus:ring-ring"
+                                                    placeholder="https://example.com/image.jpg"
+                                                />
+                                                {project.imageUrls.length > 1 && (
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => {
+                                                            const newImageUrls = project.imageUrls.filter((_, i) => i !== index)
+                                                            updateProject(project._id, 'imageUrls', newImageUrls)
+                                                        }}
+                                                        className="px-3 py-2 text-red-600 hover:bg-red-100 rounded-lg transition-colors"
+                                                    >
+                                                        <X size={16} />
+                                                    </button>
+                                                )}
+                                            </div>
+                                        ))}
+                                        <button
+                                            type="button"
+                                            onClick={() => updateProject(project._id, 'imageUrls', [...project.imageUrls, ''])}
+                                            className="inline-flex items-center gap-2 px-3 py-2 text-sm border border-dashed border-border rounded-lg hover:bg-accent transition-colors"
+                                        >
+                                            <Plus size={14} />
+                                            Add Image URL
+                                        </button>
+                                    </div>
                                 </div>
                             ) : (
                                 <>
