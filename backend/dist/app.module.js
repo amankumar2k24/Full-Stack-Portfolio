@@ -20,6 +20,8 @@ const services_module_1 = require("./services/services.module");
 const experience_module_1 = require("./experience/experience.module");
 const settings_module_1 = require("./settings/settings.module");
 const stats_module_1 = require("./stats/stats.module");
+const health_module_1 = require("./health/health.module");
+const cron_module_1 = require("./cron/cron.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -40,6 +42,8 @@ exports.AppModule = AppModule = __decorate([
             experience_module_1.ExperienceModule,
             settings_module_1.SettingsModule,
             stats_module_1.StatsModule,
+            health_module_1.HealthModule,
+            cron_module_1.CronModule,
         ],
     })
 ], AppModule);

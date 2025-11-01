@@ -11,6 +11,8 @@ import { ServicesModule } from './services/services.module';
 import { ExperienceModule } from './experience/experience.module';
 import { SettingsModule } from './settings/settings.module';
 import { StatsModule } from './stats/stats.module';
+import { HealthModule } from './health/health.module';
+import { CronModule } from './cron/cron.module';
 
 @Module({
     imports: [
@@ -28,6 +30,8 @@ import { StatsModule } from './stats/stats.module';
         ExperienceModule,
         SettingsModule,
         StatsModule,
+        HealthModule,
+        CronModule,
     ],
 })
 export class AppModule { }
