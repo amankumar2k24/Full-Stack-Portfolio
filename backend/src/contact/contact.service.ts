@@ -16,16 +16,14 @@ export class ContactService {
         const createdMessage = new this.messageModel(createMessageDto);
         const savedMessage = await createdMessage.save();
 
-        // Send email notification
-        try {
-            this.emailService.sendContactNotification({
-                name: createMessageDto.name,
-                email: createMessageDto.email,
-                message: createMessageDto.message,
-            });
-        } catch (error) {
+        // Send email notification (don't await to avoid blocking the response)
+        this.emailService.sendContactNotification({
+            name: createMessageDto.name,
+            email: createMessageDto.email,
+            message: createMessageDto.message,
+        }).catch(error => {
             console.error('Failed to send email notification:', error);
-        }
+        });
 
         return savedMessage;
     }

@@ -8,16 +8,20 @@ export class EmailService {
 
     constructor(private configService: ConfigService) {
         this.transporter = nodemailer.createTransport({
+            service: 'gmail',
             host: 'smtp.gmail.com',
             port: 587,
-            secure: false, // true for 465, false for other ports
+            secure: false,
             auth: {
                 user: this.configService.get<string>('EMAIL_USER'),
                 pass: this.configService.get<string>('EMAIL_PASS'),
             },
             tls: {
                 rejectUnauthorized: false
-            }
+            },
+            connectionTimeout: 60000, // 60 seconds
+            greetingTimeout: 30000, // 30 seconds
+            socketTimeout: 60000, // 60 seconds
         });
     }
 
@@ -56,10 +60,22 @@ export class EmailService {
         };
 
         try {
-            await this.transporter.sendMail(mailOptions);
-            console.log('Contact notification email sent successfully');
+            console.log('Attempting to send email notification...');
+            console.log('Email config:', {
+                from: this.configService.get<string>('EMAIL_USER'),
+                to: 'aman.kumar2k15@gmail.com',
+                subject: mailOptions.subject
+            });
+
+            const result = await this.transporter.sendMail(mailOptions);
+            console.log('Contact notification email sent successfully:', result.messageId);
         } catch (error) {
             console.error('Error sending contact notification email:', error);
+            console.error('Error details:', {
+                code: error.code,
+                command: error.command,
+                response: error.response
+            });
             // Don't throw error to prevent API failure
             // The contact form should still work even if email fails
         }

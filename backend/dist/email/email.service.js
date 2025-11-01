@@ -17,6 +17,7 @@ let EmailService = class EmailService {
     constructor(configService) {
         this.configService = configService;
         this.transporter = nodemailer.createTransport({
+            service: 'gmail',
             host: 'smtp.gmail.com',
             port: 587,
             secure: false,
@@ -26,7 +27,10 @@ let EmailService = class EmailService {
             },
             tls: {
                 rejectUnauthorized: false
-            }
+            },
+            connectionTimeout: 60000,
+            greetingTimeout: 30000,
+            socketTimeout: 60000,
         });
     }
     async sendContactNotification(contactData) {
@@ -59,11 +63,22 @@ let EmailService = class EmailService {
             `,
         };
         try {
-            await this.transporter.sendMail(mailOptions);
-            console.log('Contact notification email sent successfully');
+            console.log('Attempting to send email notification...');
+            console.log('Email config:', {
+                from: this.configService.get('EMAIL_USER'),
+                to: 'aman.kumar2k15@gmail.com',
+                subject: mailOptions.subject
+            });
+            const result = await this.transporter.sendMail(mailOptions);
+            console.log('Contact notification email sent successfully:', result.messageId);
         }
         catch (error) {
             console.error('Error sending contact notification email:', error);
+            console.error('Error details:', {
+                code: error.code,
+                command: error.command,
+                response: error.response
+            });
         }
     }
 };

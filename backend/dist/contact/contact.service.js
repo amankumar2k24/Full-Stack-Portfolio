@@ -26,16 +26,13 @@ let ContactService = class ContactService {
     async create(createMessageDto) {
         const createdMessage = new this.messageModel(createMessageDto);
         const savedMessage = await createdMessage.save();
-        try {
-            this.emailService.sendContactNotification({
-                name: createMessageDto.name,
-                email: createMessageDto.email,
-                message: createMessageDto.message,
-            });
-        }
-        catch (error) {
+        this.emailService.sendContactNotification({
+            name: createMessageDto.name,
+            email: createMessageDto.email,
+            message: createMessageDto.message,
+        }).catch(error => {
             console.error('Failed to send email notification:', error);
-        }
+        });
         return savedMessage;
     }
     async findAll() {
