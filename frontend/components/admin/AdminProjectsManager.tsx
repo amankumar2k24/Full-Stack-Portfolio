@@ -497,7 +497,7 @@ export default function AdminProjectsManager() {
                                                     className="inline-flex items-center gap-1 text-sm px-3 py-1.5 border border-border rounded-lg hover:bg-accent hover:text-primary transition-colors"
                                                 >
                                                     <ExternalLink size={12} />
-                                                    {project.liveLinks.length > 1 ? `Link ${linkIndex + 1}` : 'Live Demo'}
+                                                    {project.liveLinks.length > 1 ? `Link ${linkIndex + 1}` : 'Link 1'}
                                                 </a>
                                             ))}
                                         </div>

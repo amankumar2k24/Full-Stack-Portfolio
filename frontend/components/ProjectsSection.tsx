@@ -221,7 +221,7 @@ export default function ProjectsSection() {
                                         whileTap={{ scale: 0.95 }}
                                     >
                                         <ExternalLink size={10} />
-                                        {project.liveLinks.length > 1 ? `Link ${linkIndex + 1}` : 'Live Demo'}
+                                        {project.liveLinks.length > 1 ? `Link ${linkIndex + 1}` : 'Link 1'}
                                     </motion.a>
                                 ))}
                             </motion.div>
