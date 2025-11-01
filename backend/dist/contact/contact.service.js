@@ -17,22 +17,39 @@ const common_1 = require("@nestjs/common");
 const mongoose_1 = require("@nestjs/mongoose");
 const mongoose_2 = require("mongoose");
 const message_schema_1 = require("../schemas/message.schema");
+const email_service_1 = require("../email/email.service");
 let ContactService = class ContactService {
-    constructor(messageModel) {
+    constructor(messageModel, emailService) {
         this.messageModel = messageModel;
+        this.emailService = emailService;
     }
     async create(createMessageDto) {
         const createdMessage = new this.messageModel(createMessageDto);
-        return createdMessage.save();
+        const savedMessage = await createdMessage.save();
+        try {
+            await this.emailService.sendContactNotification({
+                name: createMessageDto.name,
+                email: createMessageDto.email,
+                message: createMessageDto.message,
+            });
+        }
+        catch (error) {
+            console.error('Failed to send email notification:', error);
+        }
+        return savedMessage;
     }
     async findAll() {
         return this.messageModel.find().sort({ createdAt: -1 }).exec();
+    }
+    async delete(id) {
+        await this.messageModel.findByIdAndDelete(id).exec();
     }
 };
 exports.ContactService = ContactService;
 exports.ContactService = ContactService = __decorate([
     (0, common_1.Injectable)(),
     __param(0, (0, mongoose_1.InjectModel)(message_schema_1.Message.name)),
-    __metadata("design:paramtypes", [mongoose_2.Model])
+    __metadata("design:paramtypes", [mongoose_2.Model,
+        email_service_1.EmailService])
 ], ContactService);
 //# sourceMappingURL=contact.service.js.map

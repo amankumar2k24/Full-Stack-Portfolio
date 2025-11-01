@@ -5,4 +5,7 @@ export declare class ContactController {
     constructor(contactService: ContactService);
     create(createMessageDto: CreateMessageDto): Promise<import("../schemas/message.schema").Message>;
     findAll(): Promise<import("../schemas/message.schema").Message[]>;
+    delete(id: string): Promise<{
+        message: string;
+    }>;
 }

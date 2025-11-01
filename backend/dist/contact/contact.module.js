@@ -12,6 +12,7 @@ const mongoose_1 = require("@nestjs/mongoose");
 const message_schema_1 = require("../schemas/message.schema");
 const contact_service_1 = require("./contact.service");
 const contact_controller_1 = require("./contact.controller");
+const email_module_1 = require("../email/email.module");
 let ContactModule = class ContactModule {
 };
 exports.ContactModule = ContactModule;
@@ -19,6 +20,7 @@ exports.ContactModule = ContactModule = __decorate([
     (0, common_1.Module)({
         imports: [
             mongoose_1.MongooseModule.forFeature([{ name: message_schema_1.Message.name, schema: message_schema_1.MessageSchema }]),
+            email_module_1.EmailModule,
         ],
         providers: [contact_service_1.ContactService],
         controllers: [contact_controller_1.ContactController],

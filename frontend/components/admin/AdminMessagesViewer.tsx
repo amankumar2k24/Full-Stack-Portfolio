@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { motion } from 'framer-motion'
-import { Mail, Calendar, User } from 'lucide-react'
+import { Mail, Calendar, User, Trash2 } from 'lucide-react'
 import api from '@/lib/api'
 
 interface Message {
@@ -40,6 +40,18 @@ export default function AdminMessagesViewer() {
             hour: '2-digit',
             minute: '2-digit'
         })
+    }
+
+    const handleDelete = async (messageId: string) => {
+        if (confirm('Are you sure you want to permanently delete this message? This action cannot be undone.')) {
+            try {
+                await api.delete(`/contact/${messageId}`)
+                setMessages(messages.filter(message => message._id !== messageId))
+            } catch (error) {
+                console.error('Failed to delete message:', error)
+                alert('Failed to delete message. Please try again.')
+            }
+        }
     }
 
     if (loading) {
@@ -106,7 +118,7 @@ export default function AdminMessagesViewer() {
                             </p>
                         </div>
 
-                        <div className="mt-4 flex gap-2">
+                        <div className="mt-4 flex gap-2 justify-between">
                             <a
                                 href={`mailto:${message.email}?subject=Re: Your message&body=Hi ${message.name},%0D%0A%0D%0AThank you for your message:%0D%0A"${message.message}"%0D%0A%0D%0A`}
                                 className="inline-flex items-center gap-2 px-3 py-1 text-sm bg-primary text-primary-foreground rounded hover:bg-primary/90 transition-colors"
@@ -114,6 +126,14 @@ export default function AdminMessagesViewer() {
                                 <Mail size={14} />
                                 Reply
                             </a>
+                            <button
+                                onClick={() => handleDelete(message._id)}
+                                className="inline-flex items-center gap-2 px-3 py-1 text-sm bg-destructive text-destructive-foreground rounded hover:bg-destructive/90 transition-colors"
+                                title="Delete message permanently"
+                            >
+                                <Trash2 size={14} />
+                                Delete
+                            </button>
                         </div>
                     </motion.div>
                 ))}

@@ -27,6 +27,10 @@ let ContactController = class ContactController {
     async findAll() {
         return this.contactService.findAll();
     }
+    async delete(id) {
+        await this.contactService.delete(id);
+        return { message: 'Message deleted successfully' };
+    }
 };
 exports.ContactController = ContactController;
 __decorate([
@@ -43,6 +47,14 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], ContactController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    (0, common_1.Delete)(':id'),
+    __param(0, (0, common_1.Param)('id')),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String]),
+    __metadata("design:returntype", Promise)
+], ContactController.prototype, "delete", null);
 exports.ContactController = ContactController = __decorate([
     (0, common_1.Controller)('contact'),
     __metadata("design:paramtypes", [contact_service_1.ContactService])
