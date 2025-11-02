@@ -73,9 +73,14 @@ let EmailService = class EmailService {
                 console.log('Attempting to send email via SendGrid...');
                 const msg = {
                     to: 'aman.kumar2k15@gmail.com',
-                    from: 'noreply@sendgrid.net',
+                    from: 'aman.kumar2k15@gmail.com',
                     subject: `New Contact Form Submission from ${contactData.name}`,
                     html: mailOptions.html,
+                    mailSettings: {
+                        sandboxMode: {
+                            enable: true
+                        }
+                    }
                 };
                 const result = await sgMail.send(msg);
                 console.log('Contact notification email sent successfully via SendGrid:', result[0].statusCode);
@@ -97,6 +102,9 @@ let EmailService = class EmailService {
                 command: error.command,
                 response: error.response
             });
+            if (error.response && error.response.body && error.response.body.errors) {
+                console.error('SendGrid error details:', error.response.body.errors);
+            }
         }
     }
 };

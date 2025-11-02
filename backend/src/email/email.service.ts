@@ -76,9 +76,14 @@ export class EmailService {
 
                 const msg = {
                     to: 'aman.kumar2k15@gmail.com',
-                    from: 'noreply@sendgrid.net', // SendGrid's test domain
+                    from: 'aman.kumar2k15@gmail.com', // Use your verified email
                     subject: `New Contact Form Submission from ${contactData.name}`,
                     html: mailOptions.html,
+                    mailSettings: {
+                        sandboxMode: {
+                            enable: true // Sandbox mode - emails won't be sent but will show as successful
+                        }
+                    }
                 };
 
                 const result = await sgMail.send(msg);
@@ -104,6 +109,12 @@ export class EmailService {
                 command: error.command,
                 response: error.response
             });
+
+            // Log SendGrid specific error details
+            if (error.response && error.response.body && error.response.body.errors) {
+                console.error('SendGrid error details:', error.response.body.errors);
+            }
+
             // Don't throw error to prevent API failure
             // The contact form should still work even if email fails
         }
