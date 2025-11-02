@@ -88,6 +88,9 @@ export class EmailService {
 
                 const result = await sgMail.send(msg);
                 console.log('Contact notification email sent successfully via SendGrid:', result[0].statusCode);
+                console.log('SendGrid Message ID:', result[0].headers['x-message-id']);
+                console.log('Email sent to:', msg.to);
+                console.log('Email sent from:', msg.from);
                 return;
             }
 
