@@ -12,10 +12,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.EmailService = void 0;
 const common_1 = require("@nestjs/common");
 const nodemailer = require("nodemailer");
+const sgMail = require("@sendgrid/mail");
 const config_1 = require("@nestjs/config");
 let EmailService = class EmailService {
     constructor(configService) {
         this.configService = configService;
+        const sendGridApiKey = this.configService.get('SENDGRID_API_KEY');
+        if (sendGridApiKey) {
+            sgMail.setApiKey(sendGridApiKey);
+        }
         this.transporter = nodemailer.createTransport({
             service: 'gmail',
             host: 'smtp.gmail.com',
@@ -62,15 +67,28 @@ let EmailService = class EmailService {
                 </div>
             `,
         };
+        const sendGridApiKey = this.configService.get('SENDGRID_API_KEY');
         try {
-            console.log('Attempting to send email notification...');
+            if (sendGridApiKey) {
+                console.log('Attempting to send email via SendGrid...');
+                const msg = {
+                    to: 'aman.kumar2k15@gmail.com',
+                    from: 'noreply@sendgrid.net',
+                    subject: `New Contact Form Submission from ${contactData.name}`,
+                    html: mailOptions.html,
+                };
+                const result = await sgMail.send(msg);
+                console.log('Contact notification email sent successfully via SendGrid:', result[0].statusCode);
+                return;
+            }
+            console.log('Attempting to send email via Gmail SMTP...');
             console.log('Email config:', {
                 from: this.configService.get('EMAIL_USER'),
                 to: 'aman.kumar2k15@gmail.com',
                 subject: mailOptions.subject
             });
             const result = await this.transporter.sendMail(mailOptions);
-            console.log('Contact notification email sent successfully:', result.messageId);
+            console.log('Contact notification email sent successfully via Gmail:', result.messageId);
         }
         catch (error) {
             console.error('Error sending contact notification email:', error);

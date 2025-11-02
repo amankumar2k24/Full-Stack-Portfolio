@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import * as nodemailer from 'nodemailer';
+import * as sgMail from '@sendgrid/mail';
 import { ConfigService } from '@nestjs/config';
 
 @Injectable()
@@ -7,6 +8,13 @@ export class EmailService {
     private transporter: nodemailer.Transporter;
 
     constructor(private configService: ConfigService) {
+        // Initialize SendGrid
+        const sendGridApiKey = this.configService.get<string>('SENDGRID_API_KEY');
+        if (sendGridApiKey) {
+            sgMail.setApiKey(sendGridApiKey);
+        }
+
+        // Keep Gmail as fallback (though it won't work on Render)
         this.transporter = nodemailer.createTransport({
             service: 'gmail',
             host: 'smtp.gmail.com',
@@ -19,9 +27,9 @@ export class EmailService {
             tls: {
                 rejectUnauthorized: false
             },
-            connectionTimeout: 60000, // 60 seconds
-            greetingTimeout: 30000, // 30 seconds
-            socketTimeout: 60000, // 60 seconds
+            connectionTimeout: 60000,
+            greetingTimeout: 30000,
+            socketTimeout: 60000,
         });
     }
 
@@ -59,8 +67,27 @@ export class EmailService {
             `,
         };
 
+        const sendGridApiKey = this.configService.get<string>('SENDGRID_API_KEY');
+
         try {
-            console.log('Attempting to send email notification...');
+            // Try SendGrid first (if API key is available)
+            if (sendGridApiKey) {
+                console.log('Attempting to send email via SendGrid...');
+
+                const msg = {
+                    to: 'aman.kumar2k15@gmail.com',
+                    from: 'noreply@sendgrid.net', // SendGrid's test domain
+                    subject: `New Contact Form Submission from ${contactData.name}`,
+                    html: mailOptions.html,
+                };
+
+                const result = await sgMail.send(msg);
+                console.log('Contact notification email sent successfully via SendGrid:', result[0].statusCode);
+                return;
+            }
+
+            // Fallback to Gmail (will likely fail on Render)
+            console.log('Attempting to send email via Gmail SMTP...');
             console.log('Email config:', {
                 from: this.configService.get<string>('EMAIL_USER'),
                 to: 'aman.kumar2k15@gmail.com',
@@ -68,7 +95,8 @@ export class EmailService {
             });
 
             const result = await this.transporter.sendMail(mailOptions);
-            console.log('Contact notification email sent successfully:', result.messageId);
+            console.log('Contact notification email sent successfully via Gmail:', result.messageId);
+
         } catch (error) {
             console.error('Error sending contact notification email:', error);
             console.error('Error details:', {

@@ -27,7 +27,9 @@
         "update-user": "node update-user.js",
         "update-placeholders": "node update-placeholder-images.js",
         "test-email": "ts-node src/scripts/test-email.ts",
-        "fix-image-urls": "ts-node src/scripts/fix-image-urls.ts"
+        "fix-image-urls": "ts-node src/scripts/fix-image-urls.ts",
+        "test-sendgrid": "ts-node src/scripts/test-sendgrid.ts",
+        "test-sendgrid-config": "ts-node src/scripts/test-sendgrid-config.ts"
     },
     "dependencies": {
         "@nestjs/common": "^10.4.20",
@@ -37,6 +39,7 @@
         "@nestjs/mongoose": "^10.1.0",
         "@nestjs/passport": "^10.0.3",
         "@nestjs/platform-express": "^10.4.20",
+        "@sendgrid/mail": "^8.1.6",
         "@types/cron": "^2.0.1",
         "@types/nodemailer": "^7.0.3",
         "bcrypt": "^5.1.1",
