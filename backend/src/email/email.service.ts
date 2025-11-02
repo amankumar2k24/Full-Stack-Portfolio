@@ -81,7 +81,7 @@ export class EmailService {
                     html: mailOptions.html,
                     mailSettings: {
                         sandboxMode: {
-                            enable: true // Sandbox mode - emails won't be sent but will show as successful
+                            enable: false // Disabled - now sending real emails since sender is verified
                         }
                     }
                 };

@@ -78,7 +78,7 @@ let EmailService = class EmailService {
                     html: mailOptions.html,
                     mailSettings: {
                         sandboxMode: {
-                            enable: true
+                            enable: false
                         }
                     }
                 };
