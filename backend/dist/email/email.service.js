@@ -44,27 +44,70 @@ let EmailService = class EmailService {
             to: 'aman.kumar2k15@gmail.com',
             subject: `New Contact Form Submission from ${contactData.name}`,
             html: `
-                <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #ddd; border-radius: 10px;">
-                    <h2 style="color: #333; border-bottom: 2px solid #007bff; padding-bottom: 10px;">New Contact Form Submission</h2>
-                    
-                    <div style="margin: 20px 0;">
-                        <h3 style="color: #555; margin-bottom: 5px;">Contact Details:</h3>
-                        <p style="margin: 5px 0;"><strong>Name:</strong> ${contactData.name}</p>
-                        <p style="margin: 5px 0;"><strong>Email:</strong> ${contactData.email}</p>
-                    </div>
-                    
-                    <div style="margin: 20px 0;">
-                        <h3 style="color: #555; margin-bottom: 10px;">Message:</h3>
-                        <div style="background-color: #f8f9fa; padding: 15px; border-left: 4px solid #007bff; border-radius: 5px;">
-                            <p style="margin: 0; line-height: 1.6;">${contactData.message}</p>
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="utf-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+                    <title>New Contact Form Submission</title>
+                </head>
+                <body style="margin: 0; padding: 0; font-family: Arial, sans-serif; background-color: #f4f4f4;">
+                    <div style="max-width: 600px; margin: 20px auto; background-color: #ffffff; border-radius: 10px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                        
+                        <!-- Header -->
+                        <div style="background: linear-gradient(135deg, #007bff, #0056b3); color: white; padding: 30px 20px; text-align: center;">
+                            <h1 style="margin: 0; font-size: 24px; font-weight: 600;">New Contact Form Submission</h1>
+                            <p style="margin: 10px 0 0 0; opacity: 0.9;">From your portfolio website</p>
+                        </div>
+                        
+                        <!-- Content -->
+                        <div style="padding: 30px 20px;">
+                            
+                            <!-- Contact Details -->
+                            <div style="margin-bottom: 30px;">
+                                <h2 style="color: #333; margin: 0 0 20px 0; font-size: 18px; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px;">Contact Information</h2>
+                                
+                                <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 4px solid #007bff;">
+                                    <p style="margin: 0 0 10px 0; font-size: 16px;"><strong style="color: #555;">Name:</strong> <span style="color: #333;">${contactData.name}</span></p>
+                                    <p style="margin: 0; font-size: 16px;"><strong style="color: #555;">Email:</strong> <a href="mailto:${contactData.email}" style="color: #007bff; text-decoration: none;">${contactData.email}</a></p>
+                                </div>
+                            </div>
+                            
+                            <!-- Message -->
+                            <div style="margin-bottom: 30px;">
+                                <h2 style="color: #333; margin: 0 0 20px 0; font-size: 18px; border-bottom: 2px solid #f0f0f0; padding-bottom: 10px;">Message</h2>
+                                
+                                <div style="background-color: #f8f9fa; padding: 20px; border-radius: 8px; border-left: 4px solid #28a745;">
+                                    <p style="margin: 0; line-height: 1.6; color: #333; font-size: 15px; white-space: pre-wrap;">${contactData.message}</p>
+                                </div>
+                            </div>
+                            
+                            <!-- Action Button -->
+                            <div style="text-align: center; margin: 30px 0;">
+                                <a href="mailto:${contactData.email}?subject=Re: Your message from portfolio" 
+                                   style="display: inline-block; background-color: #007bff; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; font-weight: 600; font-size: 16px;">
+                                    Reply to ${contactData.name}
+                                </a>
+                            </div>
+                        </div>
+                        
+                        <!-- Footer -->
+                        <div style="background-color: #f8f9fa; padding: 20px; text-align: center; border-top: 1px solid #e9ecef;">
+                            <p style="margin: 0; color: #666; font-size: 14px;">
+                                📧 Sent from your portfolio contact form<br>
+                                🕒 Received on ${new Date().toLocaleString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            })}
+                            </p>
                         </div>
                     </div>
-                    
-                    <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; text-align: center; color: #666; font-size: 12px;">
-                        <p>This email was sent from your portfolio contact form.</p>
-                        <p>Received on: ${new Date().toLocaleString()}</p>
-                    </div>
-                </div>
+                </body>
+                </html>
             `,
         };
         const sendGridApiKey = this.configService.get('SENDGRID_API_KEY');
@@ -73,11 +116,23 @@ let EmailService = class EmailService {
                 console.log('Attempting to send email via SendGrid...');
                 const msg = {
                     to: 'aman.kumar2k15@gmail.com',
-                    from: 'aman.kumar2k15@gmail.com',
+                    from: {
+                        email: 'aman.kumar2k15@gmail.com',
+                        name: 'Portfolio Contact Form'
+                    },
+                    replyTo: contactData.email,
                     subject: `New Contact Form Submission from ${contactData.name}`,
                     html: mailOptions.html,
                     mailSettings: {
                         sandboxMode: {
+                            enable: false
+                        }
+                    },
+                    trackingSettings: {
+                        clickTracking: {
+                            enable: false
+                        },
+                        openTracking: {
                             enable: false
                         }
                     }
