@@ -10,6 +10,7 @@ module.exports = {
         extend: {
             screens: {
                 'xs': '320px',
+                'sm-480': '480px',
                 'sm': '640px',
                 'md': '768px',
                 'lg': '1024px',
@@ -91,5 +92,21 @@ module.exports = {
             },
         },
     },
-    plugins: [],
+    plugins: [
+        function ({ addUtilities }) {
+            const newUtilities = {
+                '.scrollbar-hide': {
+                    /* IE and Edge */
+                    '-ms-overflow-style': 'none',
+                    /* Firefox */
+                    'scrollbar-width': 'none',
+                    /* Safari and Chrome */
+                    '&::-webkit-scrollbar': {
+                        display: 'none'
+                    }
+                }
+            }
+            addUtilities(newUtilities)
+        }
+    ],
 }

@@ -2,6 +2,7 @@
 
 import { motion, useInView } from 'framer-motion'
 import { useRef, useEffect, useState } from 'react'
+import { useRouter } from 'next/navigation'
 import {
     Code,
     Smartphone,
@@ -13,6 +14,8 @@ import {
     BarChart3,
     Rocket,
     Globe,
+    ChevronLeft,
+    ChevronRight,
     // Additional icons for more variety
     Monitor,
     Server,
@@ -250,6 +253,36 @@ export default function ServicesSection() {
     const [services, setServices] = useState<Service[]>([])
     const [settings, setSettings] = useState<Record<string, string>>({})
     const [loading, setLoading] = useState(true)
+    const [currentIndex, setCurrentIndex] = useState(0)
+    const [itemsPerView, setItemsPerView] = useState(3)
+    const [touchStart, setTouchStart] = useState<number | null>(null)
+    const [touchEnd, setTouchEnd] = useState<number | null>(null)
+    const [processCurrentIndex, setProcessCurrentIndex] = useState(0)
+    const [processItemsPerView, setProcessItemsPerView] = useState(6)
+    const router = useRouter()
+
+    // Minimum swipe distance (in px)
+    const minSwipeDistance = 50
+
+    // Update items per view based on screen size
+    useEffect(() => {
+        const updateItemsPerView = () => {
+            if (window.innerWidth < 768) {
+                setItemsPerView(1) // Mobile: 1 item
+                setProcessItemsPerView(1) // Mobile: 1 process item
+            } else if (window.innerWidth < 1024) {
+                setItemsPerView(2) // Tablet: 2 items
+                setProcessItemsPerView(3) // Tablet: 3 process items
+            } else {
+                setItemsPerView(3) // Desktop: 3 items
+                setProcessItemsPerView(6) // Desktop: 6 process items (all visible)
+            }
+        }
+
+        updateItemsPerView()
+        window.addEventListener('resize', updateItemsPerView)
+        return () => window.removeEventListener('resize', updateItemsPerView)
+    }, [])
 
     useEffect(() => {
         const fetchData = async () => {
@@ -275,6 +308,76 @@ export default function ServicesSection() {
 
         fetchData()
     }, [])
+
+    // Auto-carousel for process section (works on all screen sizes)
+    const [isProcessPaused, setIsProcessPaused] = useState(false)
+
+    useEffect(() => {
+        if (isProcessPaused) return // Don't auto-scroll if paused
+
+        const interval = setInterval(() => {
+            setProcessCurrentIndex((prev) => prev + 1)
+        }, 3000) // Change every 3 seconds for slow rotation
+
+        return () => clearInterval(interval)
+    }, [isProcessPaused])
+
+    // Process touch handlers
+    const onProcessTouchStart = (e: React.TouchEvent) => {
+        // Pause auto-rotation on touch
+    }
+
+    const onProcessTouchMove = (e: React.TouchEvent) => {
+        // Let the browser handle natural scrolling
+    }
+
+    const onProcessTouchEnd = () => {
+        // Resume auto-rotation after touch
+    }
+
+    const nextSlide = () => {
+        if (services.length > 0) {
+            setCurrentIndex((prev) =>
+                prev + itemsPerView >= services.length ? 0 : prev + itemsPerView
+            )
+        }
+    }
+
+    const prevSlide = () => {
+        if (services.length > 0) {
+            setCurrentIndex((prev) =>
+                prev === 0 ? Math.max(0, services.length - itemsPerView) : Math.max(0, prev - itemsPerView)
+            )
+        }
+    }
+
+    const canGoNext = services.length > 0 && currentIndex + itemsPerView < services.length
+    const canGoPrev = currentIndex > 0
+
+    const onTouchStart = (e: React.TouchEvent) => {
+        setTouchEnd(null)
+        setTouchStart(e.targetTouches[0].clientX)
+    }
+
+    const onTouchMove = (e: React.TouchEvent) => {
+        setTouchEnd(e.targetTouches[0].clientX)
+    }
+
+    const onTouchEnd = () => {
+        if (!touchStart || !touchEnd) return
+
+        const distance = touchStart - touchEnd
+        const isLeftSwipe = distance > minSwipeDistance
+        const isRightSwipe = distance < -minSwipeDistance
+
+        if (isLeftSwipe) {
+            nextSlide()
+        } else if (isRightSwipe) {
+            prevSlide()
+        }
+    }
+
+
 
     if (loading) {
         return (
@@ -321,18 +424,115 @@ export default function ServicesSection() {
                     </p>
                 </motion.div>
 
-                {/* Services Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8 mb-8 sm:mb-12">
-                    {services.length > 0 ? (
-                        services.map((service, index) => (
-                            <ServiceCard key={service.title} service={service} index={index} />
-                        ))
-                    ) : (
-                        <div className="col-span-full text-center py-12">
-                            <p className="text-muted-foreground">No services available. Please add services from the admin panel.</p>
+                {/* Services Carousel */}
+                {services.length > 0 ? (
+                    <div className="relative mb-8 sm:mb-12">
+                        {/* Navigation Arrows */}
+                        <div className="flex justify-between items-center mb-6">
+                            <motion.button
+                                onClick={prevSlide}
+                                disabled={!canGoPrev}
+                                className={`p-3 rounded-full border transition-all duration-300 ${canGoPrev
+                                    ? 'bg-card hover:bg-primary hover:text-primary-foreground border-border hover:border-primary shadow-sm hover:shadow-md'
+                                    : 'bg-muted border-muted text-muted-foreground cursor-not-allowed'
+                                    }`}
+                                whileHover={canGoPrev ? { scale: 1.05 } : {}}
+                                whileTap={canGoPrev ? { scale: 0.95 } : {}}
+                            >
+                                <ChevronLeft size={20} />
+                            </motion.button>
+
+                            <div className="flex gap-2">
+                                {Array.from({ length: Math.ceil(services.length / itemsPerView) }).map((_, index) => (
+                                    <button
+                                        key={index}
+                                        onClick={() => setCurrentIndex(index * itemsPerView)}
+                                        className={`w-2 h-2 rounded-full transition-all duration-300 ${Math.floor(currentIndex / itemsPerView) === index
+                                            ? 'bg-primary w-6'
+                                            : 'bg-muted-foreground/30 hover:bg-muted-foreground/50'
+                                            }`}
+                                    />
+                                ))}
+                            </div>
+
+                            <motion.button
+                                onClick={nextSlide}
+                                disabled={!canGoNext}
+                                className={`p-3 rounded-full border transition-all duration-300 ${canGoNext
+                                    ? 'bg-card hover:bg-primary hover:text-primary-foreground border-border hover:border-primary shadow-sm hover:shadow-md'
+                                    : 'bg-muted border-muted text-muted-foreground cursor-not-allowed'
+                                    }`}
+                                whileHover={canGoNext ? { scale: 1.05 } : {}}
+                                whileTap={canGoNext ? { scale: 0.95 } : {}}
+                            >
+                                <ChevronRight size={20} />
+                            </motion.button>
                         </div>
-                    )}
-                </div>
+
+                        {/* Carousel Container */}
+                        <div className="overflow-hidden">
+                            <motion.div
+                                className="flex transition-transform duration-500 ease-in-out"
+                                style={{
+                                    transform: `translateX(-${(currentIndex / itemsPerView) * 100}%)`,
+                                }}
+                            >
+                                {services.map((service, index) => (
+                                    <div
+                                        key={service._id}
+                                        className={`flex-shrink-0 px-3 ${itemsPerView === 1 ? 'w-full' :
+                                            itemsPerView === 2 ? 'w-1/2' : 'w-1/3'
+                                            }`}
+                                    >
+                                        <ServiceCard service={service} index={index} />
+                                    </div>
+                                ))}
+                            </motion.div>
+                        </div>
+
+                        {/* Touch/Swipe indicators for mobile */}
+                        <div className="flex justify-center mt-6 md:hidden">
+                            <p className="text-xs text-muted-foreground">
+                                Swipe or use arrows to navigate
+                            </p>
+                        </div>
+
+                        {/* See All Button */}
+                        <div className="flex justify-center mt-8">
+                            <motion.button
+                                onClick={() => router.push('/services')}
+                                className="group relative px-8 py-3 bg-primary text-primary-foreground rounded-full font-semibold transition-all duration-300 hover:bg-primary/90 hover:shadow-lg hover:shadow-primary/25 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 focus:ring-offset-background"
+                                whileHover={{ scale: 1.05 }}
+                                whileTap={{ scale: 0.95 }}
+                            >
+                                <span className="relative z-10 flex items-center gap-2">
+                                    See All Services
+                                    <motion.svg
+                                        width="16"
+                                        height="16"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        strokeWidth="2"
+                                        strokeLinecap="round"
+                                        strokeLinejoin="round"
+                                        className="transition-transform duration-300 group-hover:translate-x-1"
+                                    >
+                                        <path d="M5 12h14" />
+                                        <path d="m12 5 7 7-7 7" />
+                                    </motion.svg>
+                                </span>
+
+                                {/* Animated background */}
+                                <div className="absolute inset-0 rounded-full bg-gradient-to-r from-primary via-blue-500 to-purple-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                            </motion.button>
+                        </div>
+                    </div>
+                ) : (
+                    <div className="text-center py-12 mb-8 sm:mb-12">
+                        <p className="text-muted-foreground">No services available. Please add services from the admin panel.</p>
+                    </div>
+                )}
 
                 {/* Process Section */}
                 <motion.div
@@ -348,10 +548,45 @@ export default function ServicesSection() {
                     </p>
                 </motion.div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-8 lg:gap-6">
-                    {processSteps.map((step, index) => (
-                        <ProcessStep key={step.step} step={step} index={index} />
-                    ))}
+                {/* Process Carousel */}
+                <div className="relative">
+                    {/* Carousel Container with Shadow Effects */}
+                    <div className="relative overflow-hidden">
+                        {/* Left Shadow Gradient - Hidden below 480px */}
+                        <div className="absolute left-0 top-0 bottom-0 w-20 bg-gradient-to-r from-background via-background/90 to-transparent z-10 pointer-events-none hidden sm-480:block"></div>
+
+                        {/* Right Shadow Gradient - Hidden below 480px */}
+                        <div className="absolute right-0 top-0 bottom-0 w-20 bg-gradient-to-l from-background via-background/90 to-transparent z-10 pointer-events-none hidden sm-480:block"></div>
+
+                        {/* Carousel Content */}
+                        <div
+                            className="overflow-hidden pb-4"
+                            onMouseEnter={() => setIsProcessPaused(true)}
+                            onMouseLeave={() => setIsProcessPaused(false)}
+                        >
+                            <motion.div
+                                className="flex transition-transform duration-1000 ease-in-out"
+                                style={{
+                                    transform: `translateX(-${(processCurrentIndex % processSteps.length) * (100 / processItemsPerView)}%)`,
+                                }}
+                            >
+                                {/* Render multiple copies for infinite loop effect */}
+                                {[...Array(3)].map((_, copyIndex) => (
+                                    processSteps.map((step, index) => (
+                                        <div
+                                            key={`${copyIndex}-${step.step}`}
+                                            className={`flex-shrink-0 px-3 ${processItemsPerView === 1 ? 'w-full' :
+                                                processItemsPerView === 3 ? 'w-1/3' :
+                                                    processItemsPerView === 6 ? 'w-1/6' : 'w-1/6'
+                                                }`}
+                                        >
+                                            <ProcessStep step={step} index={index} />
+                                        </div>
+                                    ))
+                                )).flat()}
+                            </motion.div>
+                        </div>
+                    </div>
                 </div>
             </div>
 

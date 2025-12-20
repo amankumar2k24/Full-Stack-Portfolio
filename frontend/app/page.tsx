@@ -5,7 +5,7 @@ import { motion } from 'framer-motion'
 import HeroSection from '@/components/HeroSection'
 import AboutSection from '@/components/AboutSection'
 import ServicesSection from '@/components/ServicesSection'
-import EnhancedSkillsSection from '@/components/EnhancedSkillsSection'
+import SimpleSkillsSection from '@/components/SimpleSkillsSection'
 import ExperienceSection from '@/components/ExperienceSection'
 import ProjectsSection from '@/components/ProjectsSection'
 import ContactForm from '@/components/ContactForm'
@@ -83,31 +83,7 @@ export default function HomePage() {
                 <ExperienceSection />
 
                 {/* Skills Section */}
-                <section id="skills" className="py-8 sm:py-16 px-3 sm:px-6 bg-gradient-to-br from-muted/20 via-background to-muted/20 relative overflow-hidden">
-                    <div className="max-w-7xl mx-auto">
-                        <motion.div
-                            initial={{ opacity: 0, y: 30 }}
-                            whileInView={{ opacity: 1, y: 0 }}
-                            viewport={{ once: true }}
-                            transition={{ duration: 0.8 }}
-                            className="text-center mb-6 sm:mb-10"
-                        >
-                            <h2 className="pb-1 text-3xl sm:text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-primary via-blue-500 to-purple-500 bg-clip-text text-transparent">
-                                Skills & Technologies
-                            </h2>
-                            <p className="text-xs sm:text-sm text-muted-foreground max-w-2xl mx-auto">
-                                Explore my technical expertise through this interactive skill constellation
-                            </p>
-                        </motion.div>
-                        <Suspense fallback={
-                            <div className="flex items-center justify-center min-h-[400px]">
-                                <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-                            </div>
-                        }>
-                            <EnhancedSkillsSection />
-                        </Suspense>
-                    </div>
-                </section>
+                <SimpleSkillsSection />
 
                 {/* Projects Section */}
                 <section id="projects" className="py-12 sm:py-20 px-3 sm:px-6">

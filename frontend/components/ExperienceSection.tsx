@@ -59,11 +59,11 @@ function ExperienceCard({ experience, index }: { experience: Experience, index: 
     const Icon = icons[index % icons.length] // Could be enhanced to map experience.icon to actual icon
     const color = experience.color || colors[index % colors.length]
 
-    // Determine which achievements to show
-    const achievementsToShow = isMobile && !showAll
+    // Always show only 3 achievements on all screen sizes
+    const achievementsToShow = !showAll
         ? experience.achievements.slice(0, 3)
         : experience.achievements
-    const hasMoreAchievements = isMobile && experience.achievements.length > 3
+    const hasMoreAchievements = experience.achievements.length > 3
 
     return (
         <motion.div
@@ -133,7 +133,7 @@ function ExperienceCard({ experience, index }: { experience: Experience, index: 
                         ))}
                     </ul>
 
-                    {/* Show More/Less Button for Mobile */}
+                    {/* Show More/Less Button for All Screen Sizes */}
                     {hasMoreAchievements && (
                         <motion.button
                             onClick={() => setShowAll(!showAll)}
