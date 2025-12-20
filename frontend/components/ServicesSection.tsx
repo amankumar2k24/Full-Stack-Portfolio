@@ -490,13 +490,6 @@ export default function ServicesSection() {
                             </motion.div>
                         </div>
 
-                        {/* Touch/Swipe indicators for mobile */}
-                        <div className="flex justify-center mt-6 md:hidden">
-                            <p className="text-xs text-muted-foreground">
-                                Swipe or use arrows to navigate
-                            </p>
-                        </div>
-
                         {/* See All Button */}
                         <div className="flex justify-center mt-8">
                             <motion.button
