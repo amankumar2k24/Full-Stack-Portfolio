@@ -22,6 +22,8 @@ const settings_module_1 = require("./settings/settings.module");
 const stats_module_1 = require("./stats/stats.module");
 const health_module_1 = require("./health/health.module");
 const cron_module_1 = require("./cron/cron.module");
+const ai_assistant_module_1 = require("./ai-assistant/ai-assistant.module");
+const ai_config_module_1 = require("./ai-config/ai-config.module");
 let AppModule = class AppModule {
 };
 exports.AppModule = AppModule;
@@ -44,6 +46,8 @@ exports.AppModule = AppModule = __decorate([
             stats_module_1.StatsModule,
             health_module_1.HealthModule,
             cron_module_1.CronModule,
+            ai_assistant_module_1.AiAssistantModule,
+            ai_config_module_1.AiConfigModule,
         ],
     })
 ], AppModule);

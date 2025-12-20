@@ -13,6 +13,8 @@ import { SettingsModule } from './settings/settings.module';
 import { StatsModule } from './stats/stats.module';
 import { HealthModule } from './health/health.module';
 import { CronModule } from './cron/cron.module';
+import { AiAssistantModule } from './ai-assistant/ai-assistant.module';
+import { AiConfigModule } from './ai-config/ai-config.module';
 
 @Module({
     imports: [
@@ -32,6 +34,8 @@ import { CronModule } from './cron/cron.module';
         StatsModule,
         HealthModule,
         CronModule,
+        AiAssistantModule,
+        AiConfigModule,
     ],
 })
 export class AppModule { }
