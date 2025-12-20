@@ -198,15 +198,13 @@ function StatCard({ stat, index }: { stat: Stat, index: number }) {
             className="text-center group"
         >
             <motion.div
-                className="w-16 h-16 max-[480px]:w-12 max-[480px]:h-12 mx-auto mb-4 max-[480px]:mb-2 rounded-2xl max-[480px]:rounded-xl flex items-center justify-center group-hover:opacity-80 transition-colors"
-                style={{ backgroundColor: `${stat.color}20` }}
+                className="w-16 h-16 max-[480px]:w-12 max-[480px]:h-12 mx-auto mb-4 max-[480px]:mb-2 rounded-2xl max-[480px]:rounded-xl flex items-center justify-center group-hover:opacity-80 transition-colors bg-primary/20"
                 whileHover={{ scale: 1.1, rotate: 5 }}
             >
-                <Icon size={28} className="max-[480px]:w-5 max-[480px]:h-5" style={{ color: stat.color }} />
+                <Icon size={28} className="max-[480px]:w-5 max-[480px]:h-5 text-primary" />
             </motion.div>
             <motion.div
-                className="text-3xl max-[480px]:text-xl font-bold mb-2 max-[480px]:mb-1"
-                style={{ color: stat.color }}
+                className="text-3xl max-[480px]:text-xl font-bold mb-2 max-[480px]:mb-1 text-foreground"
                 initial={{ scale: 0 }}
                 animate={isInView ? { scale: 1 } : {}}
                 transition={{ duration: 0.5, delay: index * 0.1 + 0.3, type: "spring" }}

@@ -180,7 +180,7 @@ export default function Footer() {
             {/* Scroll to Top Button */}
             <motion.button
                 onClick={scrollToTop}
-                className={`fixed bottom-6 right-6 p-4 sm:p-3 bg-primary text-primary-foreground rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-50 ${showScrollTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'
+                className={`fixed bottom-20 right-4 sm:bottom-24 sm:right-6 w-10 h-10 sm:w-12 sm:h-12 bg-primary text-primary-foreground rounded-full shadow-lg hover:shadow-xl transition-all duration-300 z-50 flex items-center justify-center ${showScrollTop ? 'opacity-100 translate-y-0' : 'opacity-0 translate-y-10 pointer-events-none'
                     }`}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
@@ -191,7 +191,7 @@ export default function Footer() {
                 }}
                 transition={{ duration: 0.3 }}
             >
-                <ArrowUp size={24} className="sm:w-5 sm:h-5" />
+                <ArrowUp size={18} className="sm:w-6 sm:h-6" />
             </motion.button>
         </footer>
     )

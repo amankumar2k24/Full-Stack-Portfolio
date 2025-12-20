@@ -12,6 +12,7 @@ import ContactForm from '@/components/ContactForm'
 import Navigation from '@/components/Navigation'
 import Footer from '@/components/Footer'
 import PortfolioLoader from '@/components/PortfolioLoader'
+import AiAssistant from '@/components/AiAssistant'
 
 export default function HomePage() {
     const [isLoading, setIsLoading] = useState(true)
@@ -133,6 +134,9 @@ export default function HomePage() {
 
                 {/* Footer */}
                 <Footer />
+
+                {/* AI Assistant - Only show after loading is complete */}
+                {!isLoading && <AiAssistant />}
             </div>
         </>
     )

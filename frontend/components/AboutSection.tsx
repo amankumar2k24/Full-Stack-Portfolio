@@ -223,8 +223,7 @@ export default function AboutSection() {
                                         whileHover={{ y: -2 }}
                                     >
                                         <motion.div
-                                            className="text-2xl sm:text-3xl font-bold mb-2 group-hover:scale-110 transition-transform duration-200"
-                                            style={{ color: stat.color }}
+                                            className="text-2xl sm:text-3xl font-bold mb-2 group-hover:scale-110 transition-transform duration-200 text-foreground"
                                             initial={{ scale: 0 }}
                                             whileInView={{ scale: 1 }}
                                             viewport={{ once: true }}

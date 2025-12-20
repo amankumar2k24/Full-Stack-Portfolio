@@ -24,8 +24,8 @@ interface BackendSkill {
 const skillIconMap: Record<string, { icon: React.ComponentType<any>; color: string; category: string }> = {
     'React': { icon: SiReact, color: '#61DAFB', category: 'Frontend' },
     'React.js': { icon: SiReact, color: '#61DAFB', category: 'Frontend' },
-    'Next.js': { icon: SiNextdotjs, color: '#ffffff', category: 'Frontend' }, // Changed from black to white
-    'NextJS': { icon: SiNextdotjs, color: '#ffffff', category: 'Frontend' }, // Changed from black to white
+    'Next.js': { icon: SiNextdotjs, color: '#FBBF24', category: 'Frontend' }, // Changed to yellow
+    'NextJS': { icon: SiNextdotjs, color: '#FBBF24', category: 'Frontend' }, // Changed to yellow
     'NestJS': { icon: SiNestjs, color: '#E0234E', category: 'Backend' },
     'Nest.js': { icon: SiNestjs, color: '#E0234E', category: 'Backend' },
     'Node.js': { icon: SiNodedotjs, color: '#339933', category: 'Backend' },

@@ -16,7 +16,8 @@ import {
     LogOut,
     Menu,
     X,
-    BarChart3
+    BarChart3,
+    Bot
 } from 'lucide-react'
 import { useAuthStore } from '@/lib/store'
 
@@ -28,6 +29,7 @@ const navigation = [
     { name: 'Skills', href: '/admin/skills', icon: Code },
     { name: 'Projects', href: '/admin/projects', icon: FolderOpen },
     { name: 'Statistics', href: '/admin/stats', icon: BarChart3 },
+    { name: 'AI Assistant', href: '/admin/ai-config', icon: Bot },
     { name: 'Messages', href: '/admin/messages', icon: Mail },
     { name: 'Settings', href: '/admin/settings', icon: Settings },
 ]
