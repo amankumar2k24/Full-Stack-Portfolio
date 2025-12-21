@@ -50,7 +50,7 @@ function ImageCarousel({ images, title }: { images: string[], title: string }) {
     }
 
     return (
-        <div className="relative h-56 w-full overflow-hidden">
+        <div className="relative h-40 sm:h-56 w-full overflow-hidden">
             <AnimatePresence mode="wait">
                 <motion.div
                     key={currentIndex}
@@ -123,15 +123,14 @@ function ProjectCard({ project, index }: { project: Project, index: number }) {
             initial={{ opacity: 0, y: 50 }}
             animate={isInView ? { opacity: 1, y: 0 } : {}}
             transition={{ duration: 0.6, delay: index * 0.1 }}
-            whileHover={{ y: -12, scale: 1.02 }}
             className="group relative bg-card rounded-2xl border overflow-hidden shadow-sm hover:shadow-2xl transition-all duration-500"
         >
             {/* Project Images Carousel */}
             <ImageCarousel images={project.imageUrls || []} title={project.title} />
 
-            <div className="p-6">
+            <div className="p-4 sm:p-6">
                 <motion.h3
-                    className="text-xl font-bold mb-3 group-hover:text-primary transition-colors duration-300 cursor-help"
+                    className="text-lg sm:text-xl font-bold mb-2 sm:mb-3 group-hover:text-primary transition-colors duration-300 cursor-help"
                     initial={{ opacity: 0, y: 20 }}
                     animate={isInView ? { opacity: 1, y: 0 } : {}}
                     transition={{ duration: 0.6, delay: index * 0.1 + 0.2 }}
@@ -141,7 +140,7 @@ function ProjectCard({ project, index }: { project: Project, index: number }) {
                 </motion.h3>
 
                 <motion.div
-                    className="text-muted-foreground mb-4 leading-relaxed"
+                    className="text-muted-foreground mb-3 sm:mb-4 leading-relaxed text-sm sm:text-base"
                     initial={{ opacity: 0, y: 20 }}
                     animate={isInView ? { opacity: 1, y: 0 } : {}}
                     transition={{ duration: 0.6, delay: index * 0.1 + 0.3 }}
@@ -184,7 +183,7 @@ function ProjectCard({ project, index }: { project: Project, index: number }) {
                 </motion.div>
 
                 <motion.div
-                    className="flex flex-wrap gap-2 mb-6"
+                    className="flex flex-wrap gap-1.5 sm:gap-2 mb-4 sm:mb-6"
                     initial={{ opacity: 0, y: 20 }}
                     animate={isInView ? { opacity: 1, y: 0 } : {}}
                     transition={{ duration: 0.6, delay: index * 0.1 + 0.4 }}
@@ -201,7 +200,7 @@ function ProjectCard({ project, index }: { project: Project, index: number }) {
                                 stiffness: 200
                             }}
                             whileHover={{ scale: 1.1 }}
-                            className="px-3 py-1 bg-accent text-accent-foreground rounded-full text-xs font-medium"
+                            className="px-2 sm:px-3 py-0.5 sm:py-1 bg-accent text-accent-foreground rounded-full text-xs font-medium"
                         >
                             {tech}
                         </motion.span>
