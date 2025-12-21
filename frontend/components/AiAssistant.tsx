@@ -127,7 +127,7 @@ export default function AiAssistant() {
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.8, y: 20 }}
                         transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                        className="fixed bottom-2 right-2 left-2 sm:bottom-6 sm:right-6 sm:left-auto sm:w-96 z-50 h-[calc(100vh-1rem)] sm:h-[500px] bg-card border border-border rounded-2xl shadow-2xl flex flex-col overflow-hidden"
+                        className="fixed bottom-2 right-2 left-2 sm:bottom-6 sm:right-6 sm:left-auto sm:w-96 z-50 h-[50vh] sm:h-[500px] bg-card border border-border rounded-2xl shadow-2xl flex flex-col overflow-hidden"
                     >
                         {/* Speech Bubble Arrow - Top (hidden on mobile) */}
                         <div className="hidden sm:block absolute -top-2 right-8 w-4 h-4 bg-card border-l border-t border-border transform rotate-45"></div>
