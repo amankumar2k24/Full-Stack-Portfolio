@@ -22,6 +22,9 @@ export class Project {
 
     @Prop({ type: Number, default: 0 })
     order: number;
+
+    @Prop({ type: Boolean, default: true })
+    isActive: boolean;
 }
 
 export const ProjectSchema = SchemaFactory.createForClass(Project);

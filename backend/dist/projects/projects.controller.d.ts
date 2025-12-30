@@ -4,6 +4,7 @@ export declare class ProjectsController {
     private readonly projectsService;
     constructor(projectsService: ProjectsService);
     findAll(): Promise<import("../schemas/project.schema").Project[]>;
+    findAllForAdmin(): Promise<import("../schemas/project.schema").Project[]>;
     create(createProjectDto: CreateProjectDto): Promise<import("../schemas/project.schema").Project>;
     reorder(reorderDto: ReorderProjectsDto): Promise<import("../schemas/project.schema").Project[]>;
     update(id: string, updateProjectDto: UpdateProjectDto): Promise<import("../schemas/project.schema").Project>;

@@ -14,6 +14,7 @@ interface Project {
     techStack: string[]
     liveLinks: string[]
     imageUrls: string[]
+    isActive: boolean
 }
 
 

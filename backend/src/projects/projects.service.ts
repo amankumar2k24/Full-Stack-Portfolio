@@ -14,6 +14,10 @@ export class ProjectsService {
         return this.projectModel.find().sort({ order: 1, createdAt: 1 }).exec();
     }
 
+    async findActive(): Promise<Project[]> {
+        return this.projectModel.find({ isActive: true }).sort({ order: 1, createdAt: 1 }).exec();
+    }
+
     async create(createProjectDto: CreateProjectDto): Promise<Project> {
         // Get the highest order value and increment by 1
         const lastProject = await this.projectModel.findOne().sort({ order: -1 }).exec();

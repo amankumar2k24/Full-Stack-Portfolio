@@ -5,6 +5,7 @@ export declare class ProjectsService {
     private projectModel;
     constructor(projectModel: Model<ProjectDocument>);
     findAll(): Promise<Project[]>;
+    findActive(): Promise<Project[]>;
     create(createProjectDto: CreateProjectDto): Promise<Project>;
     update(id: string, updateProjectDto: UpdateProjectDto): Promise<Project>;
     remove(id: string): Promise<void>;

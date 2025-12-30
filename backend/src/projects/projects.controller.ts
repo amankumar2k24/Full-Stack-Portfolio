@@ -9,6 +9,12 @@ export class ProjectsController {
 
     @Get()
     async findAll() {
+        return this.projectsService.findActive();
+    }
+
+    @Get('all')
+    @UseGuards(JwtAuthGuard)
+    async findAllForAdmin() {
         return this.projectsService.findAll();
     }
 

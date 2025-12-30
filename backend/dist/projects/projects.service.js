@@ -24,6 +24,9 @@ let ProjectsService = class ProjectsService {
     async findAll() {
         return this.projectModel.find().sort({ order: 1, createdAt: 1 }).exec();
     }
+    async findActive() {
+        return this.projectModel.find({ isActive: true }).sort({ order: 1, createdAt: 1 }).exec();
+    }
     async create(createProjectDto) {
         const lastProject = await this.projectModel.findOne().sort({ order: -1 }).exec();
         const order = lastProject ? lastProject.order + 1 : 0;

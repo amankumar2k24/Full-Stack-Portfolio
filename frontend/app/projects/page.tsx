@@ -6,7 +6,7 @@ import AllProjectsSection from '@/components/AllProjectsSection'
 
 export default function ProjectsPage() {
     return (
-        <div className="min-h-screen pt-20 pb-12 px-6 bg-gradient-to-br from-muted/20 via-background to-muted/20 relative overflow-hidden">
+        <div className="min-h-screen pt-10 pb-12 px-6 bg-gradient-to-br from-muted/20 via-background to-muted/20 relative overflow-hidden">
             <div className="max-w-7xl mx-auto">
                 {/* Back Button */}
                 <motion.button
@@ -29,7 +29,7 @@ export default function ProjectsPage() {
                     transition={{ duration: 0.8 }}
                     className="text-center mb-16"
                 >
-                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-primary via-blue-500 to-purple-500 bg-clip-text text-transparent">
+                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-primary via-blue-500 to-purple-500 bg-clip-text text-transparent leading-tight pb-2">
                         All Projects
                     </h1>
                     <p className="text-lg text-muted-foreground max-w-3xl mx-auto">

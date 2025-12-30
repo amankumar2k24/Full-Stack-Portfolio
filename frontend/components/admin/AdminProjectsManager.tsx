@@ -15,6 +15,7 @@ interface Project {
     liveLinks: string[]
     imageUrls: string[]
     order: number
+    isActive: boolean
 }
 
 
@@ -100,7 +101,8 @@ export default function AdminProjectsManager() {
         description: '',
         techStack: '',
         liveLinks: '',
-        imageUrls: ''
+        imageUrls: '',
+        isActive: true
     })
     const [imageUrlInputs, setImageUrlInputs] = useState<string[]>([''])
     const [liveLinkInputs, setLiveLinkInputs] = useState<string[]>([''])
@@ -123,7 +125,7 @@ export default function AdminProjectsManager() {
 
     const fetchProjects = async () => {
         try {
-            const response = await api.get('/projects')
+            const response = await api.get('/projects/all')
             setProjects(response.data)
         } catch (error) {
             console.error('Failed to fetch projects:', error)
@@ -146,7 +148,8 @@ export default function AdminProjectsManager() {
                 description: '',
                 techStack: '',
                 liveLinks: '',
-                imageUrls: ''
+                imageUrls: '',
+                isActive: true
             })
             setImageUrlInputs([''])
             setLiveLinkInputs([''])
@@ -207,6 +210,21 @@ export default function AdminProjectsManager() {
         setProjects(projects.map(project =>
             project._id === id ? { ...project, [field]: value } : project
         ))
+    }
+
+    const toggleProjectActive = async (id: string, isActive: boolean) => {
+        try {
+            // Update local state immediately for better UX
+            updateProject(id, 'isActive', isActive)
+
+            // Make API call to save the change
+            await api.put(`/projects/${id}`, { isActive })
+        } catch (error) {
+            console.error('Failed to update project status:', error)
+            // Revert the local state if API call fails
+            updateProject(id, 'isActive', !isActive)
+            alert('Failed to update project status. Please try again.')
+        }
     }
 
     const moveProject = async (projectId: string, direction: 'up' | 'down') => {
@@ -437,6 +455,24 @@ export default function AdminProjectsManager() {
                             </div>
                         </div>
                     </div>
+
+                    {/* Active Status Toggle */}
+                    <div className="mt-4">
+                        <label className="block text-sm font-medium mb-2">Visibility</label>
+                        <div className="flex items-center gap-2">
+                            <input
+                                type="checkbox"
+                                id="isActive"
+                                checked={formData.isActive}
+                                onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
+                                className="rounded"
+                            />
+                            <label htmlFor="isActive" className="text-sm">
+                                Show this project on the main website
+                            </label>
+                        </div>
+                    </div>
+
                     <div className="flex gap-2 mt-4">
                         <button
                             onClick={handleAdd}
@@ -453,7 +489,8 @@ export default function AdminProjectsManager() {
                                     description: '',
                                     techStack: '',
                                     liveLinks: '',
-                                    imageUrls: ''
+                                    imageUrls: '',
+                                    isActive: true
                                 })
                                 setImageUrlInputs([''])
                                 setLiveLinkInputs([''])
@@ -552,6 +589,25 @@ export default function AdminProjectsManager() {
                                             </button>
                                         </>
                                     )}
+                                </div>
+                            </div>
+
+                            {/* Active Status Toggle */}
+                            <div className="mb-4 p-3 bg-muted/50 rounded-lg">
+                                <div className="flex items-center justify-between">
+                                    <span className="text-sm font-medium">Visibility Status</span>
+                                    <div className="flex items-center gap-2">
+                                        <input
+                                            type="checkbox"
+                                            id={`isActive-${project._id}`}
+                                            checked={project.isActive ?? true}
+                                            onChange={(e) => toggleProjectActive(project._id, e.target.checked)}
+                                            className="rounded"
+                                        />
+                                        <label htmlFor={`isActive-${project._id}`} className="text-sm">
+                                            {project.isActive ? 'Visible on website' : 'Hidden from website'}
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
 

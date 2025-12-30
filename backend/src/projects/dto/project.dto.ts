@@ -1,4 +1,4 @@
-import { IsString, IsArray, IsOptional, IsNumber } from 'class-validator';
+import { IsString, IsArray, IsOptional, IsNumber, IsBoolean } from 'class-validator';
 
 export class CreateProjectDto {
     @IsString()
@@ -24,9 +24,44 @@ export class CreateProjectDto {
     @IsOptional()
     @IsNumber()
     order?: number;
+
+    @IsOptional()
+    @IsBoolean()
+    isActive?: boolean;
 }
 
-export class UpdateProjectDto extends CreateProjectDto { }
+export class UpdateProjectDto {
+    @IsOptional()
+    @IsString()
+    title?: string;
+
+    @IsOptional()
+    @IsString()
+    description?: string;
+
+    @IsOptional()
+    @IsArray()
+    @IsString({ each: true })
+    techStack?: string[];
+
+    @IsOptional()
+    @IsArray()
+    @IsString({ each: true })
+    liveLinks?: string[];
+
+    @IsOptional()
+    @IsArray()
+    @IsString({ each: true })
+    imageUrls?: string[];
+
+    @IsOptional()
+    @IsNumber()
+    order?: number;
+
+    @IsOptional()
+    @IsBoolean()
+    isActive?: boolean;
+}
 
 export class ReorderProjectsDto {
     @IsArray()

@@ -22,6 +22,9 @@ let ProjectsController = class ProjectsController {
         this.projectsService = projectsService;
     }
     async findAll() {
+        return this.projectsService.findActive();
+    }
+    async findAllForAdmin() {
         return this.projectsService.findAll();
     }
     async create(createProjectDto) {
@@ -44,6 +47,13 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)
 ], ProjectsController.prototype, "findAll", null);
+__decorate([
+    (0, common_1.Get)('all'),
+    (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", []),
+    __metadata("design:returntype", Promise)
+], ProjectsController.prototype, "findAllForAdmin", null);
 __decorate([
     (0, common_1.UseGuards)(jwt_auth_guard_1.JwtAuthGuard),
     (0, common_1.Post)(),

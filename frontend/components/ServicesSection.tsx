@@ -406,7 +406,7 @@ export default function ServicesSection() {
     }
 
     return (
-        <section className="pt-16 pb-12 sm:pt-20 sm:pb-20 px-3 sm:px-6 bg-gradient-to-br from-muted/20 via-background to-muted/20 relative overflow-hidden">
+        <section className="pt-10 pb-12 sm:pt-10 sm:pb-20 px-3 sm:px-6 bg-gradient-to-br from-muted/20 via-background to-muted/20 relative overflow-hidden">
             <div className="max-w-7xl mx-auto">
                 {/* Header */}
                 <motion.div
