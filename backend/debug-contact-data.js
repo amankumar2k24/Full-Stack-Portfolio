@@ -8,11 +8,17 @@ mongoose.connect(process.env.MONGO_URI || 'mongodb://localhost:27017/portfolio')
 
 // Define schemas
 const aboutSchema = new mongoose.Schema({
+    name: String,
     title: String,
     bio: String,
-    profileImage: String,
+    location: String,
     resumeLink: String,
-    location: String
+    socials: {
+        github: String,
+        linkedin: String,
+        twitter: String,
+        email: String
+    }
 }, { timestamps: true });
 
 const settingsSchema = new mongoose.Schema({
@@ -49,18 +55,18 @@ async function debugContactData() {
         }, {});
         console.log('Settings object:', JSON.stringify(settingsObj, null, 2));
 
-        // Simulate the personalInfo object creation
+        // Simulate the personalInfo object creation (NEW LOGIC)
         console.log('\n4. Personal Info Object (as created in service):');
         const personalInfo = {
-            name: settingsObj['name'] || 'Aman Kumar',
+            name: settingsObj['name'] || about?.name || 'Aman Kumar',
             title: settingsObj['title'] || about?.title || '',
             bio: about?.bio || '',
-            location: settingsObj['location'] || '',
-            email: settingsObj['email'] || '',
-            phone: settingsObj['phone'] || '',
-            github: settingsObj['github'] || '',
-            linkedin: settingsObj['linkedin'] || '',
-            twitter: settingsObj['twitter'] || '',
+            location: settingsObj['location'] || about?.location || '',
+            email: settingsObj['email'] || about?.socials?.email || '',
+            phone: settingsObj['phone'] || '+91 7357432123', // Hardcoded as fallback
+            github: settingsObj['github'] || about?.socials?.github || '',
+            linkedin: settingsObj['linkedin'] || about?.socials?.linkedin || '',
+            twitter: settingsObj['twitter'] || about?.socials?.twitter || '',
         };
         console.log('Personal Info:', JSON.stringify(personalInfo, null, 2));
 

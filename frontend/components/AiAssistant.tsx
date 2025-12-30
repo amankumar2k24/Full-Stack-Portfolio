@@ -41,23 +41,24 @@ export default function AiAssistant() {
         }
     }, [isOpen])
 
-    const sendMessage = async () => {
-        if (!inputMessage.trim() || isLoading) return
+    const sendMessage = async (messageText?: string) => {
+        const messageToSend = messageText || inputMessage.trim()
+        if (!messageToSend || isLoading) return
 
         const userMessage: Message = {
             id: Date.now().toString(),
-            content: inputMessage,
+            content: messageToSend,
             sender: 'user',
             timestamp: new Date().toISOString(),
         }
 
         setMessages(prev => [...prev, userMessage])
-        setInputMessage('')
+        if (!messageText) setInputMessage('') // Only clear input if it's from the input field
         setIsLoading(true)
 
         try {
             const response = await api.post('/ai-assistant/chat', {
-                message: inputMessage
+                message: messageToSend
             })
 
             const aiMessage: Message = {
@@ -82,7 +83,11 @@ export default function AiAssistant() {
         }
     }
 
-    const handleKeyPress = (e: React.KeyboardEvent) => {
+    const handleQuickAction = (message: string) => {
+        sendMessage(message)
+    }
+
+    const handleKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === 'Enter' && !e.shiftKey) {
             e.preventDefault()
             sendMessage()
@@ -203,6 +208,63 @@ export default function AiAssistant() {
                             <div ref={messagesEndRef} />
                         </div>
 
+                        {/* Quick Action Buttons */}
+                        {messages.length === 1 && (
+                            <div className="px-3 sm:px-4 pb-2">
+                                <p className="text-xs text-muted-foreground mb-3 text-center">Quick actions:</p>
+                                <div className="grid grid-cols-2 gap-2">
+                                    <button
+                                        onClick={() => handleQuickAction("What's your email address?")}
+                                        className="p-2 text-xs bg-muted hover:bg-accent rounded-lg transition-colors text-left"
+                                    >
+                                        📧 Email
+                                    </button>
+                                    <button
+                                        onClick={() => handleQuickAction("LinkedIn profile link?")}
+                                        className="p-2 text-xs bg-muted hover:bg-accent rounded-lg transition-colors text-left"
+                                    >
+                                        💼 LinkedIn
+                                    </button>
+                                    <button
+                                        onClick={() => handleQuickAction("What's your phone number?")}
+                                        className="p-2 text-xs bg-muted hover:bg-accent rounded-lg transition-colors text-left"
+                                    >
+                                        📱 Phone
+                                    </button>
+                                    <button
+                                        onClick={() => handleQuickAction("GitHub profile?")}
+                                        className="p-2 text-xs bg-muted hover:bg-accent rounded-lg transition-colors text-left"
+                                    >
+                                        💻 GitHub
+                                    </button>
+                                    <button
+                                        onClick={() => handleQuickAction("Tell me about your skills")}
+                                        className="p-2 text-xs bg-muted hover:bg-accent rounded-lg transition-colors text-left"
+                                    >
+                                        🚀 Skills
+                                    </button>
+                                    <button
+                                        onClick={() => handleQuickAction("Show me your projects")}
+                                        className="p-2 text-xs bg-muted hover:bg-accent rounded-lg transition-colors text-left"
+                                    >
+                                        💡 Projects
+                                    </button>
+                                    <button
+                                        onClick={() => handleQuickAction("What services do you offer?")}
+                                        className="p-2 text-xs bg-muted hover:bg-accent rounded-lg transition-colors text-left"
+                                    >
+                                        🛠️ Services
+                                    </button>
+                                    <button
+                                        onClick={() => handleQuickAction("Tell me about your experience")}
+                                        className="p-2 text-xs bg-muted hover:bg-accent rounded-lg transition-colors text-left"
+                                    >
+                                        💼 Experience
+                                    </button>
+                                </div>
+                            </div>
+                        )}
+
                         {/* Input */}
                         <div className="p-3 sm:p-4 border-t border-border">
                             <div className="flex gap-2">
@@ -211,13 +273,13 @@ export default function AiAssistant() {
                                     type="text"
                                     value={inputMessage}
                                     onChange={(e) => setInputMessage(e.target.value)}
-                                    onKeyPress={handleKeyPress}
+                                    onKeyDown={handleKeyDown}
                                     placeholder="Ask me anything about Aman..."
                                     className="flex-1 px-3 py-2 bg-background border border-border rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
                                     disabled={isLoading}
                                 />
                                 <button
-                                    onClick={sendMessage}
+                                    onClick={() => sendMessage()}
                                     disabled={!inputMessage.trim() || isLoading}
                                     className="w-9 h-9 sm:w-10 sm:h-10 bg-primary text-primary-foreground rounded-full hover:bg-primary/90 disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center justify-center"
                                 >

@@ -44,15 +44,15 @@ let AiAssistantService = class AiAssistantService {
             }, {});
             const context = {
                 personalInfo: {
-                    name: settingsObj['name'] || 'Aman Kumar',
+                    name: settingsObj['name'] || about?.name || 'Aman Kumar',
                     title: settingsObj['title'] || about?.title || '',
                     bio: about?.bio || '',
-                    location: settingsObj['location'] || '',
-                    email: settingsObj['email'] || '',
-                    phone: settingsObj['phone'] || '',
-                    github: settingsObj['github'] || '',
-                    linkedin: settingsObj['linkedin'] || '',
-                    twitter: settingsObj['twitter'] || '',
+                    location: settingsObj['location'] || about?.location || '',
+                    email: settingsObj['email'] || about?.socials?.email || '',
+                    phone: settingsObj['phone'] || '+91 7357432123',
+                    github: settingsObj['github'] || about?.socials?.github || '',
+                    linkedin: settingsObj['linkedin'] || about?.socials?.linkedin || '',
+                    twitter: settingsObj['twitter'] || about?.socials?.twitter || '',
                 },
                 currentWork: {
                     company: experiences?.[0]?.company || '',
