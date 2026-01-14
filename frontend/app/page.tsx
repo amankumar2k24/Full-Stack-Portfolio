@@ -44,7 +44,7 @@ export default function HomePage() {
                 onComplete={() => setIsLoading(false)}
             />
 
-            <div className={`min-h-screen bg-background pt-16 sm:pt-20 overflow-x-hidden w-full max-w-full transition-opacity duration-500 ${isLoading ? 'opacity-0' : 'opacity-100'}`}>
+            <div className={`min-h-screen bg-background pt-[18px] sm:pt-20 overflow-x-hidden w-full max-w-full transition-opacity duration-500 ${isLoading ? 'opacity-0' : 'opacity-100'}`}>
                 <Navigation />
 
                 {/* Hero Section */}

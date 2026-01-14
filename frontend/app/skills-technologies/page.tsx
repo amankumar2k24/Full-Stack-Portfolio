@@ -32,7 +32,7 @@ export default function SkillsTechnologiesPage() {
                     transition={{ duration: 0.8 }}
                     className="text-center mb-16"
                 >
-                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-primary via-blue-500 to-purple-500 bg-clip-text text-transparent">
+                    <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 bg-gradient-to-r from-primary via-blue-500 to-purple-500 bg-clip-text text-transparent pb-2">
                         Skills & Technologies
                     </h1>
                     <p className="text-lg text-muted-foreground max-w-3xl mx-auto">

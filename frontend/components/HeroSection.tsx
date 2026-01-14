@@ -137,11 +137,9 @@ export default function HeroSection() {
     const scrollToSection = (sectionId: string) => {
         const element = document.getElementById(sectionId)
         if (element) {
-            // Dynamic header offset based on screen size
             const isMobile = window.innerWidth < 768
-            const headerOffset = isMobile ? 120 : 80 // More offset for mobile
+            const headerOffset = isMobile ? 120 : 80
 
-            // Get the section heading element for better positioning
             const sectionHeading = element.querySelector('h1, h2')
             const targetElement = sectionHeading || element
 
@@ -155,28 +153,8 @@ export default function HeroSection() {
         }
     }
 
-    // Remove the loading state since we have the main portfolio loader
-    // if (loading) {
-    //     return (
-    //         <div className="flex items-center justify-center min-h-screen">
-    //             <motion.div
-    //                 className="text-center space-y-4"
-    //                 initial={{ opacity: 0 }}
-    //                 animate={{ opacity: 1 }}
-    //             >
-    //                 <motion.div
-    //                     className="w-16 h-16 border-4 border-primary border-t-transparent rounded-full mx-auto"
-    //                     animate={{ rotate: 360 }}
-    //                     transition={{ duration: 1, repeat: Infinity, ease: "linear" }}
-    //                 />
-    //                 <p className="text-muted-foreground">Loading amazing portfolio...</p>
-    //             </motion.div>
-    //         </div>
-    //     )
-    // }
-
     return (
-        <div className="relative min-h-[calc(100vh-4rem)] sm:min-h-[calc(100vh-5rem)] w-full max-w-full flex items-center justify-center overflow-hidden bg-gradient-to-br from-background via-background to-muted/20 max-[719px]:bg-background">
+        <div className="relative min-h-[calc(100vh-4rem)] sm:min-h-[calc(100vh-5rem)] w-full max-w-full flex items-center justify-center overflow-hidden bg-gradient-to-br from-background via-background to-muted/20">
             {/* Simple Floating Elements */}
             <SimpleFloatingElements />
 
@@ -279,7 +257,6 @@ export default function HeroSection() {
                     className="mb-6 sm:mb-12"
                 >
                     <p className="text-base sm:text-lg md:text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed px-4">
-                        {/* {about?.bio} */}
                         Full-stack developer leveraging AI and modern web technologies to solve complex problems, delivering scalable solutions and exceptional digital experiences for businesses globally.
                     </p>
                 </motion.div>

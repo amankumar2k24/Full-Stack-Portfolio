@@ -10,6 +10,8 @@ export const metadata: Metadata = {
     description: 'Passionate full-stack developer creating innovative solutions and beautiful user experiences. Explore my projects, skills, and get in touch for collaboration.',
 }
 
+import MobileNav from '@/components/MobileNav'
+
 export default function RootLayout({
     children,
 }: {
@@ -22,6 +24,7 @@ export default function RootLayout({
                     defaultTheme="dark"
                     storageKey="portfolio-theme"
                 >
+                    <MobileNav />
                     {children}
                 </ThemeProvider>
             </body>

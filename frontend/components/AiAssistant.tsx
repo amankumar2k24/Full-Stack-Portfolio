@@ -106,7 +106,7 @@ export default function AiAssistant() {
             {/* Chat Widget Button */}
             <motion.button
                 onClick={() => setIsOpen(true)}
-                className={`fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-50 p-3 sm:p-4 bg-primary text-primary-foreground rounded-full shadow-lg hover:shadow-xl transition-all duration-300 ${isOpen ? 'hidden' : 'block'}`}
+                className={`fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 p-[10px] sm:p-4 bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 group ${isOpen ? 'hidden' : 'block'}`}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 initial={{ scale: 0 }}
@@ -119,7 +119,7 @@ export default function AiAssistant() {
                 <div className="absolute -top-1 -right-1 w-3 h-3 bg-green-500 rounded-full animate-pulse" />
 
                 {/* Tooltip */}
-                <div className="absolute bottom-full right-0 mb-2 px-3 py-1 bg-black text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap">
+                <div className="absolute bottom-full right-0 mb-2 px-3 py-1 bg-black text-white text-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
                     Ask me about Aman Kumar!
                 </div>
             </motion.button>
@@ -132,7 +132,7 @@ export default function AiAssistant() {
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.8, y: 20 }}
                         transition={{ type: "spring", stiffness: 300, damping: 30 }}
-                        className="fixed bottom-2 right-2 left-2 sm:bottom-6 sm:right-6 sm:left-auto sm:w-96 z-50 h-[50vh] sm:h-[500px] bg-card border border-border rounded-2xl shadow-2xl flex flex-col overflow-hidden"
+                        className="fixed bottom-2 right-2 left-2 sm:bottom-6 sm:right-6 sm:left-auto sm:w-[500px] z-40 h-[75vh] sm:h-[600px] bg-card border border-border rounded-2xl shadow-2xl flex flex-col overflow-hidden"
                     >
                         {/* Speech Bubble Arrow - Top (hidden on mobile) */}
                         <div className="hidden sm:block absolute -top-2 right-8 w-4 h-4 bg-card border-l border-t border-border transform rotate-45"></div>
