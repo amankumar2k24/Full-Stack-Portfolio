@@ -11,6 +11,7 @@ export const metadata: Metadata = {
 }
 
 import MobileNav from '@/components/MobileNav'
+import { UIProvider } from '@/components/UIProvider'
 
 export default function RootLayout({
     children,
@@ -24,8 +25,10 @@ export default function RootLayout({
                     defaultTheme="dark"
                     storageKey="portfolio-theme"
                 >
-                    <MobileNav />
-                    {children}
+                    <UIProvider>
+                        <MobileNav />
+                        {children}
+                    </UIProvider>
                 </ThemeProvider>
             </body>
         </html>

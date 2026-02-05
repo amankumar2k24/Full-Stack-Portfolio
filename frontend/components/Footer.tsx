@@ -4,10 +4,12 @@ import { motion } from 'framer-motion'
 import { Github, Linkedin, Mail, ArrowUp, Code, Coffee } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { useAbout } from '@/hooks/useAbout'
+import { useUI } from '@/components/UIProvider'
 
 export default function Footer() {
     const [showScrollTop, setShowScrollTop] = useState(false)
     const { about } = useAbout()
+    const { isChatOpen } = useUI()
 
     useEffect(() => {
         const handleScroll = () => {
@@ -186,8 +188,8 @@ export default function Footer() {
                 whileTap={{ scale: 0.9 }}
                 initial={{ opacity: 0 }}
                 animate={{
-                    opacity: showScrollTop ? 1 : 0,
-                    y: showScrollTop ? 0 : 40
+                    opacity: (showScrollTop && !isChatOpen) ? 1 : 0,
+                    y: (showScrollTop && !isChatOpen) ? 0 : 40
                 }}
                 transition={{ duration: 0.3 }}
             >

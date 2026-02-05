@@ -4,6 +4,7 @@ import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { MessageCircle, X, Send, Bot, User } from 'lucide-react'
 import api from '@/lib/api'
+import { useUI } from '@/components/UIProvider'
 
 interface Message {
     id: string
@@ -13,7 +14,7 @@ interface Message {
 }
 
 export default function AiAssistant() {
-    const [isOpen, setIsOpen] = useState(false)
+    const { isChatOpen: isOpen, toggleChat: setIsOpen, isMobileMenuOpen } = useUI()
     const [messages, setMessages] = useState<Message[]>([
         {
             id: '1',
@@ -106,7 +107,7 @@ export default function AiAssistant() {
             {/* Chat Widget Button */}
             <motion.button
                 onClick={() => setIsOpen(true)}
-                className={`fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 p-[10px] sm:p-4 bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 group ${isOpen ? 'hidden' : 'block'}`}
+                className={`fixed bottom-4 right-4 sm:bottom-6 sm:right-6 z-40 p-[10px] sm:p-4 bg-white/10 backdrop-blur-md border border-white/20 text-white rounded-full shadow-lg hover:shadow-xl transition-all duration-300 group ${(isOpen || isMobileMenuOpen) ? 'hidden' : 'block'}`}
                 whileHover={{ scale: 1.1 }}
                 whileTap={{ scale: 0.9 }}
                 initial={{ scale: 0 }}
@@ -131,7 +132,7 @@ export default function AiAssistant() {
                         initial={{ opacity: 0, scale: 0.8, y: 20 }}
                         animate={{ opacity: 1, scale: 1, y: 0 }}
                         exit={{ opacity: 0, scale: 0.8, y: 20 }}
-                        transition={{ type: "spring", stiffness: 300, damping: 30 }}
+                        transition={{ type: "spring", stiffness: 450, damping: 35 }}
                         className="fixed bottom-2 right-2 left-2 sm:bottom-6 sm:right-6 sm:left-auto sm:w-[500px] z-40 h-[75vh] sm:h-[600px] bg-card border border-border rounded-2xl shadow-2xl flex flex-col overflow-hidden"
                     >
                         {/* Speech Bubble Arrow - Top (hidden on mobile) */}

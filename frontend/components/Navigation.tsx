@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Menu, X, Home, User, Code, Briefcase, Mail } from 'lucide-react'
 import { ThemeToggle } from './ThemeToggle'
+import { useUI } from './UIProvider'
 
 const navItems = [
     { name: 'Home', href: '#home', icon: Home },
@@ -14,7 +15,7 @@ const navItems = [
 ]
 
 export default function Navigation() {
-    const [isOpen, setIsOpen] = useState(false)
+    const { toggleMobileMenu: setIsOpen, isChatOpen } = useUI()
     const [activeSection, setActiveSection] = useState('home')
     const [scrolled, setScrolled] = useState(false)
 
@@ -46,40 +47,6 @@ export default function Navigation() {
         return () => window.removeEventListener('scroll', handleScroll)
     }, [])
 
-    // Prevent body scroll when mobile menu is open
-    useEffect(() => {
-        if (isOpen) {
-            const scrollY = window.scrollY
-            document.body.style.overflow = 'hidden'
-            document.body.style.position = 'fixed'
-            document.body.style.top = `-${scrollY}px`
-            document.body.style.width = '100%'
-            document.body.style.left = '0'
-            document.body.style.right = '0'
-        } else {
-            const scrollY = document.body.style.top
-            document.body.style.overflow = ''
-            document.body.style.position = ''
-            document.body.style.top = ''
-            document.body.style.width = ''
-            document.body.style.left = ''
-            document.body.style.right = ''
-            if (scrollY) {
-                window.scrollTo(0, parseInt(scrollY || '0') * -1)
-            }
-        }
-
-        // Cleanup function to ensure styles are reset
-        return () => {
-            document.body.style.overflow = ''
-            document.body.style.position = ''
-            document.body.style.top = ''
-            document.body.style.width = ''
-            document.body.style.left = ''
-            document.body.style.right = ''
-        }
-    }, [isOpen])
-
     const scrollToSection = (sectionId: string) => {
         const element = document.getElementById(sectionId)
         if (element) {
@@ -103,7 +70,7 @@ export default function Navigation() {
                     top: offsetPosition,
                     behavior: 'smooth'
                 })
-            }, isOpen ? 150 : 0) // Delay only if menu was open
+            }, 150) // Small delay to allow state change to propagate
         } else {
             setIsOpen(false)
         }
@@ -157,82 +124,10 @@ export default function Navigation() {
                             ))}
 
                             <ThemeToggle />
-
-                            {/* <Link href="/admin/login">
-                                <motion.button
-                                    className="p-2 rounded-full hover:bg-accent transition-colors"
-                                    whileHover={{ scale: 1.1, rotate: 90 }}
-                                    whileTap={{ scale: 0.9 }}
-                                >
-                                    <Settings size={18} />
-                                </motion.button>
-                            </Link> */}
                         </div>
-
-                        {/* Mobile Menu Button */}
-                        <motion.button
-                            className="md:hidden p-2 rounded-lg hover:bg-accent"
-                            onClick={() => setIsOpen(!isOpen)}
-                            whileTap={{ scale: 0.95 }}
-                        >
-                            {isOpen ? <X size={24} /> : <Menu size={24} />}
-                        </motion.button>
                     </div>
                 </div>
             </motion.nav>
-
-            {/* Mobile Menu */}
-            <AnimatePresence mode="wait">
-                {isOpen && (
-                    <motion.div
-                        initial={{ opacity: 0, x: '100%' }}
-                        animate={{ opacity: 1, x: 0 }}
-                        exit={{ opacity: 0, x: '100%' }}
-                        transition={{ type: 'spring', stiffness: 400, damping: 30 }}
-                        className="fixed inset-0 z-40 md:hidden"
-                    >
-                        <div className="absolute inset-0 bg-background/90 backdrop-blur-sm" />
-                        <div className="absolute right-0 top-0 h-full w-64 bg-card border-l border-border p-6">
-                            <div className="flex flex-col space-y-6 mt-16">
-                                {navItems.map((item) => {
-                                    const Icon = item.icon
-                                    return (
-                                        <motion.button
-                                            key={item.name}
-                                            onClick={() => scrollToSection(item.href.substring(1))}
-                                            className={`flex items-center space-x-3 px-4 py-3 rounded-lg text-left transition-colors ${activeSection === item.href.substring(1)
-                                                ? 'bg-primary text-primary-foreground'
-                                                : 'hover:bg-accent'
-                                                }`}
-                                            whileHover={{ x: 4 }}
-                                            whileTap={{ scale: 0.95 }}
-                                        >
-                                            <Icon size={20} />
-                                            <span>{item.name}</span>
-                                        </motion.button>
-                                    )
-                                })}
-
-                                <div className="flex items-center justify-between px-4 py-3">
-                                    <span className="text-sm font-medium">Theme</span>
-                                    <ThemeToggle />
-                                </div>
-
-                                {/* <Link href="/admin/login">
-                                    <motion.button
-                                        className="flex items-center space-x-3 px-4 py-3 rounded-lg text-left hover:bg-accent w-full"
-                                        whileHover={{ x: 4 }}
-                                        whileTap={{ scale: 0.95 }}
-                                    >
-                                        <Settings size={20} />
-                                        <span>Admin</span>
-                                    </motion.button>
-                                </Link> */}
-                            </div>
-                        </div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
         </>
     )
 }

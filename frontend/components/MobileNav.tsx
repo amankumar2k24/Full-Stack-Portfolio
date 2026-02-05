@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Home, User, Code, Briefcase, Mail, Sun, Moon, Menu, X } from 'lucide-react'
 import { useTheme } from '@/components/ThemeProvider'
+import { useUI } from '@/components/UIProvider'
 
 const navItems = [
     { name: 'Home', href: '#home', icon: Home },
@@ -14,7 +15,7 @@ const navItems = [
 ]
 
 export default function MobileNav() {
-    const [isOpen, setIsOpen] = useState(false)
+    const { isMobileMenuOpen: isOpen, toggleMobileMenu: setIsOpen, isChatOpen } = useUI()
     const [activeSection, setActiveSection] = useState('home')
     const [mounted, setMounted] = useState(false)
     const { theme, setTheme } = useTheme()
@@ -65,6 +66,8 @@ export default function MobileNav() {
         }
     }
 
+    if (isChatOpen) return null
+
     return (
         <div className="md:hidden">
             {/* Branding (AK) - Relative to scroll away */}
@@ -88,6 +91,7 @@ export default function MobileNav() {
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
+                        transition={{ duration: 0.15 }}
                         onClick={() => setIsOpen(false)}
                         className="fixed inset-0 z-40 bg-black/20 backdrop-blur-sm"
                     />
@@ -100,7 +104,7 @@ export default function MobileNav() {
                 onClick={() => setIsOpen(!isOpen)}
                 className={`fixed top-4 right-4 z-50 p-2 rounded-full bg-black/90 backdrop-blur-xl border border-white/10 shadow-[0_0_20px_rgba(99,102,241,0.2)] text-white transition-all duration-300 ${isOpen ? 'opacity-0 pointer-events-none' : 'opacity-100'}`}
                 whileTap={{ scale: 0.9 }}
-                transition={{ type: "spring", stiffness: 260, damping: 25 }}
+                transition={{ type: "spring", stiffness: 400, damping: 30 }}
             >
                 <Menu size={22} />
             </motion.button>
@@ -117,8 +121,8 @@ export default function MobileNav() {
                 }}
                 transition={{
                     type: "spring",
-                    stiffness: 260,
-                    damping: 25
+                    stiffness: 450,
+                    damping: 35
                 }}
                 className="fixed z-50 flex flex-col items-center justify-center bg-black/95 backdrop-blur-2xl rounded-l-[3rem] py-10 pr-2 pl-4 pointer-events-auto origin-right"
                 style={{
