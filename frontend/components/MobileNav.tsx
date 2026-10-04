@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import { usePathname } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Home, User, Code, Briefcase, Mail, Sun, Moon, Menu, X } from 'lucide-react'
 import { useTheme } from '@/components/ThemeProvider'
@@ -15,6 +16,9 @@ const navItems = [
 ]
 
 export default function MobileNav() {
+    const pathname = usePathname()
+    // The new homepage ships its own navbar — don't double up
+    if (pathname === '/') return null
     const { isMobileMenuOpen: isOpen, toggleMobileMenu: setIsOpen, isChatOpen } = useUI()
     const [activeSection, setActiveSection] = useState('home')
     const [mounted, setMounted] = useState(false)

@@ -17,7 +17,17 @@ module.exports = {
                 'xl': '1280px',
                 '2xl': '1536px',
             },
+            fontFamily: {
+                display: ['var(--font-display)', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+            },
             colors: {
+                nova: {
+                    ink: '#0A0A0B',
+                    panel: '#141417',
+                    lime: '#D7FD44',
+                    bone: '#F4F1EA',
+                    mute: '#A3A29B',
+                },
                 background: 'hsl(var(--background))',
                 foreground: 'hsl(var(--foreground))',
                 card: 'hsl(var(--card))',
@@ -44,6 +54,7 @@ module.exports = {
                 sm: 'calc(var(--radius) - 4px)',
             },
             animation: {
+                'marquee': 'marquee 30s linear infinite',
                 'float': 'float 6s ease-in-out infinite',
                 'pulse-slow': 'pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite',
                 'bounce-slow': 'bounce 3s infinite',
@@ -52,6 +63,10 @@ module.exports = {
                 'glow': 'glow 2s ease-in-out infinite alternate',
             },
             keyframes: {
+                marquee: {
+                    '0%': { transform: 'translateX(0)' },
+                    '100%': { transform: 'translateX(-50%)' },
+                },
                 float: {
                     '0%, 100%': { transform: 'translateY(0px)' },
                     '50%': { transform: 'translateY(-20px)' },
