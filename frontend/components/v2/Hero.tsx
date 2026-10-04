@@ -15,7 +15,11 @@ function RoleTicker() {
         return () => clearInterval(t)
     }, [])
     return (
-        <span className="relative inline-flex h-[1.2em] overflow-hidden align-bottom min-w-[11ch]">
+        <span className="relative inline-flex h-[1.2em] overflow-hidden align-bottom">
+            {/* Sizer: longest role sets the width so nothing clips */}
+            <span className="invisible whitespace-nowrap" aria-hidden>
+                {ROLES.reduce((a, b) => (a.length >= b.length ? a : b))}
+            </span>
             {ROLES.map((r, i) => (
                 <motion.span
                     key={r}
