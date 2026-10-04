@@ -10,23 +10,23 @@ const ROLES = ['Full-Stack Developer', 'MERN Specialist', 'AI Integrator', 'Free
 
 function RoleTicker() {
     const [idx, setIdx] = useState(0)
+    const longest = ROLES.reduce((a, b) => (a.length >= b.length ? a : b))
     useEffect(() => {
         const t = setInterval(() => setIdx(i => (i + 1) % ROLES.length), 2400)
         return () => clearInterval(t)
     }, [])
     return (
-        <span className="relative inline-flex h-[1.2em] overflow-hidden align-bottom">
-            {/* Sizer: longest role sets the width so nothing clips */}
-            <span className="invisible whitespace-nowrap" aria-hidden>
-                {ROLES.reduce((a, b) => (a.length >= b.length ? a : b))}
-            </span>
+        <span className="relative block overflow-hidden font-display font-bold tracking-tight text-nova-lime text-4xl md:text-6xl leading-[1.1] mt-1 mb-1">
+            {/* Invisible sizer keeps layout stable across roles */}
+            <span className="invisible whitespace-nowrap" aria-hidden>{longest}</span>
             {ROLES.map((r, i) => (
                 <motion.span
                     key={r}
-                    className="absolute left-0 top-0 whitespace-nowrap text-nova-lime"
+                    className="absolute left-0 top-0 whitespace-nowrap"
                     initial={false}
-                    animate={{ y: `${(i - idx) * 120}%`, opacity: i === idx ? 1 : 0 }}
+                    animate={{ y: `${(i - idx) * 112}%`, opacity: i === idx ? 1 : 0 }}
                     transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+                    aria-hidden={i !== idx}
                 >
                     {r}
                 </motion.span>
@@ -87,14 +87,18 @@ export default function Hero({ about }: { about: AboutData }) {
 
                 {/* Sub row */}
                 <div className="mt-8 md:mt-10 flex flex-col md:flex-row md:items-end gap-8 md:gap-16">
-                    <motion.p
+                    <motion.div
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 1.15, duration: 0.7 }}
-                        className="font-display text-xl md:text-2xl text-nova-bone/90 max-w-md"
+                        className="max-w-md"
                     >
-                        I'm a <RoleTicker /> building fast, intelligent web experiences that ship.
-                    </motion.p>
+                        <p className="font-display text-lg md:text-xl text-nova-bone/50 tracking-wide">I'm a</p>
+                        <RoleTicker />
+                        <p className="font-display text-lg md:text-xl text-nova-bone/90 leading-relaxed">
+                            building fast, intelligent web experiences that ship.
+                        </p>
+                    </motion.div>
 
                     <motion.div
                         initial={{ opacity: 0, y: 20 }}
