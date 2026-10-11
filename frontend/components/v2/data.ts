@@ -34,6 +34,7 @@ export interface ProjectItem {
     technologies: string[]
     image?: string
     liveUrl?: string
+    liveLinks?: string[]
     githubUrl?: string
 }
 
@@ -176,6 +177,59 @@ const FALLBACK_SERVICES: ServiceItem[] = [
     { title: 'Performance Optimization', description: 'Website and application performance tuning, SEO optimization and speed enhancement.', features: ['Speed Optimization', 'SEO Implementation', 'Code Splitting', 'Caching Strategies'] },
 ]
 
+/* ---------------- Normalizers (real backend shapes) ---------------- */
+
+const asArray = <T,>(v: unknown): T[] => (Array.isArray(v) ? (v as T[]) : [])
+
+const normalizeProject = (p: any): ProjectItem => {
+    const links = asArray<string>(p.liveLinks).filter((l) => l && l.trim())
+    return {
+        _id: p._id,
+        title: p.title || 'Untitled Project',
+        description: p.description || '',
+        technologies: asArray<string>(p.techStack ?? p.technologies),
+        image: (asArray<string>(p.imageUrls)[0] || p.image) as string | undefined,
+        liveUrl: (links[0] || p.liveUrl) as string | undefined,
+        liveLinks: links.length ? links : p.liveUrl ? [p.liveUrl] : undefined,
+        githubUrl: p.githubUrl,
+    }
+}
+
+const normalizeExperience = (e: any): ExperienceItem => {
+    let startDate: string = e.startDate || ''
+    let endDate: string = e.endDate || ''
+    const duration: string = e.duration || ''
+    if (duration.includes(' - ')) {
+        const [s, en] = duration.split(' - ')
+        startDate = startDate || (s || '').trim()
+        endDate = endDate || (en || '').trim()
+    } else if (duration) {
+        startDate = startDate || duration
+    }
+    return {
+        _id: e._id,
+        title: e.title || '',
+        company: e.company || '',
+        location: e.location || '',
+        startDate,
+        endDate,
+        current: e.current ?? /present/i.test(duration),
+        description: e.description || '',
+        achievements: asArray<string>(e.achievements),
+        technologies: asArray<string>(e.technologies),
+    }
+}
+
+const normalizeService = (s: any): ServiceItem => ({
+    _id: s._id,
+    title: s.title || '',
+    description: s.description || '',
+    features: asArray<string>(s.features),
+})
+
+const byOrder = (a: any, b: any) => (a.order ?? 0) - (b.order ?? 0)
+const isActive = (x: any) => x.isActive !== false
+
 export interface PortfolioData {
     about: AboutData
     stats: StatsData
@@ -222,24 +276,42 @@ export function usePortfolioData(): PortfolioData {
             }
             if (statsR.status === 'fulfilled' && statsR.value?.data) {
                 const d = statsR.value.data
-                setStats({
-                    yearsExperience: String(d.yearsExperience ?? d.years ?? FALLBACK_STATS.yearsExperience),
-                    projectsCompleted: String(d.projectsCompleted ?? d.projects ?? FALLBACK_STATS.projectsCompleted),
-                    happyClients: String(d.happyClients ?? d.clients ?? FALLBACK_STATS.happyClients),
-                    codeCommits: String(d.codeCommits ?? d.commits ?? FALLBACK_STATS.codeCommits),
-                })
+                if (Array.isArray(d)) {
+                    // Real shape: [{ key: 'years_experience', value: '2.11+', ... }]
+                    const get = (key: string) =>
+                        d.find((s: any) => s.key === key && s.isActive !== false)?.value
+                    setStats({
+                        yearsExperience: String(get('years_experience') ?? FALLBACK_STATS.yearsExperience),
+                        projectsCompleted: String(get('projects_completed') ?? FALLBACK_STATS.projectsCompleted),
+                        happyClients: String(get('happy_clients') ?? FALLBACK_STATS.happyClients),
+                        codeCommits: String(get('code_commits') ?? get('commits') ?? FALLBACK_STATS.codeCommits),
+                    })
+                } else {
+                    setStats({
+                        yearsExperience: String(d.yearsExperience ?? d.years ?? FALLBACK_STATS.yearsExperience),
+                        projectsCompleted: String(d.projectsCompleted ?? d.projects ?? FALLBACK_STATS.projectsCompleted),
+                        happyClients: String(d.happyClients ?? d.clients ?? FALLBACK_STATS.happyClients),
+                        codeCommits: String(d.codeCommits ?? d.commits ?? FALLBACK_STATS.codeCommits),
+                    })
+                }
             }
             if (expR.status === 'fulfilled' && Array.isArray(expR.value?.data) && expR.value.data.length) {
-                setExperience(expR.value.data)
+                setExperience(
+                    expR.value.data.filter(isActive).sort(byOrder).map(normalizeExperience)
+                )
             }
             if (projR.status === 'fulfilled' && Array.isArray(projR.value?.data) && projR.value.data.length) {
-                setProjects(projR.value.data)
+                setProjects(
+                    projR.value.data.filter(isActive).sort(byOrder).map(normalizeProject)
+                )
             }
             if (skillsR.status === 'fulfilled' && Array.isArray(skillsR.value?.data) && skillsR.value.data.length) {
-                setSkills(skillsR.value.data)
+                setSkills(skillsR.value.data.filter(isActive).sort(byOrder))
             }
             if (servR.status === 'fulfilled' && Array.isArray(servR.value?.data) && servR.value.data.length) {
-                setServices(servR.value.data)
+                setServices(
+                    servR.value.data.filter(isActive).sort(byOrder).map(normalizeService)
+                )
             }
             setLoading(false)
         }

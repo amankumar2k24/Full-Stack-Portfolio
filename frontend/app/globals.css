@@ -281,3 +281,26 @@ html.has-cursor, html.has-cursor * {
     background: #d7fd44;
     color: #0a0a0b;
 }
+
+/* Slim scrollbar for AI chat */
+.nova-scroll::-webkit-scrollbar { width: 5px; }
+.nova-scroll::-webkit-scrollbar-track { background: transparent; }
+.nova-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.14); border-radius: 99px; }
+.nova-scroll::-webkit-scrollbar-thumb:hover { background: rgba(215,253,68,0.4); }
+
+/* Slow rotation for hero badge */
+@keyframes spin-slower { to { transform: rotate(360deg); } }
+.animate-spin-slower { animation: spin-slower 22s linear infinite; }
+@media (prefers-reduced-motion: reduce) {
+    .animate-spin-slower { animation: none; }
+}
+
+/* Gentle float for hero pills */
+@keyframes float-soft {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+.animate-float { animation: float-soft 5s ease-in-out infinite; }
+@media (prefers-reduced-motion: reduce) {
+    .animate-float { animation: none; }
+}

@@ -51,6 +51,54 @@ export default function Hero({ about }: { about: AboutData }) {
             <div className="absolute -top-40 left-1/2 -translate-x-1/2 w-[900px] h-[500px] bg-nova-lime/10 blur-[140px] rounded-full pointer-events-none" aria-hidden />
             <div className="absolute inset-0 noise" aria-hidden />
 
+            {/* Right-side visual cluster (xl screens only) */}
+            <motion.div
+                initial={{ opacity: 0, scale: 0.8 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: 1.4, duration: 0.8 }}
+                className="hidden xl:block absolute right-[4%] top-[calc(30%-10px)] -translate-y-1/2 pointer-events-none"
+                aria-hidden
+            >
+                <div className="relative w-[300px] h-[380px]">
+                    {/* Soft lime glow */}
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[280px] h-[280px] bg-nova-lime/[0.07] blur-[70px] rounded-full" />
+
+                    {/* Rotating badge */}
+                    <div className="absolute top-[70px] left-[30px] w-[240px] h-[240px]">
+                        <svg viewBox="0 0 200 200" className="w-full h-full animate-spin-slower">
+                            <defs>
+                                <path id="badge-circle" d="M 100,100 m -78,0 a 78,78 0 1,1 156,0 a 78,78 0 1,1 -156,0" />
+                            </defs>
+                            <text className="fill-nova-mute uppercase" style={{ fontSize: '12.5px', letterSpacing: '0.32em' }}>
+                                <textPath href="#badge-circle">Open to work • Let's build • Open to work •</textPath>
+                            </text>
+                        </svg>
+                        <div className="absolute inset-0 flex items-center justify-center">
+                            <div className="w-16 h-16 rounded-full bg-nova-lime flex items-center justify-center shadow-[0_0_50px_rgba(215,253,68,0.4)]">
+                                <ArrowUpRight size={28} className="text-nova-ink" strokeWidth={2.4} />
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Floating tech pills */}
+                    <div className="absolute top-2 left-6 px-3.5 py-1.5 rounded-full bg-white/[0.06] border border-white/12 backdrop-blur text-xs font-medium text-nova-bone/80 animate-float" style={{ animationDelay: '0s' }}>
+                        React
+                    </div>
+                    <div className="absolute top-16 right-0 px-3.5 py-1.5 rounded-full bg-white/[0.06] border border-white/12 backdrop-blur text-xs font-medium text-nova-bone/80 animate-float" style={{ animationDelay: '0.8s' }}>
+                        Next.js
+                    </div>
+                    <div className="absolute bottom-16 left-0 px-3.5 py-1.5 rounded-full bg-white/[0.06] border border-white/12 backdrop-blur text-xs font-medium text-nova-bone/80 animate-float" style={{ animationDelay: '1.6s' }}>
+                        Node.js
+                    </div>
+                    <div className="absolute bottom-4 right-10 px-3.5 py-1.5 rounded-full bg-nova-lime/10 border border-nova-lime/30 backdrop-blur text-xs font-medium text-nova-lime animate-float" style={{ animationDelay: '2.4s' }}>
+                        TypeScript
+                    </div>
+
+                    {/* Decorative dotted ring */}
+                    <div className="absolute -bottom-2 left-1/2 -translate-x-1/2 w-[200px] h-[200px] rounded-full border border-dashed border-white/10" />
+                </div>
+            </motion.div>
+
             <div className="relative max-w-7xl mx-auto px-5 md:px-8 w-full pt-32 pb-20">
                 {/* Availability badge */}
                 <motion.div
@@ -75,10 +123,10 @@ export default function Hero({ about }: { about: AboutData }) {
 
                 {/* Giant kinetic type */}
                 <h1 className="font-display font-bold tracking-[-0.03em] leading-[0.92] text-nova-bone select-none">
-                    <span className="block overflow-hidden text-[17vw] md:text-[11rem] lg:text-[13rem]">
+                    <span className="block overflow-hidden text-[15vw] md:text-[9rem] lg:text-[11rem]">
                         <SplitChars text={(first || 'AMAN').toUpperCase()} delay={0.55} />
                     </span>
-                    <span className="block overflow-hidden text-[17vw] md:text-[11rem] lg:text-[13rem]">
+                    <span className="block overflow-hidden text-[15vw] md:text-[9rem] lg:text-[11rem]">
                         <span className="text-stroke-lime">
                             <SplitChars text={(last || 'KUMAR').toUpperCase()} delay={0.75} />
                         </span>
@@ -91,11 +139,10 @@ export default function Hero({ about }: { about: AboutData }) {
                         initial={{ opacity: 0, y: 20 }}
                         animate={{ opacity: 1, y: 0 }}
                         transition={{ delay: 1.15, duration: 0.7 }}
-                        className="max-w-md"
                     >
                         <p className="font-display text-lg md:text-xl text-nova-bone/50 tracking-wide">I'm a</p>
                         <RoleTicker />
-                        <p className="font-display text-lg md:text-xl text-nova-bone/90 leading-relaxed">
+                        <p className="font-display text-lg md:text-xl text-nova-bone/90 leading-relaxed max-w-md">
                             building fast, intelligent web experiences that ship.
                         </p>
                     </motion.div>

@@ -83,7 +83,7 @@ function TiltCard({ children, index }: { children: React.ReactNode; index: numbe
 }
 
 export default function Projects({ projects }: { projects: ProjectItem[] }) {
-    const featured = projects.slice(0, 6)
+    const featured = projects
 
     return (
         <section id="work" className="relative bg-nova-ink py-24 md:py-36">
@@ -95,7 +95,7 @@ export default function Projects({ projects }: { projects: ProjectItem[] }) {
                     blurb="Real products, real users, real revenue — not tutorial clones."
                 />
 
-                <div className="grid md:grid-cols-2 gap-5 md:gap-7">
+                <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 md:gap-7">
                     {featured.map((p, i) => (
                         <Reveal key={p._id || p.title} delay={(i % 2) * 0.1} y={36}>
                             <TiltCard index={i}>
@@ -108,17 +108,20 @@ export default function Projects({ projects }: { projects: ProjectItem[] }) {
                                             {p.title}
                                         </h3>
                                         <div className="flex gap-2 shrink-0">
-                                            {p.liveUrl && (
+                                            {(p.liveLinks && p.liveLinks.length > 0 ? p.liveLinks : p.liveUrl ? [p.liveUrl] : []).map((link, li) => (
                                                 <a
-                                                    href={p.liveUrl}
+                                                    key={li}
+                                                    href={link}
                                                     target="_blank"
                                                     rel="noreferrer"
-                                                    aria-label={`Open ${p.title}`}
-                                                    className="w-10 h-10 rounded-full bg-nova-lime text-nova-ink flex items-center justify-center hover:bg-white hover:rotate-45 transition-all duration-300"
+                                                    aria-label={`Open ${p.title} link ${li + 1}`}
+                                                    title={link.replace(/^https?:\/\//, '').replace(/\/$/, '')}
+                                                    className="h-10 min-w-10 px-2 rounded-full bg-nova-lime text-nova-ink flex items-center justify-center gap-1 hover:bg-white hover:rotate-45 transition-all duration-300 text-xs font-bold"
                                                 >
                                                     <ArrowUpRight size={18} />
+                                                    {(p.liveLinks?.length || 0) > 1 && <span>{li + 1}</span>}
                                                 </a>
-                                            )}
+                                            ))}
                                             {p.githubUrl && (
                                                 <a
                                                     href={p.githubUrl}

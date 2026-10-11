@@ -56,9 +56,9 @@ export default function Services({ services }: { services: ServiceItem[] }) {
                                                 <div className="pb-8 pl-12 md:pl-16 pr-4">
                                                     <p className="text-nova-mute max-w-2xl leading-relaxed">{s.description}</p>
                                                     {s.features?.length > 0 && (
-                                                        <div className="mt-5 flex flex-wrap gap-2">
+                                                        <div className="mt-4 flex flex-wrap gap-1.5">
                                                             {s.features.map(f => (
-                                                                <span key={f} className="text-sm px-4 py-2 rounded-full bg-nova-lime/10 border border-nova-lime/25 text-nova-lime">
+                                                                <span key={f} className="text-xs px-3 py-1.5 rounded-full bg-nova-lime/10 border border-nova-lime/25 text-nova-lime">
                                                                     {f}
                                                                 </span>
                                                             ))}
